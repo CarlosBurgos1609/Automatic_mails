@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ConsejoSuperiorLogo from './assets/images/ConsejoSuperiorDeLaJudicatura.png';
+import './App.css';
 
 const Header = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);

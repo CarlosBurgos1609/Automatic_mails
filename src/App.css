@@ -1,6 +1,13 @@
+* {
+    font-family: "Work Sans", sans-serif;
+    font-size: 1rem;
+    color: #4B4B4B;
+    line-height: 1.5;
+}
 /* Header.css */
 header {
   font-family: Arial, sans-serif;
+  background-color: #003f75;
 }
 
 /* Top bar styling */
@@ -10,7 +17,7 @@ header {
 
 /* Logo styling */
 img.h-12, img.h-10 {
-  max-height: 90px;
+  max-height: 20px;
   width: auto;
 }
 
