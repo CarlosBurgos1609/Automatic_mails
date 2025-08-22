@@ -20,7 +20,7 @@ const Header = () => {
               <a href="https://www.ramajudicial.gov.co" title="Rama Judicial">
                 <img
                   className="h-12"
-                  src={ConsejoSuperiorLogo}
+                  src={ConsejoSuperiorLogo}s
                   alt="Rama Judicial"
                 />
               </a>
