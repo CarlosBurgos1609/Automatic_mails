@@ -1,5 +1,26 @@
+@use 'mixin' as m;
+
+$color_blue: #003f75;
+$color_white: #ffff;
 
 *{
     font-family: 'Times New Roman', Times, serif;
+    background-color: $color_white
+
 }
 
+.flex-column{
+    flex-direction: column;
+}
+.flex-row{
+    flex-direction: row;
+}
+.img-title{ 
+    width: 10px;
+    height: auto;
+    justify-content: baseline;
+}
+.title{
+    font-size: 20px;
+    @include m.center;
+}

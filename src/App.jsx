@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ConsejoSuperiorLogo from './assets/images/ConsejoSuperiorDeLaJudicatura.png';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import './styles/header.scss';
 import Home from './front/home';
 
 const App = () => {
