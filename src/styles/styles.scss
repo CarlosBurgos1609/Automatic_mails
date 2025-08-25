@@ -1,13 +1,13 @@
 // src/styles/styles.scss
-@use 'mixin' as m;
+@use "mixin" as m;
 
-$color_blue: #003f75; 
-$color_light_blue: #e6f0fa; 
+$color_blue: #003f75;
+$color_light_blue: #e6f0fa;
 $color_white: #ffffff;
-$color_green: #006400; 
+$color_green: #bafaba;
 
 * {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -94,7 +94,7 @@ $color_green: #006400;
     }
   }
 }
-//scroll al minimizar pantalla 
+//scroll al minimizar pantalla
 @media (max-width: 768px) {
   .header-top {
     flex-direction: column;
@@ -118,40 +118,85 @@ $color_green: #006400;
 
 // **********Apartado de Home***************
 
-.home-container{
+$color_light_green: #bdf3bd;
+
+.home-container {
+  display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
-.title{
-  padding-top: 20px;
-  padding-bottom: 10px;
+
+.title {
+  padding: 20px 0;
   font-size: 20px;
   @include m.center;
   color: $color_blue;
-  
+  text-align: center;
 }
 
-.date-time{
-  // @include m.center;
-  height: 40;
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content-wrapper {
+  padding: 20px 0;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.date-time {
   border-radius: 50px;
-  padding: 30px;
-  position: relative;
-  margin: 20px;
-  background-color: #bdf3bd;
-  & h1{
+  padding: 20px;
+  background-color: $color_light_green;
+  text-align: center;
+  margin: 10px;
+
+  h1 {
     @include m.center;
-    color: $color_blue; 
-    height: 10px;
-    padding-bottom: 10px;
+    color: $color_blue;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 16px;
+    color: #fff;
   }
 }
-.date{
-  padding: 40px;
-  border-radius: 20px;
-  background-color: #bdf3bd;
-  height: 40px;
 
+.juzgado {
+  border-radius: 20px;
+  padding: 20px;
+  background-color: $color_light_green;
+  text-align: center;
+  margin: 10px;
+
+  p {
+    font-size: 16px;
+    color: $color_blue;
+    font-weight: bold;
+  }
 }
 
+/* Media Query para responsividad */
+@media (max-width: 768px) {
+  .flex-row {
+    flex-direction: column;
+    gap: 20px;
+  }
 
-
+  .date-time,
+  .juzgado {
+    width: 80%;
+  }
+}
