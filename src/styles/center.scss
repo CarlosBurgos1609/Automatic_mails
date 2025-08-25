@@ -1,0 +1,28 @@
+@mixin cente{
+    align-items: center;
+    align-self: center;
+    text-align: center;
+    justify-content: center;
+}
+@mixin left {
+    align-items: left;
+    justify-content: left;
+    display: flex;
+
+}
+
+@mixin right {
+    align-items: right;
+    justify-content: right;
+    display: flex;
+
+}
+button{
+    background-color: #003f75;
+    border-radius: 8px;
+
+}
+
+button:hover{
+    transform: scale(0.9);
+}
