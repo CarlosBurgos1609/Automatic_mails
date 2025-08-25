@@ -1,10 +1,10 @@
 // src/styles/styles.scss
 @use 'mixin' as m;
 
-$color_blue: #003f75; // Color principal de la Rama Judicial
-$color_light_blue: #e6f0fa; // Color claro para la barra de navegación
+$color_blue: #003f75; 
+$color_light_blue: #e6f0fa; 
 $color_white: #ffffff;
-$color_green: #006400; // Color verde para la línea inferior
+$color_green: #006400; 
 
 * {
   font-family: 'Arial', sans-serif;
@@ -16,6 +16,11 @@ $color_green: #006400; // Color verde para la línea inferior
 .flex-row {
   display: flex;
   flex-direction: row;
+  align-items: center;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
@@ -89,8 +94,7 @@ $color_green: #006400; // Color verde para la línea inferior
     }
   }
 }
-
-/* Media Query para responsividad (opcional, ajusta según necesites) */
+//scroll al minimizar pantalla 
 @media (max-width: 768px) {
   .header-top {
     flex-direction: column;
@@ -112,12 +116,42 @@ $color_green: #006400; // Color verde para la línea inferior
   }
 }
 
-// **********Apartado de Menu***************
+// **********Apartado de Home***************
 
-.title{
-    & h1{
-        padding-top: 30px;
-        @include m.center;
-        color: $color_blue;
-    }
+.home-container{
+  flex-direction: column;
 }
+.title{
+  padding-top: 20px;
+  padding-bottom: 10px;
+  font-size: 20px;
+  @include m.center;
+  color: $color_blue;
+  
+}
+
+.date-time{
+  // @include m.center;
+  height: 40;
+  border-radius: 50px;
+  padding: 30px;
+  position: relative;
+  margin: 20px;
+  background-color: #bdf3bd;
+  & h1{
+    @include m.center;
+    color: $color_blue; 
+    height: 10px;
+    padding-bottom: 10px;
+  }
+}
+.date{
+  padding: 40px;
+  border-radius: 20px;
+  background-color: #bdf3bd;
+  height: 40px;
+
+}
+
+
+

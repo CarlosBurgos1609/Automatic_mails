@@ -8,8 +8,20 @@ const Home = () => {
   return (
     <div className="home-container">
       <Header />
-      <div className="title">
+      <div className='title'>
         <h1>Automatización de Correos</h1>
+      </div>
+      <div className="flex-row">
+        <div className='flex-column'>
+
+        <div className='date-time'>
+          <h1>Fecha y Hora Actual</h1>
+        </div>
+        <div className='date'>
+          <p>jj</p>
+        </div>
+        </div>
+        <div></div>
       </div>
     </div>
   );
