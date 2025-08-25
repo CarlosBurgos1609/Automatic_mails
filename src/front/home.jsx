@@ -33,15 +33,24 @@ const Home = () => {
         <h1>Automatización de Correos Electrónicos</h1>
       </div>
       <div className="flex-row content-wrapper">
-        <div className="flex-column date-section">
-          <div className="date-time">
-            <h1>Fecha y Hora Actual</h1>
-            <p>{formatDateTime(currentDateTime)}</p>
+        <div className="flex-row content-003">
+          <div className="flex-column date-section">
+            
+            <div className="date-time">
+              <h1>Fecha y Hora Actual</h1>
+            </div>
+              <div className="date-time">
+
+              <p>{formatDateTime(currentDateTime)}</p>
+              </div>
           </div>
-        </div>
-        <div className="flex-column juzgado-section">
-          <div className="juzgado">
-            <p>Juzgado</p>
+          <div className="flex-column juzgado-section">
+            <div className="juzgado">
+              <h1> Juzgado Abierto</h1>
+            </div>
+            <div className="name-juzgado">
+              <h1>nombre del juzgado que esta abierto</h1>
+            </div>
           </div>
         </div>
       </div>

@@ -16,8 +16,11 @@ $color_green: #bafaba;
 .flex-row {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
   align-items: center;
+  flex-grow: 1;
 }
+
 .flex-column {
   display: flex;
   flex-direction: column;
@@ -123,7 +126,7 @@ $color_light_green: #bdf3bd;
 .home-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  // min-height: 100vh;
 }
 
 .title {
@@ -134,24 +137,16 @@ $color_light_green: #bdf3bd;
   text-align: center;
 }
 
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  flex-grow: 1;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .content-wrapper {
   padding: 20px 0;
   flex-grow: 1;
   justify-content: center;
+}
+
+.content-003 {
+  height: 200px;
+  // background-color: red;
+  align-items: center;
 }
 
 .date-time {
@@ -164,14 +159,20 @@ $color_light_green: #bdf3bd;
   h1 {
     @include m.center;
     color: $color_blue;
-    font-size: 18px;
+    font-size: 20px;
     margin-bottom: 10px;
   }
 
   p {
-    font-size: 16px;
-    color: #fff;
+    font-size: 17px;
+    color: $color_blue;
   }
+}
+.time {
+  border-radius: 20px;
+  color: $color_blue;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 .juzgado {
@@ -181,14 +182,30 @@ $color_light_green: #bdf3bd;
   text-align: center;
   margin: 10px;
 
+  & h1 {
+    font-size: 20px;
+    position: relative;
+    color: $color_blue;
+  }
+
   p {
     font-size: 16px;
     color: $color_blue;
     font-weight: bold;
   }
 }
+.name-juzgado {
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  background-color: $color_light_green;
+  margin: 10px;
+  & h1 {
+    font-size: 20px;
+    color: $color_blue;
+  }
+}
 
-/* Media Query para responsividad */
 @media (max-width: 768px) {
   .flex-row {
     flex-direction: column;
