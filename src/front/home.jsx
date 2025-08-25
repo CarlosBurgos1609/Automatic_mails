@@ -1,19 +1,18 @@
-import React from 'react'
-import './../styles/styles.scss'
-import logojudicatura from './../assets/images/ConsejoSuperiorDeLaJudicatura.png'
-
+// src/components/Home.jsx
+// src/components/Home.jsx
+import React from 'react';
+import Header from './header';
+import '../styles/styles.scss';
 
 const Home = () => {
-    return (
-        <body>
-            <div className=' flex-column title'>
-                <h1>Consejo Superior de la Judicatura</h1>
-            </div>
-            <div className='flex-row img-title'> <img src={logojudicatura} alt="Consejo superior de la Judicatura logo" />
+  return (
+    <div className="home-container">
+      <Header />
+      <div className="title">
+        <h1>Automatización de Correos</h1>
+      </div>
+    </div>
+  );
+};
 
-            </div>
-        </body>
-    )
-}
-
-export default Home
+export default Home;
