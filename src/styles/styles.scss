@@ -217,3 +217,15 @@ $color_light_green: #bdf3bd;
     width: 80%;
   }
 }
+
+.sheets-api-container {
+  padding: 20px;
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  color: $color_white;
+}

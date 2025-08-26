@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "./header";
 import "../styles/styles.scss";
+import SheetsApi from "../components/sheetsApi";
 
 const Home = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -54,6 +55,10 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <div className="sheets-api-container">
+        <SheetsApi />
+      </div>
+      
     </div>
   );
 };
