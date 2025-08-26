@@ -5,6 +5,7 @@ $color_blue: #003f75;
 $color_light_blue: #e6f0fa;
 $color_white: #ffffff;
 $color_green: #bafaba;
+$color_light_green: #bdf3bd;
 
 * {
   font-family: "Arial", sans-serif;
@@ -97,7 +98,7 @@ $color_green: #bafaba;
     }
   }
 }
-//scroll al minimizar pantalla
+
 @media (max-width: 768px) {
   .header-top {
     flex-direction: column;
@@ -121,12 +122,11 @@ $color_green: #bafaba;
 
 // **********Apartado de Home***************
 
-$color_light_green: #bdf3bd;
-
 .home-container {
   display: flex;
   flex-direction: column;
-  // min-height: 100vh;
+  min-height: 100vh;
+  width: 100%; // Asegura que ocupe el ancho completo
 }
 
 .title {
@@ -145,7 +145,6 @@ $color_light_green: #bdf3bd;
 
 .content-003 {
   height: 200px;
-  // background-color: red;
   align-items: center;
 }
 
@@ -168,12 +167,6 @@ $color_light_green: #bdf3bd;
     color: $color_blue;
   }
 }
-.time {
-  border-radius: 20px;
-  color: $color_blue;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
 
 .juzgado {
   border-radius: 20px;
@@ -184,22 +177,17 @@ $color_light_green: #bdf3bd;
 
   & h1 {
     font-size: 20px;
-    position: relative;
     color: $color_blue;
-  }
-
-  p {
-    font-size: 16px;
-    color: $color_blue;
-    font-weight: bold;
   }
 }
+
 .name-juzgado {
   border-radius: 20px;
   padding: 20px;
   text-align: center;
   background-color: $color_light_green;
   margin: 10px;
+
   & h1 {
     font-size: 20px;
     color: $color_blue;
@@ -213,7 +201,8 @@ $color_light_green: #bdf3bd;
   }
 
   .date-time,
-  .juzgado {
+  .juzgado,
+  .name-juzgado {
     width: 80%;
   }
 }
@@ -223,9 +212,30 @@ $color_light_green: #bdf3bd;
   text-align: center;
 }
 
+.calendar-container {
+  width: 100%; // Ocupa el 100% del ancho del contenedor padre
+  padding: 20px 0; // Padding vertical, sin horizontal para maximizar ancho
+  overflow-x: auto; // Permite desplazamiento si es necesario
+
+  .rbc-calendar {
+    width: 100%;
+    height: 600px; 
+    margin: 0; 
+  }
+}
+
 button {
   padding: 10px 20px;
   margin: 5px;
   cursor: pointer;
+  background-color: $color_blue;
   color: $color_white;
+  border-radius: 8px;
 }
+
+button:hover {
+  transform: scale(0.9);
+  background-color: $color_green;
+  color: $color_blue;
+}
+

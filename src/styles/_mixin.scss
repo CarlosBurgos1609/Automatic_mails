@@ -1,28 +1,24 @@
-@mixin center{
-    align-items: center;
-    align-self: center;
-    text-align: center;
-    justify-content: center;
-}
-@mixin left {
-    align-items: left;
-    justify-content: left;
-    display: flex;
+// src/styles/mixin.scss
+$color_blue: #003f75;
+$color_light_blue: #e6f0fa;
+$color_white: #ffffff;
+$color_green: #bafaba;
 
+@mixin center {
+  align-items: center;
+  align-self: center;
+  text-align: center;
+  justify-content: center;
+}
+
+@mixin left {
+  align-items: left;
+  justify-content: left;
+  display: flex;
 }
 
 @mixin right {
-    align-items: right;
-    justify-content: right;
-    display: flex;
-
-}
-button{
-    background-color: #003f75;
-    border-radius: 8px;
-
-}
-
-button:hover{
-    transform: scale(0.9);
+  align-items: right;
+  justify-content: right;
+  display: flex;
 }
