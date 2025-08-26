@@ -26,8 +26,10 @@ const SheetsApi = () => {
           discoveryDocs: [DISCOVERY_DOC],
         });
         console.log('GAPI initialized');
+        return true;
       } catch (error) {
         console.error('Error initializing GAPI:', error);
+        return false;
       }
     };
 
@@ -53,14 +55,16 @@ const SheetsApi = () => {
       }
     };
 
-    const loadLibraries = () => {
+    const loadLibraries = async () => {
       if (!window.gapi) {
         console.error('GAPI not available');
         return;
       }
-      window.gapi.load('client', async () => {
-        await initializeGapiClient();
-        initializeGisClient();
+      await window.gapi.load('client', async () => {
+        const gapiInitialized = await initializeGapiClient();
+        if (gapiInitialized) {
+          initializeGisClient();
+        }
       });
     };
 
@@ -79,6 +83,21 @@ const SheetsApi = () => {
     }
   }, []);
 
+  // Efecto para verificar el estado de autenticación después de cargar
+  useEffect(() => {
+    if (isLoaded && window.gapi && window.gapi.client) {
+      const token = window.gapi.client.getToken();
+      if (token) {
+        setIsAuthorized(true);
+        signoutButtonRef.current.style.display = 'inline';
+        authorizeButtonRef.current.innerText = 'Refresh';
+        listMajors();
+      } else {
+        authorizeButtonRef.current.disabled = false;
+      }
+    }
+  }, [isLoaded]);
+
   const handleAuthClick = () => {
     if (!tokenClient) {
       console.error('Token client not initialized');
@@ -86,12 +105,12 @@ const SheetsApi = () => {
     }
 
     tokenClient.requestAccessToken({
-      prompt: window.gapi.client.getToken() ? '' : 'consent',
+      prompt: window.gapi && window.gapi.client.getToken() ? '' : 'consent',
     });
   };
 
   const handleSignoutClick = () => {
-    const token = window.gapi.client.getToken();
+    const token = window.gapi && window.gapi.client.getToken();
     if (token) {
       window.google.accounts.oauth2.revoke(token.access_token, () => {
         window.gapi.client.setToken('');
@@ -105,6 +124,10 @@ const SheetsApi = () => {
 
   const listMajors = async () => {
     try {
+      if (!window.gapi || !window.gapi.client) {
+        setContent('GAPI client not available');
+        return;
+      }
       const response = await window.gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
         range: 'Class Data!A2:E',
@@ -124,16 +147,6 @@ const SheetsApi = () => {
       console.error('Error fetching data:', err);
     }
   };
-
-  // Verifica el estado de autenticación al cargar
-  useEffect(() => {
-    if (window.gapi && window.gapi.client.getToken()) {
-      setIsAuthorized(true);
-      signoutButtonRef.current.style.display = 'inline';
-      authorizeButtonRef.current.innerText = 'Refresh';
-      listMajors();
-    }
-  }, [isLoaded]);
 
   return (
     <div className="sheets-api">
