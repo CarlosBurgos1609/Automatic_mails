@@ -20,10 +20,10 @@ const Header = () => {
       <nav className="nav-menu">
         <ul className="flex-row">
           <li><a href="/">Inicio</a></li>
-          <li><a href="/corporacion">Corporación</a></li>
-          <li><a href="/servicios">Servicios al ciudadano</a></li>
-          <li><a href="/participa">Participa</a></li>
-          <li><a href="/transparencia">Transparencia y acceso a la información pública</a></li>
+          <li><a href="#">Corporación</a></li>
+          <li><a href="#">Servicios al ciudadano</a></li>
+          <li><a href="#">Participa</a></li>
+          <li><a href="#">Transparencia y acceso a la información pública</a></li>
         </ul>
       </nav>
     </header>

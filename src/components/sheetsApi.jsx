@@ -10,8 +10,8 @@ const SheetsApi = () => {
   const contentRef = useRef(null);
 
   // Configuración de credenciales (reemplaza con tus valores reales)
-  const CLIENT_ID = '505380820657-6c4ko4taif3ja72ljju5lsuoc5lhhm8m.apps.googleusercontent.com';
-  const API_KEY = 'AIzaSyBsNExnnKZu_eOfrnJW5SppGML-oSBVf8E';
+  const CLIENT_ID = '939673347212-9boilpt1t5kjtjqddd1vgl213hvnc5eu.apps.googleusercontent.com';
+  const API_KEY = 'AIzaSyA_VuyAvhOF-0VduXfRZvWiToWzDKprGDQ';
   const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
   const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly';
   const SPREADSHEET_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms';
