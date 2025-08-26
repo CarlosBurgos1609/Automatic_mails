@@ -61,7 +61,7 @@ const Home = () => {
       <div className="calendar-container">
         <Calendar
           localizer={localizer}
-          style={{ height: 600 }}
+          // style={{ height: 600 }}
         />
       </div>
     </div>
