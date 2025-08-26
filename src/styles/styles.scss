@@ -233,6 +233,8 @@ $color_light_green: #bdf3bd;
   padding: 20px;
   overflow-x: auto;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
 
   .rbc-calendar {
     width: 100%;
@@ -243,9 +245,11 @@ $color_light_green: #bdf3bd;
     background-color: $color_white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(5, 0, 0, 0.1);
+    position: relative;
+    z-index: 2;
   }
 
-  // cajones del calendario
+  // Month view day cells
   .rbc-day-bg {
     background-color: $color_light_blue;
     border: 1px solid $color_blue;
@@ -258,21 +262,25 @@ $color_light_green: #bdf3bd;
     border-radius: 3px;
   }
 
-  /* Style for selected day */
+  // Selected day in month view
   .rbc-selected {
     background-color: $color_green !important;
     color: $color_blue !important;
     border: 2px solid $color_blue !important;
   }
 
-  /* Style for day numbers */
+  // Day numbers in month view
   .rbc-date-cell {
     text-align: center;
     padding: 5px;
     color: $color_blue;
     font-size: 14px;
   }
-
+.calendar--week {
+  .rbc-button-link {
+    color: white;
+  }
+}
   .rbc-button-link {
     background: none !important;
     border: none !important;
@@ -282,31 +290,98 @@ $color_light_green: #bdf3bd;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $color_blue;
+    // color: green;
     text-decoration: none;
     cursor: pointer;
+    pointer-events: auto !important;
+    z-index: 3;
   }
 
-  /* Hover effect for day cells */
+  // Hover effect for day cells
   .rbc-day-bg:hover,
   .rbc-button-link:hover {
     background-color: $color_light_green !important;
   }
 
-  //días de la semana lun, mar , mié
+  // Week and day view header (days of the week and dates)
+  .rbc-time-header {
+    background-color: $color_blue;
+    color: $color_white !important;
+    border: 1px solid $color_white;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
   .rbc-time-header-cell,
   .rbc-header {
     border-radius: 6px;
     background-color: $color_blue;
-    color: $color_white;
+    color: $color_white !important;
     font-size: 14px;
     text-align: center;
-    padding: 8px;
+    padding: 10px;
     border: 1px solid $color_white;
-    text-transform: capitalize; /* Match dayjs Spanish locale */
+    text-transform: capitalize;
+    min-height: 60px;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    overflow: visible;
+    visibility: visible !important;
+    z-index: 3;
   }
 
-  // lo que es la parte de los botones
+  // Ensure date text is visible in week view
+  .rbc-time-header-cell .rbc-header {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: capitalize;
+    color: $color_white !important;
+    visibility: visible !important;
+  }
+
+  // Time slots in week/day views
+  .rbc-time-slot {
+    border: 1px solid $color_light_blue;
+    background-color: $color_white;
+    color: $color_blue;
+    font-size: 12px;
+    text-align: center;
+    min-height: 30px;
+  }
+
+  // Time content area in week/day views
+  .rbc-time-content {
+    background-color: $color_white;
+    border: 1px solid $color_blue;
+    z-index: 2;
+  }
+
+  // Ensure events are visible in week/day views
+  .rbc-event {
+    background-color: $color_green;
+    color: $color_blue;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 12px;
+    border: 1px solid $color_blue;
+    z-index: 4;
+    pointer-events: auto !important;
+  }
+
+  // Today highlighting in week/day views
+  .rbc-today {
+    background-color: $color_green !important;
+    border: 2px solid $color_white !important;
+  }
+
+  // Toolbar styling
   .rbc-toolbar {
     padding: 10px;
     background-color: $color_light_blue;
@@ -316,9 +391,13 @@ $color_light_green: #bdf3bd;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    border-radius: 80px;
+    border-radius: 8px;
+    z-index: 100 !important;
+    pointer-events: auto !important;
+    position: relative;
   }
-//botones como lo es next y los otros
+
+  // Toolbar buttons (Next, Previous, Month, Week, Day)
   .rbc-toolbar button {
     background-color: $color_blue;
     color: $color_white;
@@ -327,7 +406,10 @@ $color_light_green: #bdf3bd;
     padding: 8px 16px;
     font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
+    pointer-events: auto !important;
+    z-index: 101 !important;
+    position: relative;
   }
 
   .rbc-toolbar button:hover {
@@ -336,23 +418,38 @@ $color_light_green: #bdf3bd;
     transform: scale(0.95);
   }
 
- //cuando este activado el botón
+  // Active toolbar button
   .rbc-active {
     background-color: $color_green !important;
     color: $color_blue !important;
   }
 
-  /* Style for events */
-  .rbc-event {
-    background-color: $color_green;
+  // Toolbar label (e.g., "August 2025")
+  .rbc-toolbar-label {
+    font-size: 16px;
+    font-weight: bold;
     color: $color_blue;
-    border-radius: 4px;
-    padding: 4px;
-    font-size: 12px;
+    text-align: center;
+    flex-grow: 1;
+  }
+
+  // Ensure toolbar button group is clickable
+  .rbc-btn-group {
+    display: flex;
+    gap: 8px;
+    pointer-events: auto !important;
+    z-index: 102 !important;
+  }
+
+  // Override any default styles that might hide buttons
+  .rbc-toolbar button:focus,
+  .rbc-toolbar button:active {
+    outline: 2px solid $color_green;
+    outline-offset: 2px;
   }
 }
 
-.documents-container{
+.documents-container {
   width: 100%;
   padding: 20px;
   overflow-x: auto;
@@ -367,6 +464,8 @@ button {
   color: $color_white;
   border-radius: 8px;
   border: none;
+  pointer-events: auto !important;
+  z-index: 5;
 }
 
 button:hover {
