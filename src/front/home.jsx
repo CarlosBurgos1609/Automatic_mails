@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "./header";
 import "../styles/styles.scss";
-import SheetsApi from "../components/sheetsApi";
+// import SheetsApi from "../components/sheetsApi";
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
@@ -114,9 +114,9 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="sheets-api-container">
+      {/* <div className="sheets-api-container">
         <SheetsApi />
-      </div>
+      </div> */}
       <div className="calendar-container">
         <Calendar
           localizer={localizer}
@@ -174,10 +174,10 @@ const Home = () => {
         </div>
       </div>
       <div className="excel-document-view">
-        {/* <iframe
+        <iframe
           src="https://docs.google.com/spreadsheets/d/1JGjg2NjMu-BkTWbIJIs1ZjiNmu_V-EDvEKVwauiDjyc/edit?gid=572366768#gid=572366768"
           frameborder="0"
-        ></iframe> */}
+        ></iframe> 
       </div>
     </div>
   );
