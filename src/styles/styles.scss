@@ -5,6 +5,7 @@ $color_light_blue: #e6f0fa;
 $color_white: #ffffff;
 $color_green: #bafaba;
 $color_light_green: #bdf3bd;
+$header-height: 90px;
 
 * {
   font-family: "Arial", sans-serif;
@@ -13,6 +14,23 @@ $color_light_green: #bdf3bd;
   box-sizing: border-box;
 }
 
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  background-color: $color_blue;
+  color: $color_white;
+  border-radius: 8px;
+  border: none;
+  pointer-events: auto !important;
+  z-index: 5;
+}
+
+button:hover {
+  transform: scale(0.9);
+  background-color: $color_green;
+  color: $color_blue;
+}
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -34,6 +52,8 @@ $color_light_green: #bdf3bd;
   background-color: $color_blue;
   color: $color_white;
   padding: 10px 20px;
+  position: fixed;
+  z-index: 1000;
 }
 
 .header-top {
@@ -131,11 +151,15 @@ $color_light_green: #bdf3bd;
 }
 
 .title {
+  margin-top: 90px;
   padding: 20px 0;
   font-size: 20px;
   @include m.center;
   color: $color_blue;
   text-align: center;
+  @media (max-width: 768px) {
+    margin-top: 700;
+  }
 }
 
 .content-wrapper {
@@ -148,7 +172,7 @@ $color_light_green: #bdf3bd;
   align-items: center;
   gap: 20px;
 }
-
+// hora y fecha
 .date-time {
   border-radius: 20px;
   padding: 20px;
@@ -171,7 +195,7 @@ $color_light_green: #bdf3bd;
     color: $color_blue;
   }
 }
-
+// nombre del juzgado abierto
 .juzgado {
   border-radius: 20px;
   padding: 20px;
@@ -222,12 +246,12 @@ $color_light_green: #bdf3bd;
     max-width: 500px;
   }
 }
-
+// contenedor para logueo de sheets
 .sheets-api-container {
   padding: 20px;
   text-align: center;
 }
-
+// calendario
 .calendar-container {
   width: 100%;
   padding: 20px;
@@ -249,7 +273,7 @@ $color_light_green: #bdf3bd;
     z-index: 2;
   }
 
-  // Month view day cells
+  // celdas de los contenedores de eventos
   .rbc-day-bg {
     background-color: $color_light_blue;
     border: 1px solid $color_blue;
@@ -262,25 +286,26 @@ $color_light_green: #bdf3bd;
     border-radius: 3px;
   }
 
-  // Selected day in month view
+  // color de la selección del día del mes
   .rbc-selected {
     background-color: $color_green !important;
     color: $color_blue !important;
     border: 2px solid $color_blue !important;
   }
 
-  // Day numbers in month view
+  // color de los número de las celdas
   .rbc-date-cell {
     text-align: center;
     padding: 5px;
     color: $color_blue;
     font-size: 14px;
   }
-.calendar--week {
-  .rbc-button-link {
-    color: white;
+  //color del texto de
+  .calendar--week {
+    .rbc-button-link {
+      color: white;
+    }
   }
-}
   .rbc-button-link {
     background: none !important;
     border: none !important;
@@ -454,22 +479,87 @@ $color_light_green: #bdf3bd;
   padding: 20px;
   overflow-x: auto;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+
+  .title-document {
+    border-radius: 20px;
+    padding: 20px;
+    padding-right: 50px;
+    background-color: $color_light_green;
+    text-align: center;
+    margin: 10px;
+    width: 80%;
+    max-width: 250px;
+    box-sizing: border-box;
+
+    h1 {
+      @include m.center;
+      color: $color_blue;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 17px;
+      color: $color_blue;
+    }
+  }
+
+  .document {
+    border-radius: 8px;
+    min-height: 40px;
+    max-height: 50;
+    padding: 20px;
+    // background-color: $color_blue;
+    .add {
+      background-color: $color_green;
+      border-radius: 9px;
+      margin: 10px;
+      padding: 40px;
+      justify-content: space-between;
+      h1 {
+        font-size: 90px;
+        color: $color_blue;
+      }
+      h2 {
+        font-size: 20px;
+        color: $color_blue;
+      }
+
+      .document-container-exist {
+        background-color: $color_green;
+        border-radius: 9px;
+        margin: 10px;
+        padding: 60px;
+      }
+    }
+    .archive-sheets{
+      background-color: $color_green;
+      border-radius: 9px;
+      margin: 10px;
+      padding: 40px;
+      justify-content: space-between;
+      h1 {
+        font-size: 90px;
+        color: $color_blue;
+      }
+      h2 {
+        font-size: 20px;
+        color: $color_blue;
+      }
+    }
+  }
 }
 
-button {
-  padding: 10px 20px;
-  margin: 5px;
-  cursor: pointer;
-  background-color: $color_blue;
-  color: $color_white;
-  border-radius: 8px;
-  border: none;
-  pointer-events: auto !important;
-  z-index: 5;
-}
-
-button:hover {
-  transform: scale(0.9);
-  background-color: $color_green;
-  color: $color_blue;
+.excel-document-view{
+  border-radius: 80px;
+  height: 800px;
+  width: 90%;
+  align-self: center;
+  iframe{
+    border-radius: 40px;
+    width: 100%;
+    height: 100%;
+  }
 }

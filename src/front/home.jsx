@@ -146,7 +146,38 @@ const Home = () => {
         />
       </div>
       <div className="documents-container">
-        <h1>hola</h1>
+        <div className="title-document">
+          <h1>Documentos</h1>
+        </div>
+
+        <div className="document flex-column">
+          <div className="flex-row">
+            <div className="add flex-column">
+              <h1>+</h1>
+
+              <h2>Añadir documento</h2>
+            </div>
+            <div className="archive-sheets flex-column">
+              <div className="archive flex-column" > <iframe width="560" height="315" src="https://www.youtube.com/embed/Z2VMC7p5J2Q?si=afulIDI7JZnb6VIE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+              <h2>nombre del documento</h2>
+            </div>
+            <div className="add flex-column">
+              <h1>+</h1>
+
+              <h2>Añadir documento</h2>
+            </div>
+            <div className="add flex-column">
+              <h1>+</h1>
+              <h2>Añadir documento</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="excel-document-view">
+        {/* <iframe
+          src="https://docs.google.com/spreadsheets/d/1JGjg2NjMu-BkTWbIJIs1ZjiNmu_V-EDvEKVwauiDjyc/edit?gid=572366768#gid=572366768"
+          frameborder="0"
+        ></iframe> */}
       </div>
     </div>
   );
