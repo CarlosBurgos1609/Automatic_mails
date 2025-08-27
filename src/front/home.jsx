@@ -146,8 +146,10 @@ const Home = () => {
         />
       </div>
       <div className="documents-container">
-        <div className="title-document">
-          <h1>Documentos</h1>
+        <div className="positioning">
+          <div className="title-document">
+            <h1>Documentos</h1>
+          </div>
         </div>
 
         <div className="document flex-column">
@@ -158,7 +160,18 @@ const Home = () => {
               <h2>Añadir documento</h2>
             </div>
             <div className="archive-sheets flex-column">
-              <div className="archive flex-column" > <iframe width="560" height="315" src="https://www.youtube.com/embed/Z2VMC7p5J2Q?si=afulIDI7JZnb6VIE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+              <div className="archive flex-column iframe-border">
+                <iframe
+                  width="560"
+                  height="315"
+                  src="https://www.youtube.com/embed/Z2VMC7p5J2Q?si=afulIDI7JZnb6VIE"
+                  title="YouTube video player"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                ></iframe>
+              </div>
               <h2>nombre del documento</h2>
             </div>
             <div className="add flex-column">
@@ -177,7 +190,7 @@ const Home = () => {
         <iframe
           src="https://docs.google.com/spreadsheets/d/1JGjg2NjMu-BkTWbIJIs1ZjiNmu_V-EDvEKVwauiDjyc/edit?gid=572366768#gid=572366768"
           frameborder="0"
-        ></iframe> 
+        ></iframe>
       </div>
     </div>
   );

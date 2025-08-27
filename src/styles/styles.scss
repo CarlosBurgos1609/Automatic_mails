@@ -158,11 +158,10 @@ button:hover {
     text-align: center;
   }
 
-  @media (max-width:758px) {
-    .title{
+  @media (max-width: 758px) {
+    .title {
       margin-top: 400px;
     }
-    
   }
 }
 
@@ -486,29 +485,42 @@ button:hover {
   position: relative;
   z-index: 1;
 
-  .title-document {
-    border-radius: 20px;
-    padding: 20px;
-    padding-right: 50px;
-    background-color: $color_light_green;
-    text-align: center;
-    margin: 10px;
+  & .positioning {
     width: 80%;
-    max-width: 250px;
-    box-sizing: border-box;
+    height: 100px;
+    margin: auto;
 
-    h1 {
+    .title-document {
+      border-radius: 20px;
+      padding: 20px;
+      padding-right: 50px;
+      background-color: $color_light_green;
+      text-align: center;
+      margin: 10px;
+      width: 90%;
+      max-width: 250px;
+      box-sizing: border-box;
       @include m.center;
-      color: $color_blue;
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
+      
+      h1 {
+        color: $color_blue;
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
 
-    p {
-      font-size: 17px;
-      color: $color_blue;
+      p {
+        font-size: 17px;
+        color: $color_blue;
+        
+      }
     }
+    
   }
+  @media (max-width: "750px"){
+     .positioning{
+      width: 50%;
+     } 
+    }
 
   .document {
     border-radius: 8px;
@@ -540,7 +552,7 @@ button:hover {
     }
     .archive-sheets {
       background-color: $color_green;
-      border-radius: 9px;
+      border-radius: 20px;
       margin: 10px;
       padding: 40px;
       justify-content: space-between;
@@ -553,6 +565,10 @@ button:hover {
         color: $color_blue;
       }
     }
+    & iframe {
+      border-radius: 20px;
+    }
+
   }
 }
 
