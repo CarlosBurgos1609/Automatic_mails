@@ -265,7 +265,7 @@ button:hover {
 
   .rbc-calendar {
     width: 100%;
-    max-width: 1200px;
+    max-width: 80%;
     margin: 0 auto;
     color: $color_blue;
     font-size: 16px;
@@ -275,7 +275,11 @@ button:hover {
     position: relative;
     z-index: 2;
   }
-
+   @media (max-width: "750px") {
+    .rbc-calendar{
+      max-width: 100%;
+    }
+  }
   // celdas de los contenedores de eventos
   .rbc-day-bg {
     background-color: $color_light_blue;
@@ -486,41 +490,38 @@ button:hover {
   z-index: 1;
 
   & .positioning {
-    width: 85%;
+    width: 90%;
     height: 100px;
     margin: auto;
+    // background-color: red;
+    border-radius: 30px;
+    @include m.center;
+
 
     .title-document {
+      background-color: $color_green;
       border-radius: 20px;
-      padding: 20px;
-      padding-right: 50px;
-      background-color: $color_light_green;
-      text-align: center;
       margin: 10px;
-      width: 90%;
-      max-width: 250px;
-      box-sizing: border-box;
-      @include m.center;
-      
+      padding: 40px;
+       width: 90%;
+      justify-content: space-between;
+
       h1 {
+        font-size: 30px;
         color: $color_blue;
-        font-size: 20px;
-        margin-bottom: 10px;
       }
 
       p {
         font-size: 17px;
         color: $color_blue;
-        
       }
     }
-    
   }
-  @media (max-width: "750px"){
-     .positioning{
+  @media (max-width: "750px") {
+    .positioning {
       width: 50%;
-     } 
     }
+  }
 
   .document {
     border-radius: 8px;
@@ -568,6 +569,47 @@ button:hover {
     & iframe {
       border-radius: 20px;
     }
+  }
+}
+.grafic-content {
+  border-radius: 30px;
+  padding: 20px;
+  margin: 20px;
+  width: 90%;
+  align-self: center;
+  // background-color: red;
+
+  & .title{
+background-color: $color_green;
+      border-radius: 20px;
+      margin: 10px;
+      padding: 40px;
+       width: 90%;
+      justify-content: space-between;
+
+  }
+  h1{
+    color: $color_blue;
+    font-size: 30px;
+    @include m.center;
+    text-transform: uppercase;
+
+  }
+  .grafic-users{
+    color: $color_green;
+    padding: 40px;
+    justify-content: space-between;
+    & iframe{
+      border-radius: 20px;
+
+    }
+
+  }
+  .grafic-rounded{
+    height: 100px;
+    width:  100px;
+    background:conic-gradient(red 50%, purple 0 90%, yellow 0 100%);
+    border-radius: 50px;
 
   }
 }

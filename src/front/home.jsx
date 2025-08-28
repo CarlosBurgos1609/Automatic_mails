@@ -146,8 +146,8 @@ const Home = () => {
         />
       </div>
       <div className="documents-container">
-        <div className="positioning">
-          <div className="title-document">
+        <div className="positioning flex-column">
+          <div className="title-document flex-column">
             <h1>Documentos</h1>
           </div>
         </div>
@@ -177,7 +177,38 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <div className="grafic-content  flex-column">
+        <div className="title">
+          <h1>Graficas</h1>
+        </div>
+        <div className="grafic-users flex-row" >
+           <iframe
+                  width="560"
+                  height="315"
+                  src="https://www.youtube.com/embed/Z2VMC7p5J2Q?si=afulIDI7JZnb6VIE"
+                  title="YouTube video player"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                ></iframe>
+                <iframe
+                  width="560"
+                  height="315"
+                  src="https://www.youtube.com/embed/Z2VMC7p5J2Q?si=afulIDI7JZnb6VIE"
+                  title="YouTube video player"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen
+                ></iframe>
+                <div className="grafic-rounded">
+
+                </div>
+        </div>
+      </div>
       <div className="excel-document-view">
+  
         <iframe
           src="https://docs.google.com/spreadsheets/d/1JGjg2NjMu-BkTWbIJIs1ZjiNmu_V-EDvEKVwauiDjyc/edit?gid=572366768#gid=572366768"
           frameborder="0"
