@@ -174,15 +174,6 @@ const Home = () => {
               </div>
               <h2>nombre del documento</h2>
             </div>
-            <div className="add flex-column">
-              <h1>+</h1>
-
-              <h2>Añadir documento</h2>
-            </div>
-            <div className="add flex-column">
-              <h1>+</h1>
-              <h2>Añadir documento</h2>
-            </div>
           </div>
         </div>
       </div>
