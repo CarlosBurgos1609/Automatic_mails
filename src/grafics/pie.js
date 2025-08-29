@@ -19,7 +19,7 @@ const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 export default function PieChartSimple() {
   return (
     <div className="chart-card">
-      <h3>Pie Chart</h3>
+      <h3>Diagrama Pie</h3>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
