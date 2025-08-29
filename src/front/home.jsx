@@ -10,6 +10,7 @@ import AreaChartInteractive from "../grafics/area";
 // import RadarChartSimple from "../grafics/radar";
 import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
+import RadarChartComponent from "../components/RadarChartComponent";
 
 dayjs.locale("es");
 
@@ -190,6 +191,7 @@ const Home = () => {
         </div>
         <div className="other-charts-row flex-row">
           {/* <RadarChartSimple /> */}
+          <RadarChartComponent/>
           <PieChartSimple />
           <RadialChartSimple />
         </div>
