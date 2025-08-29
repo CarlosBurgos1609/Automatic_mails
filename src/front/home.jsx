@@ -6,8 +6,10 @@ import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-// import AreaChartInteractive from "./../grafics/area";
-
+import AreaChartInteractive from "../grafics/area";
+// import RadarChartSimple from "../grafics/radar";
+import PieChartSimple from "../grafics/pie";
+import RadialChartSimple from "../grafics/radial";
 
 dayjs.locale("es");
 
@@ -179,35 +181,17 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="grafic-content  flex-column">
+      <div className="grafic-content flex-column">
         <div className="title">
-          <h1>Graficas</h1>
+          <h1>Gráficas</h1>
         </div>
-        <div className="grafic-users flex-row">
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/Z2VMC7p5J2Q?si=afulIDI7JZnb6VIE"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          ></iframe>
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/Z2VMC7p5J2Q?si=afulIDI7JZnb6VIE"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          ></iframe>
-          {/* <div className="grafic-users"><AreaChartInteractive /></div> */}
-          <div className="grafic-courts"></div>
-          <div className="grafic-mounths"></div>
-          <div className="grafic-day"></div>
+        <div className="area-chart-full">
+          <AreaChartInteractive />
+        </div>
+        <div className="other-charts-row flex-row">
+          {/* <RadarChartSimple /> */}
+          <PieChartSimple />
+          <RadialChartSimple />
         </div>
       </div>
       <div className="excel-document-view">

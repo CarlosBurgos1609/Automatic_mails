@@ -1,7 +1,16 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
+import {
+  PolarAngleAxis,
+  PolarGrid,
+  Radar,
+  RadarChart,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
 
 import {
   Card,
@@ -17,6 +26,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import AreaChartInteractive from "../grafics/area";
+import RadarChartSimple from "../grafics/radar";
+import PieChartSimple from "../grafics/pie";
+import RadialChartSimple from "../grafics/radial";
 
 export const description = "A radar chart with a grid filled";
 
@@ -75,5 +88,36 @@ export function ChartRadarGridFill() {
         </div>
       </CardFooter>
     </Card>
+  );
+}
+
+export default function radarChartSimple() {
+  return (
+    <div className="chart-card">
+      <h3>Radar Chart - Grid Circle Filled</h3>
+      <p style={{ textAlign: "center", color: "#666", marginBottom: 8 }}>
+        Showing total visitors for the last 6 months
+      </p>
+      <ResponsiveContainer width="100%" height={300}>
+        <RadarChart data={chartData}>
+          <PolarGrid gridType="circle" />
+          <PolarAngleAxis dataKey="month" />
+          <Radar
+            name="Desktop"
+            dataKey="desktop"
+            stroke="#8884d8"
+            fill="#8884d8"
+            fillOpacity={0.5}
+          />
+          <Tooltip />
+          <Legend />
+        </RadarChart>
+      </ResponsiveContainer>
+      <div style={{ textAlign: "center", marginTop: 12, color: "#888" }}>
+        <span style={{ fontWeight: 500 }}>Trending up by 5.2% this month</span>
+        <br />
+        <span>January - June 2024</span>
+      </div>
+    </div>
   );
 }
