@@ -191,9 +191,9 @@ const Home = () => {
         </div>
         <div className="other-charts-row flex-row">
           {/* <RadarChartSimple /> */}
-          <RadarChartComponent/>
           <PieChartSimple />
           <RadialChartSimple />
+          <RadarChartComponent/>
         </div>
       </div>
       <div className="excel-document-view">
