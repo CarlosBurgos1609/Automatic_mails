@@ -28,7 +28,7 @@ const Home = () => {
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [selectedJuzgado, setSelectedJuzgado] = useState(null);
   const localizer = dayjsLocalizer(dayjs);
-  const email = "juzgado002depasto@ejemplo.com";
+  const email = "juzgado007pasto@ejemplo.com";
 
   const events = [
     {
@@ -51,7 +51,7 @@ const Home = () => {
     },
     {
       title: "JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO",
-      email: "juzgado008pasto@ejemplo.com",
+      email: "juzgado007pasto@ejemplo.com",
       start: new Date(2025, 8, 1, 0, 0),
       end: new Date(2025, 8, 1, 23, 59),
     },

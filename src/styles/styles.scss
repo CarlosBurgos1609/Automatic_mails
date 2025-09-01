@@ -173,10 +173,10 @@ button:hover {
   width: 80%;
   border-radius: 20px;
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   @media (max-width: 870px) {
     width: 100%;
-    flex-direction: column; 
+    flex-direction: column;
     .main-content {
       width: 100% !important;
       max-width: 100% !important;
@@ -256,7 +256,7 @@ button:hover {
       font-size: 16px;
       color: $color_blue;
     }
-    & button{
+    & button {
       background-color: $color_blue;
       color: $color_white;
       border: none;
@@ -526,6 +526,31 @@ button:hover {
     outline-offset: 2px;
   }
 }
+// Mostrar el texto completo de los eventos en el calendario
+.calendar-container {
+  .rbc-event {
+    background: none !important;
+    color: $color_blue !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 4px !important;
+    font-size: 15px !important;
+    font-weight: bold;
+    white-space: normal !important; // Permite varias líneas
+    overflow: visible !important; // No recorta el texto
+    text-overflow: unset !important;
+    box-shadow: none !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+  }
+  .rbc-event-content {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-word !important;
+  }
+}
 
 .documents-container {
   width: 100%;
@@ -763,7 +788,7 @@ button:hover {
   background: #fff;
   color: #003f75;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   padding: 16px 28px 16px 16px;
   display: flex;
   align-items: center;
@@ -788,36 +813,13 @@ button:hover {
   transform: translateY(0);
 }
 
-// Mostrar el texto completo de los eventos en el calendario
-.calendar-container {
-  .rbc-event {
-    background: none !important; 
-    color: $color_blue !important;
-    border: none !important;
-    border-radius: 0 !important;
-    padding: 0 4px !important;
-    font-size: 15px !important;
-    font-weight: bold;
-    white-space: normal !important; // Permite varias líneas
-    overflow: visible !important;   // No recorta el texto
-    text-overflow: unset !important;
-    box-shadow: none !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    word-break: break-word !important;
-  }
-  .rbc-event-content {
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: unset !important;
-    word-break: break-word !important;
-  }
-}
-
 .alert-dialog-backdrop {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.25);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.25);
   z-index: 10000;
   display: flex;
   align-items: center;
@@ -830,7 +832,7 @@ button:hover {
   padding: 32px 24px 24px 24px;
   min-width: 320px;
   max-width: 90vw;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -868,7 +870,8 @@ button:hover {
   margin-top: 18px;
 }
 
-.edit-button, .close-button {
+.edit-button,
+.close-button {
   padding: 8px 18px;
   border-radius: 8px;
   border: none;
@@ -916,7 +919,7 @@ button:hover {
 .close-button-full {
   width: 100%;
   padding: 12px 0;
-  
+
   border-radius: 8px;
   border: 2px solid #e53935;
   font-size: 18px;
@@ -946,4 +949,9 @@ button:hover {
 .copy-button:active {
   background: #bafaba;
   color: #003f75;
+}
+.copy-button:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
 }
