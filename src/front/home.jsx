@@ -11,6 +11,7 @@ import AreaChartInteractive from "../grafics/area";
 import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
 import RadarChartComponent from "../components/RadarChartComponent";
+import Toast from "../components/Copy";
 
 dayjs.locale("es");
 
@@ -19,6 +20,8 @@ const Home = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [view, setView] = useState("month");
   const [date, setDate] = useState(new Date());
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
   const localizer = dayjsLocalizer(dayjs);
 
   const events = [
@@ -57,6 +60,15 @@ const Home = () => {
   const handleSelectSlot = ({ start }) => {
     setSelectedDate(start);
     console.log("Selected date:", start);
+  };
+
+  const handleCopyEmail = () => {
+    const email = "correo.electronico@ejemplo.com";
+    navigator.clipboard.writeText(email).then(() => {
+      setToastMsg("¡Se copió con éxito!");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+    });
   };
 
   const dayPropGetter = (date) => {
@@ -113,8 +125,18 @@ const Home = () => {
             <div className="juzgado">
               <h1>Juzgado Abierto</h1>
             </div>
-            <div className="name-juzgado">
+
+            <div className="name-juzgado flex-column">
               <h1>Nombre del juzgado que está abierto</h1>
+              {/* <div className="juzgado-email-container flex-row">
+                <h1>Email del Juzgado</h1>
+              </div> */}
+              <div className="juzgado-email flex-row">
+                <h2>correo.electronico@ejemplo.com</h2>
+                <button className="copy-button" onClick={handleCopyEmail}>
+                  Copiar
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -202,6 +224,7 @@ const Home = () => {
           frameborder="0"
         ></iframe>
       </div>
+      <Toast show={showToast} message={toastMsg} />
     </div>
   );
 };

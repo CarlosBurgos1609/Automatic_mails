@@ -1,6 +1,6 @@
 import React from "react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip, ResponsiveContainer } from "recharts";
-import "./RadarChartComponent.css"; // Importa el CSS
+// import "./RadarChartComponent.css"; // Importa el CSS
 
 const data = [
   { subject: "Enero", A: 120, fullMark: 150 },
