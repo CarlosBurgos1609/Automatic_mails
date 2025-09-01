@@ -177,7 +177,7 @@ const Home = () => {
                   allowfullscreen
                 ></iframe>
               </div>
-              <h2>nombre del documento</h2>
+              <h2>Nombre del documento</h2>
             </div>
           </div>
         </div>
