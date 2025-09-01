@@ -645,7 +645,7 @@ button:hover {
 
 .area-chart-full {
   width: 100vw;
-  max-width: 100vw;
+  max-width: 98vw;
   margin: 0 auto 24px auto;
   background: #fff;
   border-radius: 20px;
@@ -791,8 +791,8 @@ button:hover {
 // Mostrar el texto completo de los eventos en el calendario
 .calendar-container {
   .rbc-event {
-    background: none !important; // Quita el fondo
-    color: $color_blue !important; // Solo texto azul
+    background: none !important; 
+    color: $color_blue !important;
     border: none !important;
     border-radius: 0 !important;
     padding: 0 4px !important;

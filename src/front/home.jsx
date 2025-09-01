@@ -10,7 +10,7 @@ import AreaChartInteractive from "../grafics/area";
 // import RadarChartSimple from "../grafics/radar";
 import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
-import RadarChartComponent from "../components/RadarChartComponent";
+import RadarChartComponent from "../grafics/radar1";
 import Toast from "../components/Copy";
 import JuzgadoDialog from "../alertsDialogs/add_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/view_juzgado";
@@ -36,6 +36,18 @@ const Home = () => {
       email: "juzgado007pasto@ejemplo.com",
       start: new Date(2025, 7, 29, 0, 0),
       end: new Date(2025, 7, 29, 23, 59),
+    },
+    {
+      title: "JUZGADO 020 CIVIL MUNICIPAL DE PASTO",
+      email: "juzgado020pasto@ejemplo.com",
+      start: new Date(2025, 7, 30, 0, 0),
+      end: new Date(2025, 7, 30, 23, 59),
+    },
+    {
+      title: "JUZGADO 020 CIVIL MUNICIPAL DE PASTO",
+      email: "juzgado020pasto@ejemplo.com",
+      start: new Date(2025, 7, 31, 0, 0),
+      end: new Date(2025, 7, 31, 23, 59),
     },
     {
       title: "JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO",
@@ -137,12 +149,12 @@ const Home = () => {
             </div>
           </div>
           <div className="flex-column juzgado-section">
-            <div className="juzgado">
-              <h1>Juzgado Abierto</h1>
+            <div className="juzgado "  >
+              <h1 >Juzgado Abierto</h1>
             </div>
 
             <div className="name-juzgado flex-column">
-              <h1>Nombre del juzgado que está abierto</h1>
+              <h1 style={{cursor:"pointer"}} onClick={() => setShowDialog(true)}>JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO</h1>
               <div className="juzgado-email flex-row">
                 <h2 style={{cursor:"pointer"}} onClick={() => setShowDialog(true)}>{email}</h2>
                 <button className="copy-button" onClick={handleCopyEmail}>

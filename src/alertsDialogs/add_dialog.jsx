@@ -5,8 +5,8 @@ export default function JuzgadoDialog({ open, onClose }) {
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [editMode, setEditMode] = useState(false);
-  const [nombre, setNombre] = useState("Juzgado 004 de la judicatura de manizales");
-  const [correo, setCorreo] = useState("juzgado002depasto@ejemplo.com");
+  const [nombre, setNombre] = useState("JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO");
+  const [correo, setCorreo] = useState("juzgado008pasto@ejemplo.com");
 
   const handleCopy = () => {
     navigator.clipboard.writeText(correo).then(() => {
@@ -18,7 +18,6 @@ export default function JuzgadoDialog({ open, onClose }) {
 
   const handleSave = () => {
     setEditMode(false);
-    // Aquí podrías guardar los cambios en un backend si lo necesitas
   };
 
   if (!open) return null;
@@ -52,13 +51,13 @@ export default function JuzgadoDialog({ open, onClose }) {
             Copiar
           </button>
         </div>
-        <div className="dialog-actions">
+        <div className="dialog-actions-vertical">
           {editMode ? (
-            <button className="edit-button" onClick={handleSave}>Guardar</button>
+            <button className="edit-button-full" onClick={handleSave}>Guardar</button>
           ) : (
-            <button className="edit-button" onClick={() => setEditMode(true)}>Editar</button>
+            <button className="edit-button-full" onClick={() => setEditMode(true)}>Editar</button>
           )}
-          <button className="close-button" onClick={onClose}>
+          <button className="close-button-full" onClick={onClose}>
             Cerrar
           </button>
         </div>
