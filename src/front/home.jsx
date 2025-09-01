@@ -12,6 +12,8 @@ import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
 import RadarChartComponent from "../components/RadarChartComponent";
 import Toast from "../components/Copy";
+import JuzgadoDialog from "../alertsDialogs/add_dialog";
+import ViewJuzgadoDialog from "../alertsDialogs/view_juzgado";
 
 dayjs.locale("es");
 
@@ -22,18 +24,24 @@ const Home = () => {
   const [date, setDate] = useState(new Date());
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
+  const [showViewDialog, setShowViewDialog] = useState(false);
+  const [selectedJuzgado, setSelectedJuzgado] = useState(null);
   const localizer = dayjsLocalizer(dayjs);
+  const email = "juzgado002depasto@ejemplo.com";
 
   const events = [
     {
-      title: "Juzgado 004 de la judicatura de manizales",
+      title: "JUZGADO 007 CIVIL MUNICIPAL DE PASTO",
+      email: "juzgado007pasto@ejemplo.com",
       start: new Date(2025, 7, 29, 0, 0),
       end: new Date(2025, 7, 29, 23, 59),
     },
     {
-      title: "Audiencia",
-      start: new Date(2025, 7, 27, 14, 0),
-      end: new Date(2025, 7, 27, 15, 0),
+      title: "JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO",
+      email: "juzgado008pasto@ejemplo.com",
+      start: new Date(2025, 8, 1, 0, 0),
+      end: new Date(2025, 8, 1, 23, 59),
     },
   ];
 
@@ -63,12 +71,19 @@ const Home = () => {
   };
 
   const handleCopyEmail = () => {
-    const email = "correo.electronico@ejemplo.com";
     navigator.clipboard.writeText(email).then(() => {
       setToastMsg("¡Se copió con éxito!");
       setShowToast(true);
       setTimeout(() => setShowToast(false), 2000);
     });
+  };
+
+  const handleSelectEvent = (event) => {
+    setSelectedJuzgado({
+      nombre: event.title,
+      email: event.email,
+    });
+    setShowViewDialog(true);
   };
 
   const dayPropGetter = (date) => {
@@ -128,11 +143,8 @@ const Home = () => {
 
             <div className="name-juzgado flex-column">
               <h1>Nombre del juzgado que está abierto</h1>
-              {/* <div className="juzgado-email-container flex-row">
-                <h1>Email del Juzgado</h1>
-              </div> */}
               <div className="juzgado-email flex-row">
-                <h2>correo.electronico@ejemplo.com</h2>
+                <h2 style={{cursor:"pointer"}} onClick={() => setShowDialog(true)}>{email}</h2>
                 <button className="copy-button" onClick={handleCopyEmail}>
                   Copiar
                 </button>
@@ -158,6 +170,7 @@ const Home = () => {
           onNavigate={setDate}
           selectable={true}
           onSelectSlot={handleSelectSlot}
+          onSelectEvent={handleSelectEvent}
           dayPropGetter={dayPropGetter}
           eventPropGetter={eventPropGetter}
           formats={formats}
@@ -225,6 +238,12 @@ const Home = () => {
         ></iframe>
       </div>
       <Toast show={showToast} message={toastMsg} />
+      <JuzgadoDialog open={showDialog} onClose={() => setShowDialog(false)} />
+      <ViewJuzgadoDialog
+        open={showViewDialog}
+        onClose={() => setShowViewDialog(false)}
+        juzgado={selectedJuzgado}
+      />
     </div>
   );
 };

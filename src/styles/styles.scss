@@ -173,12 +173,10 @@ button:hover {
   width: 80%;
   border-radius: 20px;
   display: flex;
-  flex-direction: row; // Asegura que los hijos estén en fila
-
+  flex-direction: row; 
   @media (max-width: 870px) {
     width: 100%;
-    flex-direction: column; // En móvil, apila los elementos
-    .date-time,
+    flex-direction: column; 
     .main-content {
       width: 100% !important;
       max-width: 100% !important;
@@ -236,7 +234,7 @@ button:hover {
   background-color: $color_light_green;
   margin: 10px;
   width: 100%;
-  max-width: 500px;
+  max-width: 700px;
   box-sizing: border-box;
 
   & h1 {
@@ -293,11 +291,6 @@ button:hover {
     max-width: 500px;
   }
 }
-// contenedor para logueo de sheets
-.sheets-api-container {
-  padding: 20px;
-  text-align: center;
-}
 // calendario
 .calendar-container {
   width: 100%;
@@ -326,7 +319,7 @@ button:hover {
   }
   // celdas de los contenedores de eventos
   .rbc-day-bg {
-    background-color: $color_light_blue;
+    background-color: #fff;
     border: 1px solid $color_blue;
     height: 100px;
     width: 100%;
@@ -350,11 +343,14 @@ button:hover {
     padding: 5px;
     color: $color_blue;
     font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
   }
   //color del texto de
   .calendar--week {
     .rbc-button-link {
       color: white;
+      text-transform: uppercase;
     }
   }
   .rbc-button-link {
@@ -371,12 +367,17 @@ button:hover {
     cursor: pointer;
     pointer-events: auto !important;
     z-index: 3;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 
   // Hover effect for day cells
   .rbc-day-bg:hover,
   .rbc-button-link:hover {
     background-color: $color_light_green !important;
+    padding: auto;
+    margin: auto;
   }
 
   // Week and day view header (days of the week and dates)
@@ -486,6 +487,7 @@ button:hover {
     pointer-events: auto !important;
     z-index: 101 !important;
     position: relative;
+    font-weight: bold;
   }
 
   .rbc-toolbar button:hover {
@@ -753,8 +755,8 @@ button:hover {
     height: 100%;
   }
 }
-
-.custom-toast {
+// Copiar de copy.jsx el dialogo para decir que se copio correctamente
+.custom-copy {
   position: fixed;
   top: 30px;
   right: 30px;
@@ -775,13 +777,173 @@ button:hover {
   transform: translateY(-30px);
 }
 
-.custom-toast img {
+.custom-copy img {
   width: 28px;
   height: 28px;
 }
 
-.custom-toast.show {
+.custom-copy.show {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+}
+
+// Mostrar el texto completo de los eventos en el calendario
+.calendar-container {
+  .rbc-event {
+    background: none !important; // Quita el fondo
+    color: $color_blue !important; // Solo texto azul
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 4px !important;
+    font-size: 15px !important;
+    font-weight: bold;
+    white-space: normal !important; // Permite varias líneas
+    overflow: visible !important;   // No recorta el texto
+    text-overflow: unset !important;
+    box-shadow: none !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+  }
+  .rbc-event-content {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-word !important;
+  }
+}
+
+.alert-dialog-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert-dialog {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.alert-dialog h1 {
+  color: #003f75;
+  font-size: 26px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.alert-dialog p {
+  color: #003f75;
+  font-size: 18px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.juzgado-email-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 16px;
+  color: #003f75;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.edit-button, .close-button {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.edit-button {
+  background: #e6f0fa;
+  color: #003f75;
+}
+
+.close-button {
+  background: #003f75;
+  color: #fff;
+}
+
+.dialog-actions-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.edit-button-full {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #003f75;
+  color: #fff;
+  transition: background 0.2s, color 0.2s;
+}
+.edit-button-full:hover,
+.edit-button-full:active {
+  background: #bafaba;
+  color: #003f75;
+}
+
+.close-button-full {
+  width: 100%;
+  padding: 12px 0;
+  
+  border-radius: 8px;
+  border: 2px solid #e53935;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+  color: #e53935;
+  transition: background 0.2s, color 0.2s;
+}
+.close-button-full:hover,
+.close-button-full:active {
+  background: #e53935;
+  color: #fff;
+}
+.copy-button {
+  background: #e6f0fa;
+  color: #003f75;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.copy-button:hover,
+.copy-button:active {
+  background: #bafaba;
+  color: #003f75;
 }
