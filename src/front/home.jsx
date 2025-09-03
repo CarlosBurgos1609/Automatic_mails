@@ -15,6 +15,7 @@ import Toast from "../components/Copy";
 import JuzgadoDialog from "../alertsDialogs/add_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/view_juzgado";
 import ViewExcel from "../excel/ViewExcel";
+import Dowland from "../components/dowland";
 
 dayjs.locale("es");
 
@@ -51,7 +52,8 @@ const Home = () => {
       end: new Date(2025, 7, 31, 23, 59),
     },
     {
-      title: "JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO",
+      title:
+        "JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO",
       email: "juzgado007pasto@ejemplo.com",
       start: new Date(2025, 8, 1, 0, 0),
       end: new Date(2025, 8, 1, 23, 59),
@@ -150,14 +152,26 @@ const Home = () => {
             </div>
           </div>
           <div className="flex-column juzgado-section">
-            <div className="juzgado "  >
-              <h1 >Juzgado Abierto</h1>
+            <div className="juzgado ">
+              <h1>Juzgado Abierto</h1>
             </div>
 
             <div className="name-juzgado flex-column">
-              <h1 style={{cursor:"pointer"}} onClick={() => setShowDialog(true)}>JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO</h1>
+              <h1
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowDialog(true)}
+              >
+                JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO
+                TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA
+                MÚLTIPLE DE PASTO
+              </h1>
               <div className="juzgado-email flex-row">
-                <h2 style={{cursor:"pointer"}} onClick={() => setShowDialog(true)}>{email}</h2>
+                <h2
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowDialog(true)}
+                >
+                  {email}
+                </h2>
                 <button className="copy-button" onClick={handleCopyEmail}>
                   Copiar
                 </button>
@@ -198,7 +212,10 @@ const Home = () => {
           }}
         />
       </div>
-      
+      <div className="download-container">
+        <Dowland />
+      </div>
+
       <div className="grafic-content flex-column">
         <div className="title">
           <h1>Gráficas</h1>
@@ -210,10 +227,10 @@ const Home = () => {
           {/* <RadarChartSimple /> */}
           <PieChartSimple />
           <RadialChartSimple />
-          <RadarChartComponent/>
+          <RadarChartComponent />
         </div>
       </div>
-      
+
       <Toast show={showToast} message={toastMsg} />
       <JuzgadoDialog open={showDialog} onClose={() => setShowDialog(false)} />
       <ViewJuzgadoDialog

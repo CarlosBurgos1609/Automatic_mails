@@ -956,3 +956,101 @@ button:hover {
   color: #666;
   cursor: not-allowed;
 }
+
+.download-share-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin: 20px 0 0 0;
+}
+
+.pdf-download-btn, .share-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 6px 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 38px;
+}
+
+.pdf-download-btn {
+  background: #e53935;
+  color: #fff;
+  border: 2px solid #e53935;
+}
+.pdf-download-btn img {
+  width: 22px;
+  height: 22px;
+}
+.pdf-download-btn:active,
+.pdf-download-btn:focus {
+  background: transparent;
+  color: #e53935;
+  border: 2px solid #e53935;
+}
+
+.share-btn {
+  background: #003f75;
+  color: #fff;
+  border: 2px solid #003f75;
+}
+.share-btn img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+}
+.share-btn:active,
+.share-btn:focus {
+  background: transparent;
+  color: #003f75;
+  border: 2px solid #003f75;
+}
+
+.pdf-preview-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pdf-preview-content {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.close-preview-btn {
+  margin-top: 18px;
+  background: #003f75;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.close-preview-btn:active {
+  background: #bafaba;
+  color: #003f75;
+}
+
+.download-container {
+  border-radius: 80px;
+  width: 80%;
+  align-self: center;
+  
+}
