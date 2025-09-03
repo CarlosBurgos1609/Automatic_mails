@@ -38,8 +38,15 @@ export default function Dowland({ calendarRef }) {
         <div className="pdf-preview-modal">
           <div className="pdf-preview-content">
             <h2>Vista previa del PDF</h2>
-            <img src={require("../assets/plantilla/plantilla.png")} alt="Plantilla PDF" style={{ width: "100%", maxWidth: 500 }} />
-            <button className="close-preview-btn" onClick={() => setShowPreview(false)}>
+            <img
+              src={require("../assets/plantilla/plantilla.png")}
+              alt="Plantilla PDF"
+              style={{ width: "100%", maxWidth: 500 }}
+            />
+            <button
+              className="close-preview-btn"
+              onClick={() => setShowPreview(false)}
+            >
               Cerrar vista previa
             </button>
           </div>

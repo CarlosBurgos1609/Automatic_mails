@@ -920,7 +920,6 @@ button:hover {
 .close-button-full {
   width: 100%;
   padding: 12px 0;
-
   border-radius: 8px;
   border: 2px solid #e53935;
   font-size: 18px;
@@ -964,7 +963,8 @@ button:hover {
   margin: 20px 0 0 0;
 }
 
-.pdf-download-btn, .share-btn {
+.pdf-download-btn,
+.share-btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1004,17 +1004,20 @@ button:hover {
   height: 20px;
   filter: invert(100%);
 }
-.share-btn:active,
-.share-btn:focus {
-  background: transparent;
-  color: #003f75;
-  border: 2px solid #003f75;
-}
+// .share-btn:active,
+// .share-btn:focus {
+//   background: transparent;
+//   color: $color_blue;
+//   border: 2px solid $color_blue;
+// }
 
 .pdf-preview-modal {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.25);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.25);
   z-index: 10000;
   display: flex;
   align-items: center;
@@ -1026,7 +1029,7 @@ button:hover {
   padding: 32px 24px 24px 24px;
   min-width: 320px;
   max-width: 90vw;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1052,5 +1055,4 @@ button:hover {
   border-radius: 80px;
   width: 80%;
   align-self: center;
-  
 }
