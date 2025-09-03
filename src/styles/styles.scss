@@ -529,7 +529,8 @@ button:hover {
 }
 // Mostrar el texto completo de los eventos en el calendario
 .calendar-container {
-  .rbc-event {
+  .rbc-event,
+  .rbc-event-content {
     background: none !important;
     color: $color_blue !important;
     border: none !important;
@@ -544,12 +545,8 @@ button:hover {
     min-width: 0 !important;
     max-width: 100% !important;
     word-break: break-word !important;
-  }
-  .rbc-event-content {
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: unset !important;
-    word-break: break-word !important;
+    display: block !important;
+    width: 100% !important;
   }
 }
 
@@ -987,6 +984,7 @@ button:hover {
   width: 22px;
   height: 22px;
 }
+.pdf-download-btn:hover,
 .pdf-download-btn:active,
 .pdf-download-btn:focus {
   background: transparent;
@@ -1025,6 +1023,7 @@ button:hover {
 }
 .pdf-preview-content {
   background: #fff;
+  color: $color_blue;
   border-radius: 20px;
   padding: 32px 24px 24px 24px;
   min-width: 320px;
@@ -1035,24 +1034,54 @@ button:hover {
   align-items: center;
   gap: 18px;
 }
-.close-preview-btn {
-  margin-top: 18px;
+.button-container-download {  
+  width: 100%;
+
+  // background-color: red;
+}
+.download-button-full {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
   background: #003f75;
   color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 18px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  & img{
+    margin-right: 8px;
+    height: 18px;
+    @include m.center;
+    padding-right: 2px;
+  }
 }
-.close-preview-btn:active {
+.download-button-full:hover,
+.download-button-full:active {
   background: #bafaba;
   color: #003f75;
 }
+.close-preview-btn {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: 2px solid #e53935;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+  color: #e53935;
+  transition: background 0.2s, color 0.2s;
+}
+.close-preview-btn:hover,
+.close-preview-btn:active {
+  background: #e53935;
+  color: #fff;
+}
 
 .download-container {
-  border-radius: 80px;
+  border-radius: 20px;
   width: 80%;
   align-self: center;
 }

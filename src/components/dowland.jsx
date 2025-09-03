@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import pdfIcon from "../assets/icons/pdf.png";
+import downland from "../assets/icons/dowland.png";
 import shareIcon from "../assets/icons/share.png"; // Cambia el nombre si tu icono es diferente
 import Copy from "./Copy";
 
@@ -43,12 +44,21 @@ export default function Dowland({ calendarRef }) {
               alt="Plantilla PDF"
               style={{ width: "100%", maxWidth: 500 }}
             />
+            <div className="button-container-download flex-column">
+              
+
+                <button className="download-button-full" onClick={handleDownload}>
+                  <img src={downland} alt="PDF" />
+                  Descargar PDF
+                </button>
+              
             <button
               className="close-preview-btn"
               onClick={() => setShowPreview(false)}
             >
               Cerrar vista previa
             </button>
+            </div>
           </div>
         </div>
       )}
