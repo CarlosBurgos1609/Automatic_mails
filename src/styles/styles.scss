@@ -1050,11 +1050,17 @@ button:hover {
   background: #003f75;
   color: #fff;
   transition: background 0.2s, color 0.2s;
-  & img{
-    margin-right: 8px;
-    height: 18px;
-    @include m.center;
-    padding-right: 2px;
+  display: flex;                
+  align-items: center;          
+  justify-content: center;      
+  gap: 8px;                     
+
+  img {
+    height: 25px;
+    width: auto;
+    margin-right: 0;
+    filter: grayscale(46%);
+    display: inline-block;
   }
 }
 .download-button-full:hover,

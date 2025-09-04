@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import pdfIcon from "../assets/icons/pdf.png";
-import downland from "../assets/icons/dowland.png";
+import downland from "../assets/icons/downland_icon.png";
 import shareIcon from "../assets/icons/share.png"; // Cambia el nombre si tu icono es diferente
 import Copy from "./Copy";
 
@@ -8,7 +8,7 @@ export default function Dowland({ calendarRef }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  // Simula la URL de la página
+  // Coloca el URL de la página actual
   const pageUrl = window.location.href;
 
   // Simula la vista previa del PDF (puedes mejorar esto con una plantilla real)
