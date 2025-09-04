@@ -1092,3 +1092,156 @@ button:hover {
   width: 80%;
   align-self: center;
 }
+
+.calendar-container .rbc-day-bg,
+.calendar-container .rbc-date-cell,
+.calendar-container .rbc-button-link {
+  cursor: pointer !important;
+}
+
+.alert-dialog button {
+  margin-bottom: 0;
+}
+
+// --- Estilos para el diálogo de agregar juzgado (add_juzgado) ---
+
+.add-juzgado-dialog {
+  width: 100%;
+}
+
+.add-juzgado-dialog .input-busqueda {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.add-juzgado-dialog input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.2s;
+  margin-bottom: 0;
+}
+.add-juzgado-dialog input[type="text"]:focus {
+  border: 1.5px solid $color_blue;
+}
+
+// Estilos para el select de juzgados
+.add-juzgado-dialog .select-juzgado {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.add-juzgado-dialog select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.2s;
+  margin-bottom: 0;
+}
+.add-juzgado-dialog select:focus {
+  border: 1.5px solid $color_blue;
+}
+
+.add-juzgado-dialog .filtros-juzgado {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.add-juzgado-dialog .filtro-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #e6f0fa;
+  color: #003f75;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.add-juzgado-dialog .filtro-btn.selected {
+  background: #4caf50;
+  color: #fff;
+}
+.add-juzgado-dialog .filtro-btn.pasado.selected {
+  background: #e53935;
+  color: #fff;
+}
+.add-juzgado-dialog .filtro-btn.todos.selected {
+  background: #888;
+  color: #fff;
+}
+.add-juzgado-dialog .filtro-punto {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 4px;
+  
+}
+
+.add-juzgado-dialog .juzgado-email-row {
+  width: 100%;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 16px;
+  color: #003f75;
+}
+
+.add-juzgado-dialog .dialog-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.add-juzgado-dialog .edit-button-full {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #003f75;
+  color: #fff;
+  transition: background 0.2s, color 0.2s;
+}
+.add-juzgado-dialog .edit-button-full:hover,
+.add-juzgado-dialog .edit-button-full:active {
+  background: #bafaba;
+  color: #003f75;
+}
+
+.add-juzgado-dialog .close-button-full {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: 2px solid #e53935;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+  color: #e53935;
+  transition: background 0.2s, color 0.2s;
+}
+.add-juzgado-dialog .close-button-full:hover,
+.add-juzgado-dialog .close-button-full:active {
+  background: #e53935;
+  color: #fff;
+}

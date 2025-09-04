@@ -16,6 +16,7 @@ import JuzgadoDialog from "../alertsDialogs/add_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/view_juzgado";
 import ViewExcel from "../excel/ViewExcel";
 import Dowland from "../components/dowland";
+import AddJuzgadoDialog from "../alertsDialogs/add_juzgado";
 
 dayjs.locale("es");
 
@@ -29,6 +30,8 @@ const Home = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [selectedJuzgado, setSelectedJuzgado] = useState(null);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [selectedSlotDate, setSelectedSlotDate] = useState(null);
   const localizer = dayjsLocalizer(dayjs);
   const email = "juzgado007pasto@ejemplo.com";
 
@@ -81,8 +84,14 @@ const Home = () => {
   };
 
   const handleSelectSlot = ({ start }) => {
-    setSelectedDate(start);
-    console.log("Selected date:", start);
+    // Verifica si hay evento ese día
+    const hasEvent = events.some((ev) =>
+      dayjs(ev.start).isSame(dayjs(start), "day")
+    );
+    if (!hasEvent) {
+      setSelectedSlotDate(start);
+      setShowAddDialog(true);
+    }
   };
 
   const handleCopyEmail = () => {
@@ -99,6 +108,12 @@ const Home = () => {
       email: event.email,
     });
     setShowViewDialog(true);
+  };
+
+  const handleSaveJuzgado = (juzgado, date) => {
+    // Aquí puedes agregar el juzgado al array de eventos
+    // Ejemplo:
+    // setEvents([...events, { title: juzgado.nombre, email: juzgado.email, start: date, end: date }]);
   };
 
   const dayPropGetter = (date) => {
@@ -237,6 +252,12 @@ const Home = () => {
         open={showViewDialog}
         onClose={() => setShowViewDialog(false)}
         juzgado={selectedJuzgado}
+      />
+      <AddJuzgadoDialog
+        open={showAddDialog}
+        onClose={() => setShowAddDialog(false)}
+        onSave={handleSaveJuzgado}
+        slotDate={selectedSlotDate}
       />
     </div>
   );
