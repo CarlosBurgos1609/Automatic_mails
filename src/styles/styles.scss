@@ -147,6 +147,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  max-height: 100%;
   width: 100%;
 
   & .title {
@@ -208,7 +209,7 @@ button:hover {
   }
 
   p {
-    font-size: 17px;
+    font-size: 20px;
     color: $color_blue;
   }
 }
@@ -1002,12 +1003,12 @@ button:hover {
   height: 20px;
   filter: invert(100%);
 }
-// .share-btn:active,
-// .share-btn:focus {
-//   background: transparent;
-//   color: $color_blue;
-//   border: 2px solid $color_blue;
-// }
+
+.share-btn:active {
+  background: $color_green;
+  color: $color_blue;
+  border: 2px solid $color_blue;
+}
 
 .pdf-preview-modal {
   position: fixed;
@@ -1034,7 +1035,7 @@ button:hover {
   align-items: center;
   gap: 18px;
 }
-.button-container-download {  
+.button-container-download {
   width: 100%;
 
   // background-color: red;
@@ -1050,10 +1051,10 @@ button:hover {
   background: #003f75;
   color: #fff;
   transition: background 0.2s, color 0.2s;
-  display: flex;                
-  align-items: center;          
-  justify-content: center;      
-  gap: 8px;                     
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   img {
     height: 25px;

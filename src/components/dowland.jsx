@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import pdfIcon from "../assets/icons/pdf.png";
-import downland from "../assets/icons/downland_icon.png";
+import downland from "../assets/icons/download.png";
 import shareIcon from "../assets/icons/share.png"; // Cambia el nombre si tu icono es diferente
 import Copy from "./Copy";
 
