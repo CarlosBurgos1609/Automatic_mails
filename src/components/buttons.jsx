@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import pdfIcon from "../assets/icons/pdf.png";
 import downland from "../assets/icons/download.png";
-import shareIcon from "../assets/icons/share.png"; // Cambia el nombre si tu icono es diferente
+import shareIcon from "../assets/icons/share.png";
+import add from "../assets/icons/add.png";
+import deleteIcon from "../assets/icons/delete.png";
+import festive from "../assets/icons/festive.png";
 import Copy from "./Copy";
 
-export default function Dowland({ calendarRef }) {
+export default function Buttons({ calendarRef }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
@@ -29,6 +32,23 @@ export default function Dowland({ calendarRef }) {
       <button className="pdf-download-btn" onClick={handleDownload}>
         <img src={pdfIcon} alt="PDF" />
         Descargar en PDF
+      </button>
+      
+      <button className="add-btn" onClick={handleShare}>
+        <img src={add} alt="Añadir" />
+        Agregar Nuevo Juzgado
+      </button>
+      <button className="delete-btn" onClick={handleShare}>
+        <img src={deleteIcon} alt="Eliminar" />
+        Eliminar Juzgado
+      </button>
+      <button className="add-festive-btn" onClick={handleShare}>
+        <img src={festive} alt="Añadir festivo" />
+        Agregar Festivo
+      </button>
+      <button className="delete-festive-btn" onClick={handleShare}>
+        <img src={festive} alt="Eliminar festivo" />
+        Eliminar Festivo
       </button>
       <button className="share-btn" onClick={handleShare}>
         <img src={shareIcon} alt="Compartir" />

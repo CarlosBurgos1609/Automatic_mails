@@ -6,6 +6,7 @@ $color_white: #ffffff;
 $color_green: #bafaba;
 $color_light_green: #bdf3bd;
 $header-height: 90px;
+$filter-blue-image: brightness(0) saturate(100%) invert(13%) sepia(99%) saturate(7470%) hue-rotate(196deg) brightness(95%) contrast(105%);
 
 * {
   font-family: "Arial", sans-serif;
@@ -962,7 +963,11 @@ button:hover {
 }
 
 .pdf-download-btn,
-.share-btn {
+.share-btn,
+.add-btn,
+.delete-btn,
+.add-festive-btn,
+.delete-festive-btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1004,10 +1009,91 @@ button:hover {
   filter: invert(100%);
 }
 
+.share-btn:hover,
 .share-btn:active {
   background: $color_green;
   color: $color_blue;
   border: 2px solid $color_blue;
+  img{
+    filter: $filter-blue-image;
+  }
+}
+.add-btn {
+  background: #003f75;
+  color: #fff;
+  border: 2px solid #003f75;
+}
+.add-btn img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+}
+.add-btn:hover,
+.add-btn:active {
+  background: $color_green;
+  color: $color_blue;
+  border: 2px solid $color_blue;
+  img {
+    filter: $filter-blue-image;
+  }
+}
+.delete-btn {
+  background: transparent;
+  color: #e53935;
+  border: 2px solid #e53935;
+}
+.delete-btn img {
+  width: 22px;
+  height: 22px;
+}
+.delete-btn:hover,
+.delete-btn:active {
+  background: #e53935;
+  color: #fff;
+  border: 2px solid #e53935;
+  img {
+    filter: grayscale(100%) brightness(400%);
+  }
+}
+.add-festive-btn {
+  background: #003f75;
+  color: #fff;
+  border: 2px solid #003f75;
+}
+.add-festive-btn img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+}
+
+.add-festive-btn:hover,
+.add-festive-btn:active {
+  background: $color_green;
+  color: $color_blue;
+  border: 2px solid $color_blue;
+  img {
+    filter: $filter-blue-image;
+  }
+}
+.delete-festive-btn {
+  background: transparent;
+  color: #e53935;
+  border: 2px solid #e53935;
+}
+.delete-festive-btn img {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) saturate(100%) invert(17%) sepia(99%) saturate(7490%) hue-rotate(357deg) brightness(97%) contrast(119%);
+  
+}
+.delete-festive-btn:hover,
+.delete-festive-btn:active {
+  background: #e53935;
+  color: #fff;
+  border: 2px solid #e53935;
+  img {
+    filter: invert(100%);
+  }
 }
 
 .pdf-preview-modal {
@@ -1186,7 +1272,6 @@ button:hover {
   height: 10px;
   border-radius: 50%;
   margin-right: 4px;
-  
 }
 
 .add-juzgado-dialog .juzgado-email-row {
@@ -1244,4 +1329,60 @@ button:hover {
 .add-juzgado-dialog .close-button-full:active {
   background: #e53935;
   color: #fff;
+}
+
+@media (max-width: 900px) {
+  .download-container {
+    width: 98vw;
+    min-width: 0;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding: 0 2vw;
+    border-radius: 16px;
+  }
+
+  .download-share-buttons {
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .download-share-buttons > button {
+    flex: 1 1 45vw;
+    min-width: 180px;
+    max-width: 100vw;
+    margin: 0;
+    white-space: normal;
+    word-break: break-word;
+    text-align: center;
+    font-size: 16px;
+    padding: 10px 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .download-container {
+    width: 100vw;
+    padding: 0 1vw;
+  }
+  .download-share-buttons {
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 10px;
+    align-items: stretch;
+    width: 100%;
+  }
+  .download-share-buttons > button {
+    flex: 1 1 48vw;
+    min-width: 0;
+    max-width: 90vw;
+    font-size: 14px;
+    padding: 10px 4px;
+    white-space: normal;
+    word-break: break-word;
+    text-align: center;
+    margin: 0;
+  }
 }

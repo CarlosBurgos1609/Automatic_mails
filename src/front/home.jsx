@@ -15,7 +15,7 @@ import Toast from "../components/Copy";
 import JuzgadoDialog from "../alertsDialogs/add_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/view_juzgado";
 import ViewExcel from "../excel/ViewExcel";
-import Dowland from "../components/dowland";
+import Buttons from "../components/buttons";
 import AddJuzgadoDialog from "../alertsDialogs/add_juzgado";
 
 dayjs.locale("es");
@@ -228,7 +228,7 @@ const Home = () => {
         />
       </div>
       <div className="download-container">
-        <Dowland />
+        <Buttons />
       </div>
 
       <div className="grafic-content flex-column">
