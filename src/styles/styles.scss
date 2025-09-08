@@ -967,7 +967,8 @@ button:hover {
 .add-btn,
 .delete-btn,
 .add-festive-btn,
-.delete-festive-btn {
+.delete-festive-btn,
+.juzgados_button {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1201,6 +1202,21 @@ button:hover {
 }
 
 .add-juzgado-dialog input[type="text"] {
+  text-transform: uppercase;
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.2s;
+  margin-bottom: 0;
+}
+.add-juzgado-dialog input[type="text"]:focus {
+  border: 1.5px solid $color_blue;
+}
+.add-juzgado-dialog input[type="email"] {
+  text-transform: lowercase;
   width: 100%;
   padding: 8px;
   border-radius: 8px;

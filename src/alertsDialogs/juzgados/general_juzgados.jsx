@@ -1,15 +1,11 @@
 import React, { useState } from "react";
-import pdfIcon from "../assets/icons/pdf.png";
-import downland from "../assets/icons/download.png";
-import shareIcon from "../assets/icons/share.png";
 import add from "../assets/icons/add.png";
 import deleteIcon from "../assets/icons/delete.png";
-import festive from "../assets/icons/festive.png";
 import juzgado from "../assets/icons/juzgado.png";
 import Copy from "./Copy";
 import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 
-export default function Buttons({ calendarRef, onAddJuzgado }) {
+export default function JuzgadosDialog({ calendarRef, onAddJuzgado }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
@@ -70,7 +66,7 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
       </button>
       <button className="add-festive-btn" onClick={handleShare}>
         <img src={festive} alt="Añadir festivo" />
-        Festivos
+        Agregar Festivo
       </button>
 
       <button className="share-btn" onClick={handleShare}>
