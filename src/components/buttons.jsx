@@ -6,7 +6,7 @@ import add from "../assets/icons/add.png";
 import deleteIcon from "../assets/icons/delete.png";
 import festive from "../assets/icons/festive.png";
 import Copy from "./Copy";
-import AddJuzgadoDialog from "../alertsDialogs/add_juzgado";
+import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 
 export default function Buttons({ calendarRef, onAddJuzgado }) {
   const [showPreview, setShowPreview] = useState(false);

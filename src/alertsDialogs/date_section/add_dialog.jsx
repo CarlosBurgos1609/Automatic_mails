@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Copy from "../components/Copy";
+import Copy from "./../../components/Copy";
 
 export default function JuzgadoDialog({ open, onClose }) {
   const [showToast, setShowToast] = useState(false);

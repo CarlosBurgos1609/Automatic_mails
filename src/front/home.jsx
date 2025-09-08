@@ -12,11 +12,11 @@ import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
 import RadarChartComponent from "../grafics/radar1";
 import Toast from "../components/Copy";
-import JuzgadoDialog from "../alertsDialogs/add_dialog";
-import ViewJuzgadoDialog from "../alertsDialogs/view_juzgado";
+import JuzgadoDialog from "../alertsDialogs/date_section/add_dialog";
+import ViewJuzgadoDialog from "../alertsDialogs/calendar/view_juzgado";
 import ViewExcel from "../excel/ViewExcel";
 import Buttons from "../components/buttons";
-import AddJuzgadoCalendarDialog from "../alertsDialogs/add_juzgado_calendar";
+import AddJuzgadoCalendarDialog from "../alertsDialogs/calendar/add_juzgado_calendar";
 
 dayjs.locale("es");
 

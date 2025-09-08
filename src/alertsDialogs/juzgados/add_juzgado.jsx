@@ -41,7 +41,7 @@ export default function AddJuzgadoDialog({ open, onClose, onSave }) {
         </div>
         <div className="input-busqueda">
           <input
-            type="email"
+            type="text"
             placeholder="Correo electrónico"
             value={correo}
             onChange={(e) => setCorreo(e.target.value)}
