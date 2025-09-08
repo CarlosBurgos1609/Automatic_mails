@@ -6,10 +6,12 @@ import add from "../assets/icons/add.png";
 import deleteIcon from "../assets/icons/delete.png";
 import festive from "../assets/icons/festive.png";
 import Copy from "./Copy";
+import AddJuzgadoDialog from "../alertsDialogs/add_juzgado";
 
-export default function Buttons({ calendarRef }) {
+export default function Buttons({ calendarRef, onAddJuzgado }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
 
   // Coloca el URL de la página actual
   const pageUrl = window.location.href;
@@ -27,14 +29,24 @@ export default function Buttons({ calendarRef }) {
     });
   };
 
+  const handleSaveNuevoJuzgado = (nuevoJuzgado) => {
+    // Aquí puedes agregar el nuevo juzgado a tu lista o hacer lo que necesites
+    // Por ejemplo: setJuzgados([...juzgados, nuevoJuzgado]);
+    // O mostrar un toast de éxito
+  };
+
   return (
     <div className="download-share-buttons">
       <button className="pdf-download-btn" onClick={handleDownload}>
         <img src={pdfIcon} alt="PDF" />
         Descargar en PDF
       </button>
-      
-      <button className="add-btn" onClick={handleShare}>
+
+      <button
+        className="add-btn"
+        onClick={() => setShowAddJuzgadoDialog(true)}
+        style={{ marginBottom: "16px" }}
+      >
         <img src={add} alt="Añadir" />
         Agregar Nuevo Juzgado
       </button>
@@ -65,23 +77,26 @@ export default function Buttons({ calendarRef }) {
               style={{ width: "100%", maxWidth: 500 }}
             />
             <div className="button-container-download flex-column">
-              
+              <button className="download-button-full" onClick={handleDownload}>
+                <img src={downland} alt="PDF" />
+                Descargar PDF
+              </button>
 
-                <button className="download-button-full" onClick={handleDownload}>
-                  <img src={downland} alt="PDF" />
-                  Descargar PDF
-                </button>
-              
-            <button
-              className="close-preview-btn"
-              onClick={() => setShowPreview(false)}
-            >
-              Cerrar vista previa
-            </button>
+              <button
+                className="close-preview-btn"
+                onClick={() => setShowPreview(false)}
+              >
+                Cerrar vista previa
+              </button>
             </div>
           </div>
         </div>
       )}
+      <AddJuzgadoDialog
+        open={showAddJuzgadoDialog}
+        onClose={() => setShowAddJuzgadoDialog(false)}
+        onSave={handleSaveNuevoJuzgado}
+      />
     </div>
   );
 }

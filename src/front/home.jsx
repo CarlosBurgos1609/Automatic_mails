@@ -16,7 +16,7 @@ import JuzgadoDialog from "../alertsDialogs/add_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/view_juzgado";
 import ViewExcel from "../excel/ViewExcel";
 import Buttons from "../components/buttons";
-import AddJuzgadoDialog from "../alertsDialogs/add_juzgado";
+import AddJuzgadoCalendarDialog from "../alertsDialogs/add_juzgado_calendar";
 
 dayjs.locale("es");
 
@@ -253,7 +253,7 @@ const Home = () => {
         onClose={() => setShowViewDialog(false)}
         juzgado={selectedJuzgado}
       />
-      <AddJuzgadoDialog
+      <AddJuzgadoCalendarDialog
         open={showAddDialog}
         onClose={() => setShowAddDialog(false)}
         onSave={handleSaveJuzgado}
