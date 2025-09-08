@@ -7,12 +7,13 @@ import deleteIcon from "../assets/icons/delete.png";
 import festive from "../assets/icons/festive.png";
 import juzgado from "../assets/icons/juzgado.png";
 import Copy from "./Copy";
-import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
+import JuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados"
+// import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 
 export default function Buttons({ calendarRef, onAddJuzgado }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
+  const [showJuzgadosDialog, setShowJuzgadosDialog] = useState(false);
 
   // Coloca el URL de la página actual
   const pageUrl = window.location.href;
@@ -62,7 +63,7 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
       </button> */}
       <button
         className="add-btn"
-        onClick={() => setShowAddJuzgadoDialog(true)}
+        onClick={() => setShowJuzgadosDialog(true)}
         style={{ marginBottom: "16px" }}
       >
         <img src={juzgado} alt="Añadir" />
@@ -103,9 +104,9 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
           </div>
         </div>
       )}
-      <AddJuzgadoDialog
-        open={showAddJuzgadoDialog}
-        onClose={() => setShowAddJuzgadoDialog(false)}
+      <JuzgadosDialog
+        open={showJuzgadosDialog}
+        onClose={() => setShowJuzgadosDialog(false)}
         onSave={handleSaveNuevoJuzgado}
       />
     </div>
