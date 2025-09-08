@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Copy from "./../../components/Copy";
+import Copy from "../../components/Copy";
 
 export default function JuzgadoDialog({ open, onClose }) {
   const [showToast, setShowToast] = useState(false);
@@ -52,11 +52,11 @@ export default function JuzgadoDialog({ open, onClose }) {
           </button>
         </div>
         <div className="dialog-actions-vertical">
-          {editMode ? (
+          {/* {editMode ? (
             <button className="edit-button-full" onClick={handleSave}>Guardar</button>
           ) : (
             <button className="edit-button-full" onClick={() => setEditMode(true)}>Editar</button>
-          )}
+          )} */}
           <button className="close-button-full" onClick={onClose}>
             Cerrar
           </button>

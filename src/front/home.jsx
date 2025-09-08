@@ -12,7 +12,7 @@ import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
 import RadarChartComponent from "../grafics/radar1";
 import Toast from "../components/Copy";
-import JuzgadoDialog from "../alertsDialogs/date_section/add_dialog";
+import JuzgadoDialog from "../alertsDialogs/date_section/open_juzgado_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/calendar/view_juzgado";
 import ViewExcel from "../excel/ViewExcel";
 import Buttons from "../components/buttons";
