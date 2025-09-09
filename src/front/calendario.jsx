@@ -1,4 +1,4 @@
-// src/components/Calendary.jsx o Home.jsx
+// src/components/Calendary.jsx
 import React, { useState, useEffect } from "react";
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
@@ -10,17 +10,22 @@ dayjs.locale("es");
 const Calendary = () => {
   const localizer = dayjsLocalizer(dayjs);
   const [municipios, setMunicipios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 👇 Aquí va el useEffect
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/data");
+        if (!response.ok) throw new Error("Error en la API");
         const data = await response.json();
-        console.log("Datos recibidos del backend:", data); // 👈 Log para verificar
+        console.log("✅ Datos recibidos:", data);
         setMunicipios(data);
-      } catch (error) {
-        console.error("Error al obtener municipios:", error);
+      } catch (err) {
+        console.error("❌ Error al obtener municipios:", err);
+        setError("No se pudieron cargar los municipios");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -30,30 +35,37 @@ const Calendary = () => {
   return (
     <div className="calendar-container" style={{ padding: "20px" }}>
       <h2>Lista de Municipios</h2>
-      <table border="1" cellPadding="10" style={{ marginBottom: "30px", width: "100%" }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Fecha de creación</th>
-          </tr>
-        </thead>
-        <tbody>
-          {municipios.length === 0 ? (
+
+      {loading ? (
+        <p>Cargando municipios...</p>
+      ) : error ? (
+        <p style={{ color: "red" }}>{error}</p>
+      ) : (
+        <table border="1" cellPadding="10" style={{ marginBottom: "30px", width: "100%" }}>
+          <thead>
             <tr>
-              <td colSpan="3">No hay municipios para mostrar</td>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Fecha de creación</th>
             </tr>
-          ) : (
-            municipios.map((mun) => (
-              <tr key={mun.id}>
-                <td>{mun.id}</td>
-                <td>{mun.name}</td>
-                <td>{new Date(mun.created_at).toLocaleDateString()}</td>
+          </thead>
+          <tbody>
+            {municipios.length === 0 ? (
+              <tr>
+                <td colSpan="3">No hay municipios para mostrar</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              municipios.map((mun) => (
+                <tr key={mun.id}>
+                  <td>{mun.id}</td>
+                  <td>{mun.name}</td>
+                  <td>{new Date(mun.created_at).toLocaleDateString("es-ES")}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      )}
 
       <h2>Calendario</h2>
       <Calendar
