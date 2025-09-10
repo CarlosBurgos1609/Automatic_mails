@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { FaEnvelope  } from 'react-icons/fa';
+import { FaGlassCheers   } from 'react-icons/fa';
 
 export default function AddFestiveDialog({ open, onClose, onSave }) {
   const [codigo, setCodigo] = useState("");
@@ -29,7 +29,7 @@ export default function AddFestiveDialog({ open, onClose, onSave }) {
   return (
     <div className="alert-dialog-backdrop">
       <div className="alert-dialog add-juzgado-dialog">
-        <h1><FaEnvelope  size={24} color="red" />  Agregar Nuevo Día Festivo</h1>
+        <h1><FaGlassCheers   size={24}  />  Agregar Nuevo Día Festivo</h1>
         <div className="calendar-election">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <StaticDatePicker
