@@ -8,12 +8,14 @@ import festive from "../assets/icons/festive.png";
 import juzgado from "../assets/icons/juzgado.png";
 import Copy from "./Copy";
 import JuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados"
+import FestivDialog from "../alertsDialogs/festivs/general_festivs"
 // import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 
 export default function Buttons({ calendarRef, onAddJuzgado }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showJuzgadosDialog, setShowJuzgadosDialog] = useState(false);
+  const [showFestivDialog, setShowFestivDialog] = useState(false);
 
   // Coloca el URL de la página actual
   const pageUrl = window.location.href;
@@ -32,6 +34,11 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
   };
 
   const handleSaveNuevoJuzgado = (nuevoJuzgado) => {
+    // Aquí puedes agregar el nuevo juzgado a tu lista o hacer lo que necesites
+    // Por ejemplo: setJuzgados([...juzgados, nuevoJuzgado]);
+    // O mostrar un toast de éxito
+  };
+  const handleSaveNuevoFestivo = (nuevoJuzgado) => {
     // Aquí puedes agregar el nuevo juzgado a tu lista o hacer lo que necesites
     // Por ejemplo: setJuzgados([...juzgados, nuevoJuzgado]);
     // O mostrar un toast de éxito
@@ -69,7 +76,11 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
         <img src={juzgado} alt="Añadir" />
         Juzgados
       </button>
-      <button className="add-festive-btn" onClick={handleShare}>
+      <button
+        className="add-festive-btn"
+        onClick={() => setShowFestivDialog(true)}
+        style={{ marginBottom: "16px" }}
+      >
         <img src={festive} alt="Añadir festivo" />
         Festivos
       </button>
@@ -108,6 +119,11 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
         open={showJuzgadosDialog}
         onClose={() => setShowJuzgadosDialog(false)}
         onSave={handleSaveNuevoJuzgado}
+      />
+      <FestivDialog
+        open={showFestivDialog}
+        onClose={() => setShowFestivDialog(false)}
+        onSave={handleSaveNuevoFestivo}
       />
     </div>
   );

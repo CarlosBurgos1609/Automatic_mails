@@ -21,20 +21,37 @@ const dbConfig = {
 };
 
 // Conexión global
-const poolPromise = new sql.ConnectionPool(dbConfig)
-  .connect()
-  .then(pool => {
-    console.log("✅ Conectado a SQL Server");
-    return pool;
-  })
-  .catch(err => {
-    console.error("❌ Error en la conexión a SQL Server:", err);
-  });
+let poolPromise;
+
+async function connectToDatabase() {
+  try {
+    poolPromise = new sql.ConnectionPool(dbConfig)
+      .connect()
+      .then(pool => {
+        console.log("✅ Conectado a SQL Server");
+        return pool;
+      })
+      .catch(err => {
+        console.error("❌ Error en la conexión a SQL Server:", err);
+        throw err; // Lanza el error para manejarlo en el endpoint
+      });
+    return poolPromise;
+  } catch (err) {
+    console.error("❌ No se pudo inicializar la conexión:", err);
+    throw err;
+  }
+}
+
+// Inicializa la conexión al iniciar el servidor
+connectToDatabase();
 
 // Endpoint API
 app.get('/api/data', async (req, res) => {
   try {
     const pool = await poolPromise;
+    if (!pool) {
+      throw new Error('No hay conexión a la base de datos');
+    }
     const result = await pool.request().query('SELECT id, name, created_at FROM municipios');
     res.json(result.recordset);
   } catch (err) {

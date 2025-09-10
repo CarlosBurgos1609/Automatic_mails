@@ -4,10 +4,12 @@ import AddJuzgadoDialog from "../juzgados/add_juzgado";
 import add from "../../assets/icons/add.png";
 import deleteIcon from "../../assets/icons/delete.png";
 import edit from "../../assets/icons/edit.png";
-import juzgado from "../../assets/icons/juzgado.png";
+import festiv from "../../assets/icons/festive.png";
+import AddFestiveDialog from "../../alertsDialogs/festivs/add_festiv"
 
-export default function JuzgadoDialog({ open, onClose }) {
-  const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
+export default function FestivDialog({ open, onClose }) {
+//   const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
+  const [showAddFestiveDialog, setShowAddFestiveDialog] = useState(false);
 
   const handleSaveNuevoJuzgado = (nuevoJuzgado) => {
     // Aquí puedes agregar el nuevo juzgado a tu lista o hacer lo que necesites
@@ -20,32 +22,32 @@ export default function JuzgadoDialog({ open, onClose }) {
   return (
     <div className="alert-dialog-backdrop">
       <div className="alert_dialog_juzgados">
-        <h1> <img src={juzgado} alt="" /> JUZGADOS</h1>
+        <h1> <img src={festiv} alt="" /> Festivos</h1>
         
           <button
             className="add-btn"
-            onClick={() => setShowAddJuzgadoDialog(true)}
+            onClick={() => setShowAddFestiveDialog(true)}
             style={{ marginBottom: "16px" }}
           >
             <img src={add} alt="Añadir" />
-            Agregar Nuevo Juzgado
+            Agregar Nuevo Día Festivo
           </button>
           <button className="add-btn">
             <img src={edit} alt="Editar" />
-            Editar Juzgado
+            Editar Día Festivo
           </button>
           <button className="delete-btn">
             <img src={deleteIcon} alt="Eliminar" />
-            Eliminar Juzgado
+            Eliminar Día Festivo
           </button>
           <button className="close-preview-btn " onClick={onClose}>
             Cerrar 
           </button>
         
       </div>
-      <AddJuzgadoDialog
-        open={showAddJuzgadoDialog}
-        onClose={() => setShowAddJuzgadoDialog(false)}
+      <AddFestiveDialog
+        open={showAddFestiveDialog}
+        onClose={() => setShowAddFestiveDialog(false)}
         onSave={handleSaveNuevoJuzgado}
       />
     </div>
