@@ -27,7 +27,7 @@ export default function FestivDialog({ open, onClose }) {
           <button
             className="add-btn"
             onClick={() => setShowAddFestiveDialog(true)}
-            style={{ marginBottom: "16px" }}
+          
           >
             <img src={add} alt="Añadir" />
             Agregar Nuevo Día Festivo

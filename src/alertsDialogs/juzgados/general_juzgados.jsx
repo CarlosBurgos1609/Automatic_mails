@@ -25,7 +25,7 @@ export default function JuzgadoDialog({ open, onClose }) {
           <button
             className="add-btn"
             onClick={() => setShowAddJuzgadoDialog(true)}
-            style={{ marginBottom: "16px" }}
+            
           >
             <img src={add} alt="Añadir" />
             Agregar Nuevo Juzgado

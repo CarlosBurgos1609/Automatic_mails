@@ -245,6 +245,10 @@ const Home = () => {
           <RadarChartComponent />
         </div>
       </div>
+      <div className="tabla-content">
+        <h1>Tabla de Datos</h1>
+        {/* Aquí puedes agregar tu tabla */}
+      </div>
 
       <Toast show={showToast} message={toastMsg} />
       <JuzgadoDialog open={showDialog} onClose={() => setShowDialog(false)} />
