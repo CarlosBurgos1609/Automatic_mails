@@ -1536,6 +1536,19 @@ button:hover {
   color: #fff;
 }
 
+.add-juzgado-dialog .input-error {
+  border: 2px solid #e53935 !important;
+  background: #fff0f0;
+}
+
+.add-juzgado-dialog .error-message {
+  color: #e53935;
+  font-size: 15px;
+  margin-bottom: 10px;
+  text-align: left;
+  width: 100%;
+}
+
 @media (max-width: 900px) {
   .buttons_container {
     width: 98vw;
