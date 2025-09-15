@@ -103,14 +103,14 @@ export default function AreaChartInteractive() {
 	const filteredData = chartData.slice(-showLast);
 
 	return (
-		<div style={{ width: "98%" }}>
-			<h3 style={{ textAlign: "center", marginBottom: 16 }}>Gráfica de Área</h3>
-			<div style={{ marginBottom: 16, textAlign: "center" }}>
-				<button onClick={() => setShowLast(7)} style={{ marginRight: 8 }}>Últimos 7 días</button>
-				<button onClick={() => setShowLast(30)} style={{ marginRight: 8 }}>Últimos 30 días</button>
+		<div className="area-chart-interactive">
+			<h3>Gráfica de Área</h3>
+			<div className="area-chart-buttons">
+				<button onClick={() => setShowLast(7)}>Últimos 7 días</button>
+				<button onClick={() => setShowLast(30)}>Últimos 30 días</button>
 				<button onClick={() => setShowLast(90)}>Últimos 90 días</button>
 			</div>
-			<div style={{ width: "100%", height: "350px" }}>
+			<div className="area-chart-graph">
 				<ResponsiveContainer width="100%" height="100%">
 					<AreaChart data={filteredData}>
 						<defs>

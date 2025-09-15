@@ -697,6 +697,35 @@ button:hover {
   }
 }
 
+.area-chart-interactive {
+  width: 95%;
+  margin: 0 auto;
+
+  h3 {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .area-chart-buttons {
+    margin-bottom: 16px;
+    text-align: center;
+
+    button {
+      margin-right: 8px;
+      // Puedes agregar más estilos si lo deseas
+    }
+    button:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .area-chart-graph {
+    width: 98%;
+    height: 350px;
+    margin: 0 auto;
+  }
+}
+
 .other-charts-row {
   display: flex;
   flex-direction: row;
