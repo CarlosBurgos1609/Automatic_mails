@@ -701,9 +701,11 @@ button:hover {
   width: 95%;
   margin: 0 auto;
 
-  h3 {
+  h1 {
     text-align: center;
     margin-bottom: 16px;
+    color: $color_blue;
+    font-size: 18px;
   }
 
   .area-chart-buttons {
@@ -1451,8 +1453,15 @@ button:hover {
   transition: background 0.2s, color 0.2s;
 }
 .add-juzgado-dialog .filtro-btn.selected {
-  background: #4caf50;
+  border: 2px solid #fff;
+  background: #003f75;
   color: #fff;
+  box-shadow: 0 0 0 3px $color_blue; 
+  position: relative;
+  z-index: 1;
+}
+.add-juzgado-dialog .filtro-btn.selected .filtro-punto {
+  border: 2px solid #fff;
 }
 .add-juzgado-dialog .filtro-btn.pasado.selected {
   background: #e53935;

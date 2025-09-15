@@ -104,8 +104,9 @@ export default function AreaChartInteractive() {
 
 	return (
 		<div className="area-chart-interactive">
-			<h3>Gráfica de Área</h3>
+			<h1>Gráfica de Área</h1>
 			<div className="area-chart-buttons">
+				<button onClick={() => setShowLast(3)}>Últimos 3 días</button>
 				<button onClick={() => setShowLast(7)}>Últimos 7 días</button>
 				<button onClick={() => setShowLast(30)}>Últimos 30 días</button>
 				<button onClick={() => setShowLast(90)}>Últimos 90 días</button>
