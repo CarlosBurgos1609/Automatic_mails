@@ -6,12 +6,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FaGlassCheers } from "react-icons/fa";
 
 export default function AddFestiveDialog({ open, onClose, onSave }) {
-  const [codigo, setCodigo] = useState("");
   const [nombre, setNombre] = useState("");
-  const [correo, setCorreo] = useState("");
-  const [departamento, setDepartamento] = useState("");
-  const [fecha, setFecha] = useState(dayjs()); // Fecha seleccionada
-  const [errorFecha, setErrorFecha] = useState(""); // Para manejar errores de fecha
+  const [fecha, setFecha] = useState(dayjs());
+  const [error, setError] = useState("");
+  const [errorFecha, setErrorFecha] = useState("");
 
   // Manejar cambio en el input de fecha
   const handleFechaInputChange = (e) => {
@@ -35,26 +33,20 @@ export default function AddFestiveDialog({ open, onClose, onSave }) {
   };
 
   const handleGuardar = () => {
-    if (codigo && nombre && correo && departamento && fecha && !errorFecha) {
-      onSave({
-        codigo,
-        nombre,
-        correo,
-        departamento,
-        fecha: fecha.format("YYYY-MM-DD"),
-      });
-      onClose();
-      setCodigo("");
-      setNombre("");
-      setCorreo("");
-      setDepartamento("");
-      setFecha(dayjs());
-      setErrorFecha("");
-    } else {
-      if (!fecha || errorFecha) {
-        setErrorFecha("Por favor, seleccione una fecha válida");
-      }
+    if (!nombre || !fecha || errorFecha) {
+      setError("Por favor, complete todos los campos obligatorios.");
+      if (!fecha || errorFecha) setErrorFecha("Por favor, seleccione una fecha válida");
+      return;
     }
+    setError(""); // Limpiar error si todo está bien
+    onSave({
+      nombre,
+      fecha: fecha.format("YYYY-MM-DD"),
+    });
+    onClose();
+    setNombre("");
+    setFecha(dayjs());
+    setErrorFecha("");
   };
 
   if (!open) return null;
@@ -71,6 +63,7 @@ export default function AddFestiveDialog({ open, onClose, onSave }) {
             placeholder="Nombre del día festivo"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
+            className={error && !nombre ? "input-error" : ""}
           />
         </div>
         <div className="input-busqueda">
@@ -79,19 +72,21 @@ export default function AddFestiveDialog({ open, onClose, onSave }) {
             value={fecha.format("YYYY-MM-DD")}
             onChange={handleFechaInputChange}
             placeholder="Fecha (YYYY-MM-DD)"
+            className={errorFecha ? "input-error" : ""}
           />
           {errorFecha && <span className="error-message">{errorFecha}</span>}
         </div>
+        {error && <div className="error-message">{error}</div>}
         <div className="calendar-election">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <StaticDatePicker
               displayStaticWrapperAs="desktop"
               value={fecha}
               onChange={handleFechaChange}
-              showToolbar={false} // Desactiva la barra de herramientas
+              showToolbar={false}
               slotProps={{
-                actionBar: { actions: [] }, 
-                toolbar: { hidden: true }, 
+                actionBar: { actions: [] },
+                toolbar: { hidden: true },
               }}
             />
           </LocalizationProvider>
