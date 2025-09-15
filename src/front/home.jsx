@@ -199,7 +199,7 @@ const Home = () => {
         <SheetsApi />
       </div> */}
       <div className="linear-divide flex-column">
-        <hr />   
+        <hr />
       </div>
       <div className="calendar-container">
         <Calendar
@@ -233,8 +233,8 @@ const Home = () => {
       <div className="download-container">
         <Buttons />
       </div>
-<div className="linear-divide flex-column">
-        <hr />   
+      <div className="linear-divide flex-column">
+        <hr />
       </div>
       <div className="grafic-content flex-column">
         <div className="title">
@@ -251,13 +251,15 @@ const Home = () => {
         </div>
       </div>
       <div className="linear-divide flex-column">
-        <hr />   
+        <hr />
       </div>
       <div className="table-container flex-column">
         <div className="title">
-        <h1>Tabla de Datos</h1>
+          <h1>Tabla de Datos</h1>
         </div>
-        {/* Aquí puedes agregar tu tabla */}
+        <div className="table-content"> 
+          
+        </div>
       </div>
 
       <Toast show={showToast} message={toastMsg} />
@@ -273,7 +275,6 @@ const Home = () => {
         onSave={handleSaveJuzgado}
         slotDate={selectedSlotDate}
       />
-
     </div>
   );
 };
