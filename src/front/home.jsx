@@ -198,6 +198,9 @@ const Home = () => {
       {/* <div className="sheets-api-container">
         <SheetsApi />
       </div> */}
+      <div className="linear-divide flex-column">
+        <hr />   
+      </div>
       <div className="calendar-container">
         <Calendar
           localizer={localizer}
@@ -230,7 +233,9 @@ const Home = () => {
       <div className="download-container">
         <Buttons />
       </div>
-
+<div className="linear-divide flex-column">
+        <hr />   
+      </div>
       <div className="grafic-content flex-column">
         <div className="title">
           <h1>Gráficas</h1>
@@ -245,8 +250,13 @@ const Home = () => {
           <RadarChartComponent />
         </div>
       </div>
-      <div className="tabla-content">
+      <div className="linear-divide flex-column">
+        <hr />   
+      </div>
+      <div className="table-container flex-column">
+        <div className="title">
         <h1>Tabla de Datos</h1>
+        </div>
         {/* Aquí puedes agregar tu tabla */}
       </div>
 
@@ -263,6 +273,7 @@ const Home = () => {
         onSave={handleSaveJuzgado}
         slotDate={selectedSlotDate}
       />
+
     </div>
   );
 };
