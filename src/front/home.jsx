@@ -255,7 +255,7 @@ const Home = () => {
       </div>
       <div className="table-container flex-column">
         <div className="title">
-          <h1>Tabla de Datos</h1>
+          <h1>Lista de Juzgados</h1>
         </div>
         <div className="table-content"> 
           
