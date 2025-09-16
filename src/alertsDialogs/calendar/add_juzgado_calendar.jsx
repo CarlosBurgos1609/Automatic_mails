@@ -1,41 +1,34 @@
-import React, { useState } from "react";
-
-const juzgadosData = [
-  {
-    nombre: "JUZGADO 007 CIVIL MUNICIPAL DE PASTO",
-    email: "juzgado007pasto@ejemplo.com",
-    estado: "disponible",
-  },
-  {
-    nombre: "JUZGADO 020 CIVIL MUNICIPAL DE PASTO",
-    email: "juzgado020pasto@ejemplo.com",
-    estado: "pasado",
-  },
-  {
-    nombre: "JUZGADO 004 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO",
-    email: "juzgado004pasto@ejemplo.com",
-    estado: "disponible",
-  },
-  // ...agrega más juzgados aquí...
-];
-
-const estados = [
-  { key: "disponible", label: "Disponibles", color: "#4caf50" },
-  { key: "pasado", label: "Ya pasaron", color: "#e53935" },
-  { key: "todos", label: "Todos", color: "#888" },
-];
+import React, { useState, useEffect } from "react";
+import Copy from "../../components/Copy"; // Ajusta la ruta si es necesario
 
 export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate }) {
-  const [filtro, setFiltro] = useState("todos");
   const [busqueda, setBusqueda] = useState("");
+  const [juzgadosData, setJuzgadosData] = useState([]);
   const [juzgadoSeleccionado, setJuzgadoSeleccionado] = useState(null);
-  const [error, setError] = useState(""); // Nuevo estado para error
+  const [error, setError] = useState("");
+  const [showCopy, setShowCopy] = useState(false);
 
-  // Filtrado de juzgados
+  // Cargar juzgados desde el backend (como en calendario.jsx)
+  useEffect(() => {
+    if (open) {
+      fetch("http://localhost:5000/api/juzgados")
+        .then((res) => res.json())
+        .then((data) => {
+          setJuzgadosData(data);
+          setError("");
+        })
+        .catch(() => {
+          setJuzgadosData([]);
+          setError("No se pudieron cargar los juzgados.");
+        });
+    }
+  }, [open]);
+
+  // Filtrado de juzgados por nombre o email
   const juzgadosFiltrados = juzgadosData.filter(
     (j) =>
-      (filtro === "todos" || j.estado === filtro) &&
-      j.nombre.toLowerCase().includes(busqueda.toLowerCase())
+      j.name.toLowerCase().includes(busqueda.toLowerCase()) ||
+      (j.email && j.email.toLowerCase().includes(busqueda.toLowerCase()))
   );
 
   const handleGuardar = () => {
@@ -43,77 +36,75 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
       setError("Debe seleccionar un juzgado antes de guardar.");
       return;
     }
-    setError(""); // Limpiar error si todo está bien
+    setError("");
     onSave(juzgadoSeleccionado, slotDate);
-    onClose();
+    setShowCopy(true);
+    setBusqueda("");
+    setJuzgadoSeleccionado(null);
+    // Cierra el alert dialog después de mostrar el mensaje
+    setTimeout(() => {
+      setShowCopy(false);
+      onClose();
+    }, 1500);
   };
 
-  if (!open) return null;
+  if (!open && !showCopy) return null;
 
   return (
-    <div className="alert-dialog-backdrop">
-      <div className="alert-dialog add-juzgado-dialog">
-        <h1>Agregar Juzgado</h1>
-        <div className="input-busqueda">
-          <input
-            type="text"
-            placeholder="Buscar juzgado..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            className={error && !busqueda ? "input-error" : ""}
-          />
-        </div>
-        <div className="filtros-juzgado">
-          {estados.map((est) => (
-            <button
-              key={est.key}
-              className={`filtro-btn${filtro === est.key ? " selected" : ""} ${est.key}`}
-              onClick={() => setFiltro(est.key)}
-              type="button"
-            >
-              <span
-                className="filtro-punto"
-                style={{ background: est.color }}
-              ></span>
-              {est.label}
-            </button>
-          ))}
-        </div>
-        <div className="select-juzgado">
-          <select
-            value={juzgadoSeleccionado?.nombre || ""}
-            onChange={(e) => {
-              const juz = juzgadosData.find((j) => j.nombre === e.target.value);
-              setJuzgadoSeleccionado(juz);
-              setError(""); // Limpiar error al seleccionar
-            }}
-            className={error && !juzgadoSeleccionado ? "input-error" : ""}
-          >
-            <option value="">Seleccione un juzgado...</option>
-            {juzgadosFiltrados.map((j) => (
-              <option key={j.nombre} value={j.nombre}>
-                {j.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        {error && (
-          <div className="error-message">{error}</div>
-        )}
-        {juzgadoSeleccionado && (
-          <div className="juzgado-email-row">
-            <span>{juzgadoSeleccionado.email}</span>
+    <>
+      <Copy show={showCopy} message="Se guardó correctamente" />
+      {open && !showCopy && (
+        <div className="alert-dialog-backdrop">
+          <div className="alert-dialog add-juzgado-dialog">
+            <h1>Agregar Juzgado</h1>
+            <div className="input-busqueda">
+              <input
+                type="text"
+                placeholder="Buscar juzgado por nombre o email..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                className={error && !busqueda ? "input-error" : ""}
+              />
+            </div>
+            <div className="select-juzgado">
+              <select
+                value={juzgadoSeleccionado?.id || ""}
+                onChange={(e) => {
+                  const juz = juzgadosData.find((j) => String(j.id) === e.target.value);
+                  setJuzgadoSeleccionado(juz);
+                  setError("");
+                }}
+                className={error && !juzgadoSeleccionado ? "input-error" : ""}
+              >
+                <option value="">Seleccione un juzgado...</option>
+                {juzgadosFiltrados.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    {j.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {error && (
+              <div className="error-message">{error}</div>
+            )}
+            {juzgadoSeleccionado && (
+              <div className="juzgado-email-row">
+                <span>
+                  <b>Email:</b> {juzgadoSeleccionado.email}
+                </span>
+              </div>
+            )}
+            <div className="dialog-actions flex-column">
+              <button className="edit-button-full" onClick={handleGuardar}>
+                Guardar
+              </button>
+              <button className="close-button-full" onClick={onClose}>
+                Cerrar
+              </button>
+            </div>
           </div>
-        )}
-        <div className="dialog-actions flex-column">
-          <button className="edit-button-full" onClick={handleGuardar}>
-            Guardar
-          </button>
-          <button className="close-button-full" onClick={onClose}>
-            Cerrar
-          </button>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }

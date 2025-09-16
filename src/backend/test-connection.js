@@ -1,14 +1,15 @@
 const sql = require('mssql');
 
 const dbConfig = {
-  user: 'Practicante',
+  user: 'Practicante2',
   password: 'Sistemas1',
-  server: '192.168.68.21',
-  port: 1433,
+  server: '192.168.68.21',  // IP del servidor
   database: 'automatic_emails',
+  port: 1433,
   options: {
-    encrypt: false,
+    encrypt: false,              // Importante para SQL 2008
     trustServerCertificate: true,
+    enableArithAbort: true,
   },
 };
 

@@ -35,7 +35,7 @@ const Home = () => {
   const localizer = dayjsLocalizer(dayjs);
   const email = "juzgado007pasto@ejemplo.com";
 
-  const events = [
+  const [events, setEvents] = useState([
     {
       title: "JUZGADO 007 CIVIL MUNICIPAL DE PASTO",
       email: "juzgado007pasto@ejemplo.com",
@@ -61,7 +61,7 @@ const Home = () => {
       start: new Date(2025, 8, 1, 0, 0),
       end: new Date(2025, 8, 1, 23, 59),
     },
-  ];
+  ]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -111,9 +111,34 @@ const Home = () => {
   };
 
   const handleSaveJuzgado = (juzgado, date) => {
-    // Aquí puedes agregar el juzgado al array de eventos
-    // Ejemplo:
-    // setEvents([...events, { title: juzgado.nombre, email: juzgado.email, start: date, end: date }]);
+    // Crear evento para el calendario
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    setEvents((prevEvents) => [
+      ...prevEvents,
+      {
+        title: juzgado.name,      // Nombre del juzgado
+        email: juzgado.email,     // Email del juzgado
+        start: startOfDay,        // Día completo
+        end: endOfDay,            // Día completo
+      },
+    ]);
+
+    // Si quieres guardar en la base de datos, puedes hacer algo como:
+    /*
+    fetch("http://localhost:5000/api/turnos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        juzgado_id: juzgado.id,
+        turn_date: startOfDay.toISOString().slice(0, 10), // YYYY-MM-DD
+        estado_id: 1, // Por ahora 1
+      }),
+    });
+    */
   };
 
   const dayPropGetter = (date) => {

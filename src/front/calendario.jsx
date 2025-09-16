@@ -9,62 +9,103 @@ dayjs.locale("es");
 
 const Calendary = () => {
   const localizer = dayjsLocalizer(dayjs);
-  const [municipios, setMunicipios] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [juzgados, setJuzgados] = useState([]);
+  const [loadingJuzgados, setLoadingJuzgados] = useState(true);
+  const [errorJuzgados, setErrorJuzgados] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchJuzgados = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/data");
-        if (!response.ok) throw new Error("Error en la API");
+        const response = await fetch("http://localhost:5000/api/juzgados");
+        if (!response.ok) throw new Error("Error en la API de juzgados");
         const data = await response.json();
-        console.log("✅ Datos recibidos:", data);
-        setMunicipios(data);
+        setJuzgados(data);
       } catch (err) {
-        console.error("❌ Error al obtener municipios:", err);
-        setError("No se pudieron cargar los municipios");
+        setErrorJuzgados("No se pudieron cargar los juzgados");
       } finally {
-        setLoading(false);
+        setLoadingJuzgados(false);
       }
     };
-
-    fetchData();
+    fetchJuzgados();
   }, []);
 
   return (
     <div className="calendar-container" style={{ padding: "20px" }}>
-      <h2>Lista de Municipios</h2>
+      <button
+        onClick={() => setShowDialog(true)}
+        style={{ marginBottom: "20px", padding: "10px 20px", fontSize: "16px" }}
+      >
+        Ver Juzgados
+      </button>
 
-      {loading ? (
-        <p>Cargando municipios...</p>
-      ) : error ? (
-        <p style={{ color: "red" }}>{error}</p>
-      ) : (
-        <table border="1" cellPadding="10" style={{ marginBottom: "30px", width: "100%" }}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Fecha de creación</th>
-            </tr>
-          </thead>
-          <tbody>
-            {municipios.length === 0 ? (
-              <tr>
-                <td colSpan="3">No hay municipios para mostrar</td>
-              </tr>
+      {showDialog && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0, left: 0, right: 0, bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 1000
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: "30px",
+              borderRadius: "8px",
+              maxWidth: "90vw",
+              maxHeight: "80vh",
+              overflowY: "auto",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
+            }}
+          >
+            <h2>Lista de Juzgados</h2>
+            <button
+              onClick={() => setShowDialog(false)}
+              style={{
+                position: "absolute",
+                top: 20,
+                right: 30,
+                fontSize: "18px",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer"
+              }}
+              aria-label="Cerrar"
+            >
+              ✖
+            </button>
+            {loadingJuzgados ? (
+              <p>Cargando juzgados...</p>
+            ) : errorJuzgados ? (
+              <p style={{ color: "red" }}>{errorJuzgados}</p>
             ) : (
-              municipios.map((mun) => (
-                <tr key={mun.id}>
-                  <td>{mun.id}</td>
-                  <td>{mun.name}</td>
-                  <td>{new Date(mun.created_at).toLocaleDateString("es-ES")}</td>
-                </tr>
-              ))
+              <table border="1" cellPadding="10" style={{ marginBottom: "30px", width: "100%" }}>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {juzgados.length === 0 ? (
+                    <tr>
+                      <td colSpan="2">No hay juzgados para mostrar</td>
+                    </tr>
+                  ) : (
+                    juzgados.map((juz) => (
+                      <tr key={juz.id}>
+                        <td>{juz.name}</td>
+                        <td>{juz.email}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             )}
-          </tbody>
-        </table>
+          </div>
+        </div>
       )}
 
       <h2>Calendario</h2>

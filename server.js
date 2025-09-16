@@ -2,6 +2,7 @@
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json());
@@ -9,7 +10,7 @@ app.use(cors());
 
 // Configuración SQL Server
 const dbConfig = {
-  user: 'Practicante',
+  user: 'Practicante2',
   password: 'Sistemas1',
   server: '192.168.68.21',
   port: 1433,
@@ -17,6 +18,7 @@ const dbConfig = {
   options: {
     encrypt: false,
     trustServerCertificate: true,
+    enableArithAbort: true, // Añadido para consistencia con juzgados.js
   },
 };
 
@@ -33,7 +35,7 @@ async function connectToDatabase() {
       })
       .catch(err => {
         console.error("❌ Error en la conexión a SQL Server:", err);
-        throw err; // Lanza el error para manejarlo en el endpoint
+        throw err;
       });
     return poolPromise;
   } catch (err) {
@@ -59,6 +61,10 @@ app.get('/api/data', async (req, res) => {
     res.status(500).json({ error: 'Error al conectar o consultar la tabla municipios' });
   }
 });
+
+// Cargar rutas de juzgados y pasar poolPromise
+const juzgadosRoutes = require('./src/backend/juzgados')(poolPromise);
+app.use('/api', juzgadosRoutes);
 
 // Puerto
 const PORT = 5000;
