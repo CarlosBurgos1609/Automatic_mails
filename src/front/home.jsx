@@ -1,29 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Header from "./header";
 import "../styles/styles.scss";
-// import SheetsApi from "../components/sheetsApi";
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import AreaChartInteractive from "../grafics/area";
-// import RadarChartSimple from "../grafics/radar";
 import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
 import RadarChartComponent from "../grafics/radar1";
 import Toast from "../components/Copy";
 import JuzgadoDialog from "../alertsDialogs/date_section/open_juzgado_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/calendar/view_juzgado";
-import ViewExcel from "../excel/ViewExcel";
 import Buttons from "../components/buttons";
 import AddJuzgadoCalendarDialog from "../alertsDialogs/calendar/add_juzgado_calendar";
 import axios from "axios";
 
+// Extiende plugins solo una vez
 dayjs.locale("es");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// Usa el localizer solo una vez
+const localizer = dayjsLocalizer(dayjs);
 
 const Home = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
   const [view, setView] = useState("month");
   const [date, setDate] = useState(new Date());
   const [showToast, setShowToast] = useState(false);
@@ -33,12 +37,10 @@ const Home = () => {
   const [selectedJuzgado, setSelectedJuzgado] = useState(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedSlotDate, setSelectedSlotDate] = useState(null);
-  const localizer = dayjsLocalizer(dayjs);
   const email = "juzgado007pasto@ejemplo.com";
 
-  const [events, setEvents] = useState([]);
   const [juzgados, setJuzgados] = useState([]);
-  const [turnos, setTurnos] = useState([]); // <--- Nuevo estado para turnos
+  const [turnos, setTurnos] = useState([]);
 
   // Cargar juzgados
   useEffect(() => {
@@ -56,18 +58,23 @@ const Home = () => {
       .catch(() => setTurnos([]));
   }, []);
 
-  // Mapear eventos solo cuando ambos estén listos
-  useEffect(() => {
-    if (juzgados.length === 0 || turnos.length === 0) {
-      setEvents([]);
-      return;
-    }
-    const eventos = turnos.map((turno) => {
+  // Memoiza eventos para evitar renders innecesarios
+  const events = useMemo(() => {
+    if (juzgados.length === 0 || turnos.length === 0) return [];
+    return turnos.map((turno) => {
       const juzgado = juzgados.find((j) => j.id === turno.juzgado_id) || {};
-      const start = new Date(turno.turn_date);
-      start.setHours(0, 0, 0, 0);
-      const end = new Date(turno.turn_date);
-      end.setHours(23, 59, 59, 999);
+      const start = dayjs.tz(turno.turn_date, "America/Bogota")
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toDate();
+      const end = dayjs.tz(turno.turn_date, "America/Bogota")
+        .hour(23)
+        .minute(59)
+        .second(59)
+        .millisecond(999)
+        .toDate();
       return {
         title: juzgado.name || "Juzgado",
         email: juzgado.email || "",
@@ -75,8 +82,15 @@ const Home = () => {
         end,
       };
     });
-    setEvents(eventos);
   }, [juzgados, turnos]);
+
+  // Actualiza la hora actual cada 10 segundos (menos renders)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const formatDateTime = (date) => {
     const options = {
@@ -92,7 +106,6 @@ const Home = () => {
   };
 
   const handleSelectSlot = ({ start }) => {
-    // Verifica si hay evento ese día
     const hasEvent = events.some((ev) =>
       dayjs(ev.start).isSame(dayjs(start), "day")
     );
@@ -119,34 +132,8 @@ const Home = () => {
   };
 
   const handleSaveJuzgado = (juzgado, date) => {
-    // Crear evento para el calendario
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    setEvents((prevEvents) => [
-      ...prevEvents,
-      {
-        title: juzgado.name,      // Nombre del juzgado
-        email: juzgado.email,     // Email del juzgado
-        start: startOfDay,        // Día completo
-        end: endOfDay,            // Día completo
-      },
-    ]);
-
-    // Si quieres guardar en la base de datos, puedes hacer algo como:
-    /*
-    fetch("http://localhost:5000/api/turnos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        juzgado_id: juzgado.id,
-        turn_date: startOfDay.toISOString().slice(0, 10), // YYYY-MM-DD
-        estado_id: 1, // Por ahora 1
-      }),
-    });
-    */
+    // Aquí puedes hacer el POST a la API si lo necesitas
+    // Recarga turnos después de guardar si quieres que se refleje en el calendario
   };
 
   const dayPropGetter = (date) => {
@@ -203,7 +190,6 @@ const Home = () => {
             <div className="juzgado ">
               <h1>Juzgado Abierto</h1>
             </div>
-
             <div className="name-juzgado flex-column">
               <h1
                 style={{ cursor: "pointer" }}
@@ -228,9 +214,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-      {/* <div className="sheets-api-container">
-        <SheetsApi />
-      </div> */}
       <div className="linear-divide flex-column">
         <hr />
       </div>
@@ -277,7 +260,6 @@ const Home = () => {
           <AreaChartInteractive />
         </div>
         <div className="other-charts-row flex-row">
-          {/* <RadarChartSimple /> */}
           <PieChartSimple />
           <RadialChartSimple />
           <RadarChartComponent />
@@ -290,9 +272,7 @@ const Home = () => {
         <div className="title">
           <h1>Lista de Juzgados</h1>
         </div>
-        <div className="table-content"> 
-          
-        </div>
+        <div className="table-content"></div>
       </div>
 
       <Toast show={showToast} message={toastMsg} />
