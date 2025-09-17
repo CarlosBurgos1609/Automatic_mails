@@ -95,7 +95,11 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
               </div>
             )}
             <div className="dialog-actions flex-column">
-              <button className="edit-button-full" onClick={handleGuardar}>
+              <button
+                className="edit-button-full"
+                onClick={handleGuardar}
+                disabled={!juzgadoSeleccionado}
+              >
                 Guardar
               </button>
               <button className="close-button-full" onClick={onClose}>

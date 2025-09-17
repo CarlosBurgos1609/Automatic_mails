@@ -116,11 +116,13 @@ const Home = () => {
   };
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(email).then(() => {
-      setToastMsg("¡Se copió con éxito!");
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
-    });
+    if (juzgadoHoy && juzgadoHoy.email) {
+      navigator.clipboard.writeText(juzgadoHoy.email).then(() => {
+        setToastMsg("¡Se copió con éxito!");
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+      });
+    }
   };
 
   const handleSelectEvent = (event) => {
@@ -131,11 +133,41 @@ const Home = () => {
     setShowViewDialog(true);
   };
 
-  const handleSaveJuzgado = (juzgado, date) => {
-    // Aquí puedes hacer el POST a la API si lo necesitas
-    // Recarga turnos después de guardar si quieres que se refleje en el calendario
-  };
+  const handleSaveJuzgado = async (juzgado, date) => {
+    try {
+      if (!juzgado?.id || !date) {
+        console.error('Datos incompletos:', { juzgado, date });
+        setToastMsg('Error: Faltan datos del juzgado o fecha');
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+        return;
+      }
 
+      const turn_date = dayjs(date).format('YYYY-MM-DD');
+      console.log('Enviando datos al backend:', { juzgado_id: juzgado.id, turn_date, estado_id: 1 });
+
+      // Cambia la URL aquí:
+      const response = await axios.post('http://localhost:5000/api/turnos', {
+        juzgado_id: juzgado.id,
+        turn_date,
+        estado_id: 1,
+      });
+
+      console.log('Respuesta del backend:', response.data);
+
+      // Recarga los turnos
+      const res = await axios.get('http://localhost:5000/api/turnos');
+      setTurnos(res.data);
+      setToastMsg('Turno guardado correctamente');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+    } catch (err) {
+      console.error('Error al guardar el turno:', err.response?.data || err.message);
+      setToastMsg(`Error al guardar el turno: ${err.response?.data?.error || err.message}`);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+    }
+  };
   const dayPropGetter = (date) => {
     const isToday = dayjs(date).isSame(dayjs(), "day");
     return {
@@ -170,6 +202,20 @@ const Home = () => {
       localizer.format(end, "DD MMMM YYYY", culture),
   };
 
+  // Encuentra el turno de hoy
+  const turnoHoy = useMemo(() => {
+    const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
+    return turnos.find(t =>
+      dayjs.tz(t.turn_date, "America/Bogota").format('YYYY-MM-DD') === hoy
+    );
+  }, [turnos]);
+
+  // Encuentra el juzgado de turno hoy
+  const juzgadoHoy = useMemo(() => {
+    if (!turnoHoy) return null;
+    return juzgados.find(j => j.id === turnoHoy.juzgado_id);
+  }, [juzgados, turnoHoy]);
+
   return (
     <div className="home-container">
       <Header />
@@ -195,20 +241,22 @@ const Home = () => {
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowDialog(true)}
               >
-                JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO
-                TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA
-                MÚLTIPLE DE PASTO
+                {juzgadoHoy
+                  ? juzgadoHoy.name
+                  : "No hay juzgado de turno hoy"}
               </h1>
               <div className="juzgado-email flex-row">
                 <h2
                   style={{ cursor: "pointer" }}
                   onClick={() => setShowDialog(true)}
                 >
-                  {email}
+                  {juzgadoHoy ? juzgadoHoy.email : ""}
                 </h2>
-                <button className="copy-button" onClick={handleCopyEmail}>
-                  Copiar
-                </button>
+                {juzgadoHoy && (
+                  <button className="copy-button" onClick={handleCopyEmail}>
+                    Copiar
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -276,7 +324,11 @@ const Home = () => {
       </div>
 
       <Toast show={showToast} message={toastMsg} />
-      <JuzgadoDialog open={showDialog} onClose={() => setShowDialog(false)} />
+      <JuzgadoDialog
+        open={showDialog}
+        onClose={() => setShowDialog(false)}
+        juzgadoHoy={juzgadoHoy}
+      />
       <ViewJuzgadoDialog
         open={showViewDialog}
         onClose={() => setShowViewDialog(false)}

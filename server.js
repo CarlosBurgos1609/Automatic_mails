@@ -63,11 +63,15 @@ app.get('/api/data', async (req, res) => {
 });
 
 // Cargar rutas de juzgados y pasar poolPromise
-const juzgadosRouter = require('./src/backend/juzgados')(poolPromise);
+const juzgadosRouter = require('./src/backend/bring_data/juzgados')(poolPromise);
 app.use('/api', juzgadosRouter);
 // ...existing code...
-const turnosRouter = require('./src/backend/turnos')(poolPromise);
+const turnosRouter = require('./src/backend/bring_data/turnos')(poolPromise);
 app.use('/api', turnosRouter);
+// ...existing code...
+// ...existing code...
+const changeTurnsRouter = require('./src/backend/change_data/change_turns')(poolPromise);
+app.use('/api', changeTurnsRouter);
 // ...existing code...
 // Puerto
 const PORT = 5000;
