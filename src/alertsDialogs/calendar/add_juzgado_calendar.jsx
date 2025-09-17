@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Copy from "../../components/Copy"; // Ajusta la ruta si es necesario
 
-export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate }) {
+export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate, showToastMsg }) {
   const [busqueda, setBusqueda] = useState("");
   const [juzgadosData, setJuzgadosData] = useState([]);
   const [juzgadoSeleccionado, setJuzgadoSeleccionado] = useState(null);
@@ -38,14 +38,20 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     }
     setError("");
     onSave(juzgadoSeleccionado, slotDate);
-    setShowCopy(true);
+    showToastMsg("Se guardó correctamente");
     setBusqueda("");
     setJuzgadoSeleccionado(null);
-    // Cierra el alert dialog después de mostrar el mensaje
     setTimeout(() => {
-      setShowCopy(false);
       onClose();
     }, 1500);
+  };
+
+  const handleCopyEmail = () => {
+    if (juzgadoSeleccionado?.email) {
+      navigator.clipboard.writeText(juzgadoSeleccionado.email).then(() => {
+        showToastMsg("¡Se copió con éxito!");
+      });
+    }
   };
 
   if (!open && !showCopy) return null;
@@ -92,6 +98,9 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                 <span>
                   <b>Email:</b> {juzgadoSeleccionado.email}
                 </span>
+                <button onClick={handleCopyEmail} className="copy-email-button">
+                  Copiar Email
+                </button>
               </div>
             )}
             <div className="dialog-actions flex-column">

@@ -41,6 +41,7 @@ const Home = () => {
 
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
+  const [toastMsgs, setToastMsgs] = useState([]);
 
   // Cargar juzgados
   useEffect(() => {
@@ -115,14 +116,12 @@ const Home = () => {
     }
   };
 
-  const handleCopyEmail = () => {
-    if (juzgadoHoy && juzgadoHoy.email) {
-      navigator.clipboard.writeText(juzgadoHoy.email).then(() => {
-        setToastMsg("¡Se copió con éxito!");
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 2000);
-      });
-    }
+  // Nueva función para mostrar mensajes
+  const showToastMsg = (msg) => {
+    setToastMsgs((prev) => [...prev, msg]);
+    setTimeout(() => {
+      setToastMsgs((prev) => prev.slice(1));
+    }, 2000);
   };
 
   const handleSelectEvent = (event) => {
@@ -133,20 +132,27 @@ const Home = () => {
     setShowViewDialog(true);
   };
 
+  // Cambia handleCopyEmail para usar showToastMsg
+  const handleCopyEmail = () => {
+    if (juzgadoHoy && juzgadoHoy.email) {
+      navigator.clipboard.writeText(juzgadoHoy.email).then(() => {
+        showToastMsg("¡Se copió con éxito!");
+      });
+    }
+  };
+
+  // Cambia handleSaveJuzgado para usar showToastMsg
   const handleSaveJuzgado = async (juzgado, date) => {
     try {
       if (!juzgado?.id || !date) {
         console.error('Datos incompletos:', { juzgado, date });
-        setToastMsg('Error: Faltan datos del juzgado o fecha');
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 2000);
+        showToastMsg('Error: Faltan datos del juzgado o fecha');
         return;
       }
 
       const turn_date = dayjs(date).format('YYYY-MM-DD');
       console.log('Enviando datos al backend:', { juzgado_id: juzgado.id, turn_date, estado_id: 1 });
 
-      // Cambia la URL aquí:
       const response = await axios.post('http://localhost:5000/api/turnos', {
         juzgado_id: juzgado.id,
         turn_date,
@@ -155,17 +161,12 @@ const Home = () => {
 
       console.log('Respuesta del backend:', response.data);
 
-      // Recarga los turnos
       const res = await axios.get('http://localhost:5000/api/turnos');
       setTurnos(res.data);
-      setToastMsg('Turno guardado correctamente');
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
+      showToastMsg('Turno guardado correctamente');
     } catch (err) {
       console.error('Error al guardar el turno:', err.response?.data || err.message);
-      setToastMsg(`Error al guardar el turno: ${err.response?.data?.error || err.message}`);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
+      showToastMsg(`Error al guardar el turno: ${err.response?.data?.error || err.message}`);
     }
   };
   const dayPropGetter = (date) => {
@@ -323,22 +324,31 @@ const Home = () => {
         <div className="table-content"></div>
       </div>
 
-      <Toast show={showToast} message={toastMsg} />
+      {/* Toasts en columna */}
+      <div className="toast-container">
+        {toastMsgs.map((msg, idx) => (
+          <Toast key={idx} show={true} message={msg} />
+        ))}
+      </div>
+
       <JuzgadoDialog
         open={showDialog}
         onClose={() => setShowDialog(false)}
         juzgadoHoy={juzgadoHoy}
+        showToastMsg={showToastMsg}
       />
       <ViewJuzgadoDialog
         open={showViewDialog}
         onClose={() => setShowViewDialog(false)}
         juzgado={selectedJuzgado}
+        showToastMsg={showToastMsg}
       />
       <AddJuzgadoCalendarDialog
         open={showAddDialog}
         onClose={() => setShowAddDialog(false)}
         onSave={handleSaveJuzgado}
         slotDate={selectedSlotDate}
+        showToastMsg={showToastMsg}
       />
     </div>
   );
