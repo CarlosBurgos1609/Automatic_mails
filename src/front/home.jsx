@@ -81,6 +81,9 @@ const Home = () => {
         email: juzgado.email || "",
         start,
         end,
+        turno_id: turno.id,           // <--- Agrega el id del turno
+        turn_date: turno.turn_date,   // <--- Agrega la fecha del turno
+        juzgado_id: juzgado.id,       // <--- (opcional) id del juzgado
       };
     });
   }, [juzgados, turnos]);
@@ -128,6 +131,9 @@ const Home = () => {
     setSelectedJuzgado({
       nombre: event.title,
       email: event.email,
+      turno_id: event.turno_id,      // <--- id del turno
+      turn_date: event.turn_date,    // <--- fecha del turno
+      juzgado_id: event.juzgado_id,  // <--- (opcional) id del juzgado
     });
     setShowViewDialog(true);
   };
@@ -216,6 +222,15 @@ const Home = () => {
     if (!turnoHoy) return null;
     return juzgados.find(j => j.id === turnoHoy.juzgado_id);
   }, [juzgados, turnoHoy]);
+
+  const cargarTurnos = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/turnos");
+      setTurnos(res.data);
+    } catch {
+      setTurnos([]);
+    }
+  };
 
   return (
     <div className="home-container">
@@ -339,9 +354,13 @@ const Home = () => {
       />
       <ViewJuzgadoDialog
         open={showViewDialog}
-        onClose={() => setShowViewDialog(false)}
+        onClose={() => {
+          setShowViewDialog(false);
+          setSelectedJuzgado(null); // <--- Limpia el seleccionado
+        }}
         juzgado={selectedJuzgado}
         showToastMsg={showToastMsg}
+        onTurnoEliminado={cargarTurnos}
       />
       <AddJuzgadoCalendarDialog
         open={showAddDialog}

@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Copy from "../../components/Copy";
-import deleteIcon from "../../assets/icons/delete.png"; // Asegúrate de tener este import
+import deleteIcon from "../../assets/icons/delete.png";
 
-export default function ViewJuzgadoDialog({ open, onClose, juzgado }) {
+export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoEliminado, showToastMsg }) {
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open) setLoading(false);
+  }, [open, juzgado]);
+
   const handleCopy = () => {
     if (juzgado?.email) {
       navigator.clipboard.writeText(juzgado.email).then(() => {
@@ -12,6 +19,23 @@ export default function ViewJuzgadoDialog({ open, onClose, juzgado }) {
         setShowToast(true);
         setTimeout(() => setShowToast(false), 2000);
       });
+    }
+  };
+
+  const handleEliminarTurno = async () => {
+    if (!juzgado?.turno_id || !juzgado?.turn_date) {
+      showToastMsg("No se encontró el turno para eliminar.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.delete(`http://localhost:5000/api/turnos/${juzgado.turno_id}/${juzgado.turn_date}`);
+      showToastMsg("Turno eliminado correctamente");
+      if (onTurnoEliminado) await onTurnoEliminado(); // <--- refresca turnos
+      onClose();
+    } catch (err) {
+      showToastMsg("Error al eliminar el turno");
+      setLoading(false);
     }
   };
 
@@ -32,22 +56,15 @@ export default function ViewJuzgadoDialog({ open, onClose, juzgado }) {
             className="edit-button-full"
             onClick={() => alert("Función de cambiar aún no implementada")}
           >
-            Cambiar Turno del Juzgado
+            Cambiar
           </button>
           <button
             className="delete-btn"
-            style={{
-              justifyContent: "center",
-              display: "flex",
-              alignItems: "center",
-            }}
-            onClick={() => alert("Función de eliminar aún no implementada")}
+            style={{ justifyContent: "center", display: "flex", alignItems: "center" }}
+            onClick={handleEliminarTurno}
+            disabled={loading}
           >
-            <img
-              src={deleteIcon}
-              alt="Eliminar"
-              style={{ marginRight: "8px" }}
-            />
+            <img src={deleteIcon} alt="Eliminar" style={{ marginRight: "8px" }} />
             Eliminar Turno del Juzgado
           </button>
           <button className="close-button-full" onClick={onClose}>
