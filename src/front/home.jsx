@@ -17,6 +17,7 @@ import ViewJuzgadoDialog from "../alertsDialogs/calendar/view_juzgado";
 import ViewExcel from "../excel/ViewExcel";
 import Buttons from "../components/buttons";
 import AddJuzgadoCalendarDialog from "../alertsDialogs/calendar/add_juzgado_calendar";
+import axios from "axios";
 
 dayjs.locale("es");
 
@@ -35,40 +36,47 @@ const Home = () => {
   const localizer = dayjsLocalizer(dayjs);
   const email = "juzgado007pasto@ejemplo.com";
 
-  const [events, setEvents] = useState([
-    {
-      title: "JUZGADO 007 CIVIL MUNICIPAL DE PASTO",
-      email: "juzgado007pasto@ejemplo.com",
-      start: new Date(2025, 7, 29, 0, 0),
-      end: new Date(2025, 7, 29, 23, 59),
-    },
-    {
-      title: "JUZGADO 020 CIVIL MUNICIPAL DE PASTO",
-      email: "juzgado020pasto@ejemplo.com",
-      start: new Date(2025, 7, 30, 0, 0),
-      end: new Date(2025, 7, 30, 23, 59),
-    },
-    {
-      title: "JUZGADO 020 CIVIL MUNICIPAL DE PASTO",
-      email: "juzgado020pasto@ejemplo.com",
-      start: new Date(2025, 7, 31, 0, 0),
-      end: new Date(2025, 7, 31, 23, 59),
-    },
-    {
-      title:
-        "JUZGADO 007 CIVIL MUNICIPAL DE PASTO, ACTUALMENTE TRANSFORMADO TRANSITORIAMENTE EN JUZGADO 007 DE PEQUEÑAS CAUSAS Y COMPETENCIA MÚLTIPLE DE PASTO",
-      email: "juzgado007pasto@ejemplo.com",
-      start: new Date(2025, 8, 1, 0, 0),
-      end: new Date(2025, 8, 1, 23, 59),
-    },
-  ]);
+  const [events, setEvents] = useState([]);
+  const [juzgados, setJuzgados] = useState([]);
+  const [turnos, setTurnos] = useState([]); // <--- Nuevo estado para turnos
 
+  // Cargar juzgados
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentDateTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
+    axios
+      .get("http://localhost:5000/api/juzgados")
+      .then((res) => setJuzgados(res.data))
+      .catch(() => setJuzgados([]));
   }, []);
+
+  // Cargar turnos
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/turnos")
+      .then((res) => setTurnos(res.data))
+      .catch(() => setTurnos([]));
+  }, []);
+
+  // Mapear eventos solo cuando ambos estén listos
+  useEffect(() => {
+    if (juzgados.length === 0 || turnos.length === 0) {
+      setEvents([]);
+      return;
+    }
+    const eventos = turnos.map((turno) => {
+      const juzgado = juzgados.find((j) => j.id === turno.juzgado_id) || {};
+      const start = new Date(turno.turn_date);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(turno.turn_date);
+      end.setHours(23, 59, 59, 999);
+      return {
+        title: juzgado.name || "Juzgado",
+        email: juzgado.email || "",
+        start,
+        end,
+      };
+    });
+    setEvents(eventos);
+  }, [juzgados, turnos]);
 
   const formatDateTime = (date) => {
     const options = {
