@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Copy from "../../components/Copy"; // Ajusta la ruta si es necesario
+import dayjs from "dayjs"; // Asegúrate de importar dayjs
 
 export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate, showToastMsg }) {
   const [busqueda, setBusqueda] = useState("");
@@ -54,6 +55,11 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     }
   };
 
+  // Formatea la fecha seleccionada
+  const fechaSeleccionada = slotDate
+    ? dayjs(slotDate).format("dddd, DD [de] MMMM [de] YYYY")
+    : "";
+
   if (!open && !showCopy) return null;
 
   return (
@@ -62,7 +68,12 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
       {open && !showCopy && (
         <div className="alert-dialog-backdrop">
           <div className="alert-dialog add-juzgado-dialog">
-            <h1>Agregar Juzgado</h1>
+            <h1>Agregar turno del juzgado</h1>
+            {fechaSeleccionada && (
+              <div style={{ marginBottom: "1rem", fontWeight: "bold", color: "#003f75" }}>
+                Fecha seleccionada: {fechaSeleccionada}
+              </div>
+            )}
             <div className="input-busqueda">
               <input
                 type="text"
