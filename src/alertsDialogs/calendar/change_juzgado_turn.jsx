@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import dayjs from "dayjs"; // <--- Agrega esto
 
 export default function ChangeJuzgadoTurnDialog({
   open,
@@ -36,6 +37,11 @@ export default function ChangeJuzgadoTurnDialog({
       (j.email && j.email.toLowerCase().includes(busqueda.toLowerCase()))
   );
 
+  // Formatea la fecha seleccionada
+  const fechaSeleccionada = slotDate
+    ? dayjs(slotDate).format("dddd, DD [de] MMMM [de] YYYY")
+    : "";
+
   const handleGuardar = () => {
     if (!nuevoJuzgado) {
       setError("Debe seleccionar un juzgado para el cambio.");
@@ -57,6 +63,17 @@ export default function ChangeJuzgadoTurnDialog({
     <div className="alert-dialog-backdrop">
       <div className="alert-dialog add-juzgado-dialog">
         <h1>Cambiar el turno de juzgado</h1>
+        {fechaSeleccionada && (
+          <div
+            style={{
+              marginBottom: "1rem",
+              fontWeight: "bold",
+              color: "#003f75",
+            }}
+          >
+            Fecha seleccionada: {fechaSeleccionada}
+          </div>
+        )}
         <div className="input-busqueda">
           <input
             type="text"

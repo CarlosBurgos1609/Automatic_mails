@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Copy from "../../components/Copy";
 import deleteIcon from "../../assets/icons/delete.png";
+import dayjs from "dayjs"; // <--- Asegúrate de importar dayjs
 
 export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoEliminado, showToastMsg, onChangeTurn }) {
   const [showToast, setShowToast] = useState(false);
@@ -31,7 +32,7 @@ export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoElimi
     try {
       await axios.delete(`http://localhost:5000/api/turnos/${juzgado.turno_id}/${juzgado.turn_date}`);
       showToastMsg("Turno eliminado correctamente");
-      if (onTurnoEliminado) await onTurnoEliminado(); // <--- refresca turnos
+      if (onTurnoEliminado) await onTurnoEliminado();
       onClose();
     } catch (err) {
       showToastMsg("Error al eliminar el turno");
@@ -39,12 +40,22 @@ export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoElimi
     }
   };
 
+  // Formatea la fecha seleccionada
+  const fechaSeleccionada = juzgado?.turn_date
+    ? dayjs(juzgado.turn_date).format("dddd, DD [de] MMMM [de] YYYY")
+    : "";
+
   if (!open) return null;
 
   return (
     <div className="alert-dialog-backdrop">
       <div className="alert-dialog">
         <h1>{juzgado?.nombre || "Nombre del Juzgado"}</h1>
+        {fechaSeleccionada && (
+          <div style={{ marginBottom: "1rem", fontWeight: "bold", color: "#003f75" }}>
+            Fecha seleccionada: {fechaSeleccionada}
+          </div>
+        )}
         <div className="juzgado-email-row">
           <span>{juzgado?.email || "juzgadoejemplo@correo.com"}</span>
           <button className="copy-button" onClick={handleCopy}>
