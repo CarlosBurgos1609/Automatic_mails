@@ -294,6 +294,12 @@ button:hover {
     max-width: 500px;
   }
 }
+.calendar-loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #003f75;
+  margin: 1rem 0;
+}
 // calendario
 .calendar-container {
   width: 100%;
@@ -897,6 +903,8 @@ button:hover {
   padding: 10px 16px;
   font-size: 16px;
   color: #003f75;
+  word-break: break-word;
+  flex-wrap: wrap;
 }
 
 .dialog-actions {

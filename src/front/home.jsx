@@ -45,6 +45,8 @@ const Home = () => {
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [toastMsgs, setToastMsgs] = useState([]);
+  const [range, setRange] = useState({ start: null, end: null });
+  const [loadingTurnos, setLoadingTurnos] = useState(false);
 
   // Cargar juzgados
   useEffect(() => {
@@ -56,10 +58,17 @@ const Home = () => {
 
   // Cargar turnos
   useEffect(() => {
+    setLoadingTurnos(true);
     axios
       .get("http://localhost:5000/api/turnos")
-      .then((res) => setTurnos(res.data))
-      .catch(() => setTurnos([]));
+      .then((res) => {
+        setTurnos(res.data);
+        setLoadingTurnos(false);
+      })
+      .catch(() => {
+        setTurnos([]);
+        setLoadingTurnos(false);
+      });
   }, []);
 
   // Memoiza eventos para evitar renders innecesarios
@@ -235,6 +244,34 @@ const Home = () => {
     }
   };
 
+  const handleRangeChange = (range) => {
+    // range puede ser un objeto con start y end (react-big-calendar lo provee)
+    setRange({
+      start: dayjs(range.start).format("YYYY-MM-DD"),
+      end: dayjs(range.end).format("YYYY-MM-DD"),
+    });
+  };
+
+  useEffect(() => {
+    if (range.start && range.end) {
+      setLoadingTurnos(true);
+      axios
+        .get("http://localhost:5000/api/turnos", {
+          params: { start: range.start, end: range.end },
+        })
+        .then((res) => setTurnos(res.data))
+        .catch(() => setTurnos([]))
+        .finally(() => setLoadingTurnos(false));
+    }
+  }, [range.start, range.end]);
+
+  useEffect(() => {
+    // Al montar, establece el rango del mes actual
+    const startOfMonth = dayjs().startOf("month").format("YYYY-MM-DD");
+    const endOfMonth = dayjs().endOf("month").format("YYYY-MM-DD");
+    setRange({ start: startOfMonth, end: endOfMonth });
+  }, []);
+
   return (
     <div className="home-container">
       <Header />
@@ -285,6 +322,11 @@ const Home = () => {
         <hr />
       </div>
       <div className="calendar-container">
+        {loadingTurnos && (
+          <div className="calendar-loading">
+            <span>Cargando turnos del mes...</span>
+          </div>
+        )}
         <Calendar
           localizer={localizer}
           events={events}
@@ -299,6 +341,7 @@ const Home = () => {
           selectable={true}
           onSelectSlot={handleSelectSlot}
           onSelectEvent={handleSelectEvent}
+          onRangeChange={handleRangeChange}
           dayPropGetter={dayPropGetter}
           eventPropGetter={eventPropGetter}
           formats={formats}

@@ -42,9 +42,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     showToastMsg("Se guardó correctamente");
     setBusqueda("");
     setJuzgadoSeleccionado(null);
-    setTimeout(() => {
-      onClose();
-    }, 1500);
+    onClose(); // <-- Cierra el diálogo inmediatamente
   };
 
   const handleCopyEmail = () => {

@@ -5,11 +5,19 @@ module.exports = (poolPromise) => {
   router.get('/turnos', async (req, res) => {
     try {
       const pool = await poolPromise;
-      if (!pool) throw new Error('No hay conexión a la base de datos');
-      const result = await pool.request().query(`
+      const { start, end } = req.query;
+      let query = `
         SELECT id, juzgado_id, turn_date, estado_id
         FROM [automatic_emails].[dbo].[turnos]
-      `);
+      `;
+      if (start && end) {
+        query += ` WHERE turn_date BETWEEN @start AND @end`;
+      }
+      const request = pool.request();
+      if (start && end) {
+        request.input('start', start).input('end', end);
+      }
+      const result = await request.query(query);
       res.json(result.recordset);
     } catch (err) {
       console.error('Error al consultar turnos:', err);
