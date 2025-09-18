@@ -18,6 +18,7 @@ import Buttons from "../components/buttons";
 import AddJuzgadoCalendarDialog from "../alertsDialogs/calendar/add_juzgado_calendar";
 import axios from "axios";
 import ChangeJuzgadoTurnDialog from "../alertsDialogs/calendar/change_juzgado_turn";
+import LoadingDialog from "../components/LoadingDialog";
 // ...resto del código...
 // Extiende plugins solo una vez
 dayjs.locale("es");
@@ -322,11 +323,7 @@ const Home = () => {
         <hr />
       </div>
       <div className="calendar-container">
-        {loadingTurnos && (
-          <div className="calendar-loading">
-            <span>Cargando turnos del mes...</span>
-          </div>
-        )}
+        <LoadingDialog open={loadingTurnos} message="Cargando turnos del mes..." />
         <Calendar
           localizer={localizer}
           events={events}
