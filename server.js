@@ -75,7 +75,8 @@ app.use('/api', changeTurnsRouter);
 // Eliminar datos en la base de datos
 const deleteJuzgadoTurnRouter = require('./src/backend/delete_data/delete_juzgado_turn')(poolPromise);
 app.use('/api', deleteJuzgadoTurnRouter);
-
+const changeTurnRouter = require('./src/backend/change_data/change_turn')(poolPromise);
+app.use('/api', changeTurnRouter);
 // Puerto
 const PORT = 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

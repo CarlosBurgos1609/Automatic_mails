@@ -3,7 +3,7 @@ import axios from "axios";
 import Copy from "../../components/Copy";
 import deleteIcon from "../../assets/icons/delete.png";
 
-export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoEliminado, showToastMsg }) {
+export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoEliminado, showToastMsg, onChangeTurn }) {
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,9 +54,9 @@ export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoElimi
         <div className="dialog-actions-vertical">
           <button
             className="edit-button-full"
-            onClick={() => alert("Función de cambiar aún no implementada")}
+            onClick={() => onChangeTurn(juzgado)}
           >
-            Cambiar
+            Cambiar Juzgado de Turno
           </button>
           <button
             className="delete-btn"

@@ -17,7 +17,8 @@ import ViewJuzgadoDialog from "../alertsDialogs/calendar/view_juzgado";
 import Buttons from "../components/buttons";
 import AddJuzgadoCalendarDialog from "../alertsDialogs/calendar/add_juzgado_calendar";
 import axios from "axios";
-
+import ChangeJuzgadoTurnDialog from "../alertsDialogs/calendar/change_juzgado_turn";
+// ...resto del código...
 // Extiende plugins solo una vez
 dayjs.locale("es");
 dayjs.extend(utc);
@@ -37,6 +38,8 @@ const Home = () => {
   const [selectedJuzgado, setSelectedJuzgado] = useState(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedSlotDate, setSelectedSlotDate] = useState(null);
+  const [showChangeDialog, setShowChangeDialog] = useState(false);
+  const [changeTurnData, setChangeTurnData] = useState(null);
   const email = "juzgado007pasto@ejemplo.com";
 
   const [juzgados, setJuzgados] = useState([]);
@@ -356,17 +359,47 @@ const Home = () => {
         open={showViewDialog}
         onClose={() => {
           setShowViewDialog(false);
-          setSelectedJuzgado(null); // <--- Limpia el seleccionado
+          setSelectedJuzgado(null);
         }}
         juzgado={selectedJuzgado}
         showToastMsg={showToastMsg}
         onTurnoEliminado={cargarTurnos}
+        onChangeTurn={(juzgado) => {
+          setChangeTurnData(juzgado);
+          setShowViewDialog(false);
+          setShowChangeDialog(true);
+        }}
       />
       <AddJuzgadoCalendarDialog
         open={showAddDialog}
         onClose={() => setShowAddDialog(false)}
         onSave={handleSaveJuzgado}
         slotDate={selectedSlotDate}
+        showToastMsg={showToastMsg}
+      />
+      <ChangeJuzgadoTurnDialog
+        open={showChangeDialog}
+        onClose={() => setShowChangeDialog(false)}
+        onChange={async (nuevoJuzgado, slotDate) => {
+          // Aquí va la lógica para cambiar el turno en el backend
+          try {
+            await axios.put(`http://localhost:5000/api/turnos/${changeTurnData.turno_id}`, {
+              nuevo_juzgado_id: nuevoJuzgado.id,
+              turn_date: changeTurnData.turn_date,
+            });
+            showToastMsg("Turno cambiado correctamente");
+            setShowChangeDialog(false);
+            cargarTurnos();
+          } catch (err) {
+            showToastMsg("Error al cambiar el turno");
+          }
+        }}
+        slotDate={changeTurnData?.turn_date}
+        currentJuzgado={changeTurnData && {
+          name: changeTurnData.nombre,
+          email: changeTurnData.email,
+          id: changeTurnData.juzgado_id,
+        }}
         showToastMsg={showToastMsg}
       />
     </div>
