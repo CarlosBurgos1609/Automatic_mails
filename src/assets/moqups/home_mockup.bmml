@@ -1,0 +1,325 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1200" measuredH="2400" mockupW="1200" mockupH="2400">
+  <controls>
+    <!-- Header -->
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="1200" h="90" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>3355443</color>
+      </controlProperties>
+    </control>
+    
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Image" x="20" y="20" w="50" h="50" measuredW="77" measuredH="79" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./assets/images/consejo.png</src>
+        <text>Logo Consejo</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="80" y="30" w="300" h="30" measuredW="250" measuredH="25" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Consejo Superior de la Judicatura</text>
+        <color>16777215</color>
+        <size>16</size>
+        <bold>true</bold>
+      </controlProperties>
+    </control>
+
+    <!-- Título Principal -->
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Title" x="20" y="120" w="1160" h="40" measuredW="500" measuredH="43" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Automatización de Correos Electrónicos</text>
+        <align>center</align>
+        <size>28</size>
+      </controlProperties>
+    </control>
+
+    <!-- Sección Fecha y Juzgado -->
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::FieldSet" x="20" y="180" w="560" h="120" measuredW="200" measuredH="170" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Fecha y Hora Actual</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="40" y="220" w="520" h="60" measuredW="400" measuredH="25" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>jueves, 19 de septiembre de 2025, 14:30:45</text>
+        <size>18</size>
+        <align>center</align>
+      </controlProperties>
+    </control>
+
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::FieldSet" x="620" y="180" w="560" h="120" measuredW="200" measuredH="170" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Juzgado Abierto</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Button" x="640" y="220" w="300" h="30" measuredW="250" measuredH="27" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Juzgado 007 de Pasto</text>
+        <color>11184810</color>
+      </controlProperties>
+    </control>
+    
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Label" x="640" y="255" w="200" h="25" measuredW="180" measuredH="21" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>juzgado007@ejemplo.com</text>
+        <size>12</size>
+      </controlProperties>
+    </control>
+    
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::Button" x="850" y="255" w="80" h="25" measuredW="60" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Copiar</text>
+        <size>11</size>
+      </controlProperties>
+    </control>
+
+    <!-- Línea divisoria -->
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::HRule" x="20" y="320" w="1160" h="-1" measuredW="100" measuredH="10" zOrder="10" locked="false" isInGroup="-1"/>
+
+    <!-- Calendario -->
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::FieldSet" x="20" y="340" w="1160" h="600" measuredW="200" measuredH="170" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Calendario de Turnos</text>
+      </controlProperties>
+    </control>
+    
+    <!-- Navegación del calendario -->
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::Button" x="40" y="370" w="80" h="30" measuredW="70" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Anterior</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::Label" x="500" y="370" w="200" h="30" measuredW="150" measuredH="25" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Septiembre 2025</text>
+        <size>18</size>
+        <bold>true</bold>
+        <align>center</align>
+      </controlProperties>
+    </control>
+    
+    <control controlID="15" controlTypeID="com.balsamiq.mockups::Button" x="1080" y="370" w="80" h="30" measuredW="70" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Siguiente</text>
+      </controlProperties>
+    </control>
+    
+    <!-- Botones de vista -->
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::ButtonBar" x="400" y="370" w="200" h="30" measuredW="200" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Mes, Semana, Día</text>
+        <selectedIndex>0</selectedIndex>
+      </controlProperties>
+    </control>
+    
+    <!-- Grid del calendario (simplificado) -->
+    <control controlID="17" controlTypeID="com.balsamiq.mockups::DataGrid" x="40" y="420" w="1120" h="500" measuredW="300" measuredH="200" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Dom, Lun, Mar, Mié, Jue, Vie, Sáb
+1, 2, 3, 4, 5, 6, 7
+8, 9, 10, 11, 12, 13, 14
+15, 16, 17 {color:green}Juzgado 001{color}, 18, 19 {color:green}Juzgado 007{color}, 20, 21
+22, 23, 24 {color:green}Juzgado 003{color}, 25, 26 {color:green}Juzgado 002{color}, 27, 28
+29, 30, , , , , </text>
+        <rowHeight>70</rowHeight>
+        <hasHeader>true</hasHeader>
+      </controlProperties>
+    </control>
+
+    <!-- Botones de descarga -->
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::FieldSet" x="20" y="960" w="1160" h="80" measuredW="200" measuredH="170" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Descargas</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="19" controlTypeID="com.balsamiq.mockups::Button" x="50" y="990" w="120" h="40" measuredW="100" measuredH="27" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>📄 PDF</text>
+        <color>16776960</color>
+      </controlProperties>
+    </control>
+    
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::Button" x="190" y="990" w="120" h="40" measuredW="100" measuredH="27" zOrder="19" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>📊 Excel</text>
+        <color>5817600</color>
+      </controlProperties>
+    </control>
+    
+    <control controlID="21" controlTypeID="com.balsamiq.mockups::Button" x="330" y="990" w="120" h="40" measuredW="100" measuredH="27" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>📤 Compartir</text>
+        <color>10066329</color>
+      </controlProperties>
+    </control>
+
+    <!-- Línea divisoria -->
+    <control controlID="22" controlTypeID="com.balsamiq.mockups::HRule" x="20" y="1060" w="1160" h="-1" measuredW="100" measuredH="10" zOrder="21" locked="false" isInGroup="-1"/>
+
+    <!-- Sección de Gráficas -->
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::Title" x="20" y="1080" w="1160" h="40" measuredW="150" measuredH="43" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Gráficas</text>
+        <align>center</align>
+        <size>24</size>
+      </controlProperties>
+    </control>
+    
+    <!-- Gráfica de área (grande) -->
+    <control controlID="24" controlTypeID="com.balsamiq.mockups::LineChart" x="20" y="1130" w="1160" h="300" measuredW="300" measuredH="200" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Turnos por Mes
+Ene, Feb, Mar, Abr, May, Jun
+15, 22, 18, 25, 30, 28</text>
+      </controlProperties>
+    </control>
+    
+    <!-- Gráficas pequeñas -->
+    <control controlID="25" controlTypeID="com.balsamiq.mockups::PieChart" x="20" y="1450" w="280" h="200" measuredW="200" measuredH="200" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Juzgados Activos
+Juzgado 1, 25%
+Juzgado 2, 30%
+Juzgado 3, 20%
+Otros, 25%</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="26" controlTypeID="com.balsamiq.mockups::BarChart" x="320" y="1450" w="280" h="200" measuredW="200" measuredH="200" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Turnos Semanales
+Lun, Mar, Mié, Jue, Vie
+5, 8, 6, 7, 9</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="27" controlTypeID="com.balsamiq.mockups::LineChart" x="620" y="1450" w="280" h="200" measuredW="300" measuredH="200" zOrder="26" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Tendencia Mensual
+Q1, Q2, Q3, Q4
+100, 120, 115, 130</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="28" controlTypeID="com.balsamiq.mockups::PieChart" x="920" y="1450" w="280" h="200" measuredW="200" measuredH="200" zOrder="27" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Estados de Turno
+Activo, 60%
+Pendiente, 25%
+Completado, 15%</text>
+      </controlProperties>
+    </control>
+
+    <!-- Línea divisoria -->
+    <control controlID="29" controlTypeID="com.balsamiq.mockups::HRule" x="20" y="1670" w="1160" h="-1" measuredW="100" measuredH="10" zOrder="28" locked="false" isInGroup="-1"/>
+
+    <!-- Tabla de Juzgados -->
+    <control controlID="30" controlTypeID="com.balsamiq.mockups::Title" x="20" y="1690" w="1160" h="40" measuredW="200" measuredH="43" zOrder="29" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Lista de Juzgados</text>
+        <align>center</align>
+        <size>24</size>
+      </controlProperties>
+    </control>
+    
+    <control controlID="31" controlTypeID="com.balsamiq.mockups::DataGrid" x="20" y="1740" w="1160" h="300" measuredW="600" measuredH="200" zOrder="30" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>ID, Nombre del Juzgado, Email, Estado, Acciones
+001, Juzgado 001 Pasto, juzgado001@email.com, Activo, [Editar] [Eliminar]
+002, Juzgado 002 Pasto, juzgado002@email.com, Activo, [Editar] [Eliminar]
+003, Juzgado 003 Pasto, juzgado003@email.com, Inactivo, [Editar] [Eliminar]
+007, Juzgado 007 Pasto, juzgado007@email.com, Activo, [Editar] [Eliminar]
+008, Juzgado 008 Pasto, juzgado008@email.com, Activo, [Editar] [Eliminar]</text>
+        <hasHeader>true</hasHeader>
+      </controlProperties>
+    </control>
+
+    <!-- Dialogo Modal (ejemplo) -->
+    <control controlID="32" controlTypeID="com.balsamiq.mockups::TitleWindow" x="400" y="500" w="400" h="300" measuredW="450" measuredH="400" zOrder="31" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Agregar turno del juzgado</text>
+        <close>true</close>
+      </controlProperties>
+    </control>
+    
+    <control controlID="33" controlTypeID="com.balsamiq.mockups::Label" x="420" y="540" w="360" h="25" measuredW="200" measuredH="21" zOrder="32" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Fecha seleccionada: martes, 17 de septiembre de 2025</text>
+        <bold>true</bold>
+        <color>3355443</color>
+      </controlProperties>
+    </control>
+    
+    <control controlID="34" controlTypeID="com.balsamiq.mockups::SearchBox" x="420" y="580" w="360" h="30" measuredW="120" measuredH="25" zOrder="33" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Buscar juzgado por nombre o email...</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="35" controlTypeID="com.balsamiq.mockups::ComboBox" x="420" y="620" w="360" h="30" measuredW="200" measuredH="25" zOrder="34" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Seleccione un juzgado...
+Juzgado 001 Pasto
+Juzgado 002 Pasto
+Juzgado 003 Pasto</text>
+      </controlProperties>
+    </control>
+    
+    <control controlID="36" controlTypeID="com.balsamiq.mockups::Label" x="420" y="660" w="360" h="25" measuredW="150" measuredH="21" zOrder="35" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Email: juzgado001@email.com</text>
+        <bold>true</bold>
+      </controlProperties>
+    </control>
+    
+    <control controlID="37" controlTypeID="com.balsamiq.mockups::Button" x="420" y="720" w="170" h="35" measuredW="70" measuredH="27" zOrder="36" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Guardar</text>
+        <color>5817600</color>
+      </controlProperties>
+    </control>
+    
+    <control controlID="38" controlTypeID="com.balsamiq.mockups::Button" x="610" y="720" w="170" h="35" measuredW="60" measuredH="27" zOrder="37" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cerrar</text>
+        <color>13421772</color>
+      </controlProperties>
+    </control>
+
+    <!-- Toast/Notificación -->
+    <control controlID="39" controlTypeID="com.balsamiq.mockups::CallOut" x="900" y="2100" w="250" h="50" measuredW="150" measuredH="39" zOrder="38" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>¡Se guardó correctamente!</text>
+        <color>5817600</color>
+      </controlProperties>
+    </control>
+
+    <!-- Loading Dialog -->
+    <control controlID="40" controlTypeID="com.balsamiq.mockups::TitleWindow" x="450" y="800" w="300" h="200" measuredW="450" measuredH="400" zOrder="39" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cargando...</text>
+        <close>false</close>
+      </controlProperties>
+    </control>
+    
+    <control controlID="41" controlTypeID="com.balsamiq.mockups::Icon" x="550" y="850" w="100" h="100" measuredW="32" measuredH="32" zOrder="40" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>RefreshIcon%7Cmedium</icon>
+        <color>3355443</color>
+      </controlProperties>
+    </control>
+    
+    <control controlID="42" controlTypeID="com.balsamiq.mockups::Label" x="470" y="960" w="260" h="25" measuredW="180" measuredH="21" zOrder="41" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cargando turnos del mes...</text>
+        <align>center</align>
+        <bold>true</bold>
+        <color>3355443</color>
+      </controlProperties>
+    </control>
+
+  </controls>
+</mockup>

@@ -77,6 +77,11 @@ const deleteJuzgadoTurnRouter = require('./src/backend/delete_data/delete_juzgad
 app.use('/api', deleteJuzgadoTurnRouter);
 const changeTurnRouter = require('./src/backend/change_data/change_turn')(poolPromise);
 app.use('/api', changeTurnRouter);
+
+// ...existing code...
+const insertJuzgadoRouter = require('./src/backend/insert_data/insert_juzgado')(poolPromise);
+app.use('/api', insertJuzgadoRouter);
+// ...existing code...
 // Puerto
 const PORT = 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
