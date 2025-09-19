@@ -19,7 +19,6 @@ import AddJuzgadoCalendarDialog from "../alertsDialogs/calendar/add_juzgado_cale
 import axios from "axios";
 import ChangeJuzgadoTurnDialog from "../alertsDialogs/calendar/change_juzgado_turn";
 import LoadingDialog from "../components/LoadingDialog";
-import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 // ...resto del código...
 // Extiende plugins solo una vez
 dayjs.locale("es");
@@ -163,23 +162,31 @@ const Home = () => {
   };
 
   // Cambia handleSaveJuzgado para usar showToastMsg
-  const handleSaveJuzgado = async (nuevoJuzgado) => {
+  const handleSaveJuzgado = async (juzgado, date) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/juzgados', {
-        code: nuevoJuzgado.codigo,
-        name: nuevoJuzgado.nombre,
-        email: nuevoJuzgado.correo,
-        municipio_id: 1, // Cambia esto por el ID real del municipio/departamento
+      if (!juzgado?.id || !date) {
+        console.error('Datos incompletos:', { juzgado, date });
+        showToastMsg('Error: Faltan datos del juzgado o fecha');
+        return;
+      }
+
+      const turn_date = dayjs(date).format('YYYY-MM-DD');
+      console.log('Enviando datos al backend:', { juzgado_id: juzgado.id, turn_date, estado_id: 1 });
+
+      const response = await axios.post('http://localhost:5000/api/turnos', {
+        juzgado_id: juzgado.id,
+        turn_date,
+        estado_id: 1,
       });
 
-      showToastMsg('Juzgado creado correctamente');
-      
-      // Recargar la lista de juzgados
-      const res = await axios.get("http://localhost:5000/api/juzgados");
-      setJuzgados(res.data);
+      console.log('Respuesta del backend:', response.data);
+
+      const res = await axios.get('http://localhost:5000/api/turnos');
+      setTurnos(res.data);
+      showToastMsg('Turno guardado correctamente');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Error al crear el juzgado';
-      showToastMsg(errorMsg);
+      console.error('Error al guardar el turno:', err.response?.data || err.message);
+      showToastMsg(`Error al guardar el turno: ${err.response?.data?.error || err.message}`);
     }
   };
   const dayPropGetter = (date) => {
@@ -373,17 +380,7 @@ const Home = () => {
         <div className="title">
           <h1>Lista de Juzgados</h1>
         </div>
-        <div className="table-actions">
-          <button 
-            className="add-button"
-            onClick={() => setShowAddJuzgadoDialog(true)}
-          >
-            + Agregar Juzgado
-          </button>
-        </div>
-        <div className="table-content">
-          {/* Aquí va tu tabla de juzgados */}
-        </div>
+        <div className="table-content"></div>
       </div>
 
       {/* Toasts en columna */}
@@ -445,11 +442,6 @@ const Home = () => {
           id: changeTurnData.juzgado_id,
         }}
         showToastMsg={showToastMsg}
-      />
-      <AddJuzgadoDialog
-        open={showAddJuzgadoDialog}
-        onClose={() => setShowAddJuzgadoDialog(false)}
-        onSave={handleSaveJuzgado}
       />
     </div>
   );
