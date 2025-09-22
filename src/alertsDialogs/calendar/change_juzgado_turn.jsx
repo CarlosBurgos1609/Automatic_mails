@@ -36,12 +36,11 @@ export default function ChangeJuzgadoTurnDialog({
       j.name.toLowerCase().includes(busqueda.toLowerCase()) ||
       (j.email && j.email.toLowerCase().includes(busqueda.toLowerCase()))
   );
-
-  // Formatea la fecha seleccionada
+  // Formatea la fecha seleccionada agregando un día
   const fechaSeleccionada = slotDate
-    ? dayjs(slotDate).format("dddd, DD [de] MMMM [de] YYYY")
+    ? dayjs(slotDate).add(1, 'day').format("dddd, DD [de] MMMM [de] YYYY")
     : "";
-
+ 
   const handleGuardar = () => {
     if (!nuevoJuzgado) {
       setError("Debe seleccionar un juzgado para el cambio.");

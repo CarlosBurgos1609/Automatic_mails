@@ -40,9 +40,9 @@ export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoElimi
     }
   };
 
-  // Formatea la fecha seleccionada
+  // Formatea la fecha seleccionada (corrige desfase de zona horaria)
   const fechaSeleccionada = juzgado?.turn_date
-    ? dayjs(juzgado.turn_date).format("dddd, DD [de] MMMM [de] YYYY")
+    ? dayjs(juzgado.turn_date).add(1, 'day').format("dddd, DD [de] MMMM [de] YYYY")
     : "";
 
   if (!open) return null;
