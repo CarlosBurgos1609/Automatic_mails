@@ -19,6 +19,7 @@ import AddJuzgadoCalendarDialog from "../alertsDialogs/calendar/add_juzgado_cale
 import axios from "axios";
 import ChangeJuzgadoTurnDialog from "../alertsDialogs/calendar/change_juzgado_turn";
 import LoadingDialog from "../components/LoadingDialog";
+import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 // ...resto del código...
 // Extiende plugins solo una vez
 dayjs.locale("es");
@@ -216,18 +217,8 @@ const Home = () => {
 
       console.log("Respuesta del backend:", response.data);
 
-      // Recargar tanto los turnos del calendario como los de hoy
-      const res = await axios.get("http://localhost:5000/api/turnos");
-      setTurnos(res.data);
-
-      // Si la fecha guardada es hoy, actualizar también todayTurnos
-      const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
-      if (turn_date === hoy) {
-        const resHoy = await axios.get("http://localhost:5000/api/turnos", {
-          params: { start: hoy, end: hoy },
-        });
-        setTodayTurnos(resHoy.data);
-      }
+      // Recargar tanto juzgados como turnos
+      await recargarDatos();
 
       showToastMsg("Turno guardado correctamente");
     } catch (err) {
@@ -276,6 +267,18 @@ const Home = () => {
     return juzgados.find((j) => j.id === turnoHoy.juzgado_id);
   }, [juzgados, turnoHoy]);
 
+  // Función para recargar juzgados
+  const cargarJuzgados = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/juzgados");
+      setJuzgados(res.data);
+    } catch (error) {
+      console.error("Error al cargar juzgados:", error);
+      setJuzgados([]);
+    }
+  };
+
+  // Función mejorada para recargar turnos
   const cargarTurnos = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/turnos");
@@ -292,6 +295,12 @@ const Home = () => {
       setTodayTurnos([]);
     }
   };
+
+  // Función combinada para recargar todos los datos
+  const recargarDatos = async () => {
+    await Promise.all([cargarJuzgados(), cargarTurnos()]);
+  };
+
   // Encuentra el turno del día seleccionado (en la vista actual)
   const turnoDiaSeleccionado = useMemo(() => {
     // Si la vista es "month", muestra el turno de hoy (ya manejado por turnoHoy/juzgadoHoy)
@@ -522,23 +531,8 @@ const Home = () => {
             showToastMsg("Turno cambiado correctamente");
             setShowChangeDialog(false);
 
-            // Recargar turnos del calendario
-            cargarTurnos();
-
-            // Si el turno cambiado es de hoy, actualizar también todayTurnos
-            const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
-            const turnDate = dayjs(changeTurnData.turn_date)
-              .tz("America/Bogota")
-              .format("YYYY-MM-DD");
-            if (turnDate === hoy) {
-              const resHoy = await axios.get(
-                "http://localhost:5000/api/turnos",
-                {
-                  params: { start: hoy, end: hoy },
-                }
-              );
-              setTodayTurnos(resHoy.data);
-            }
+            // Recargar todos los datos
+            await recargarDatos();
           } catch (err) {
             showToastMsg("Error al cambiar el turno");
           }
@@ -552,6 +546,11 @@ const Home = () => {
           }
         }
         showToastMsg={showToastMsg}
+      />
+      <AddJuzgadoDialog
+        open={showAddJuzgadoDialog}
+        onClose={() => setShowAddJuzgadoDialog(false)}
+        onSave={recargarDatos} // Pasa la función que recarga tanto juzgados como turnos
       />
     </div>
   );

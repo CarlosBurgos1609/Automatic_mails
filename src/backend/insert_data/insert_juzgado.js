@@ -5,13 +5,18 @@ const router = express.Router();
 module.exports = (poolPromise) => {
   // Insertar un nuevo juzgado
   router.post('/juzgados', async (req, res) => {
-    const { code, name, email, municipio_id } = req.body;
+    let { code, name, email, municipio_id } = req.body;
     
     if (!code || !name || !email || !municipio_id) {
       return res.status(400).json({ 
         error: 'Faltan campos obligatorios: code, name, email, municipio_id' 
       });
     }
+
+    // Asegurar el formato correcto en el backend también
+    code = code.toString().toUpperCase().trim();
+    name = name.toString().toUpperCase().trim();
+    email = email.toString().toLowerCase().trim();
 
     // Validar formato de email
     if (!email.includes('@')) {
@@ -54,7 +59,7 @@ module.exports = (poolPromise) => {
       res.status(201).json({ 
         success: true, 
         message: 'Juzgado creado correctamente',
-        id: result.recordset?.insertId || null
+        data: { code, name, email, municipio_id }
       });
     } catch (err) {
       console.error('Error al insertar juzgado:', err);
