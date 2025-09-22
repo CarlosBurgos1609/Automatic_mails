@@ -58,6 +58,7 @@ const Home = () => {
 
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
+  const [todayTurnos, setTodayTurnos] = useState([]); // Nuevo estado para turnos de hoy
   const [toastMsgs, setToastMsgs] = useState([]);
   const [range, setRange] = useState({ start: null, end: null });
   const [loadingTurnos, setLoadingTurnos] = useState(false);
@@ -70,7 +71,24 @@ const Home = () => {
       .catch(() => setJuzgados([]));
   }, []);
 
-  // Cargar turnos
+  // Cargar turnos de hoy (independiente del filtro del calendario)
+  useEffect(() => {
+    const cargarTurnosHoy = async () => {
+      try {
+        const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
+        const res = await axios.get("http://localhost:5000/api/turnos", {
+          params: { start: hoy, end: hoy },
+        });
+        setTodayTurnos(res.data);
+      } catch {
+        setTodayTurnos([]);
+      }
+    };
+
+    cargarTurnosHoy();
+  }, []); // Solo se ejecuta al montar el componente
+
+  // Cargar turnos iniciales
   useEffect(() => {
     setLoadingTurnos(true);
     axios
@@ -114,7 +132,7 @@ const Home = () => {
     });
   }, [juzgados, turnos]);
 
-  // Actualiza la hora actual cada 10 segundos (menos renders)
+  // Actualiza la hora currentDateTime cada 10 segundos (menos renders)
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentDateTime(new Date());
@@ -193,8 +211,19 @@ const Home = () => {
 
       console.log('Respuesta del backend:', response.data);
 
+      // Recargar tanto los turnos del calendario como los de hoy
       const res = await axios.get('http://localhost:5000/api/turnos');
       setTurnos(res.data);
+      
+      // Si la fecha guardada es hoy, actualizar también todayTurnos
+      const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
+      if (turn_date === hoy) {
+        const resHoy = await axios.get("http://localhost:5000/api/turnos", {
+          params: { start: hoy, end: hoy },
+        });
+        setTodayTurnos(resHoy.data);
+      }
+      
       showToastMsg('Turno guardado correctamente');
     } catch (err) {
       console.error('Error al guardar el turno:', err.response?.data || err.message);
@@ -222,13 +251,13 @@ const Home = () => {
     };
   };
 
-  // Encuentra el turno de hoy
+  // Encuentra el turno de hoy (basado en todayTurnos, no en turnos)
   const turnoHoy = useMemo(() => {
     const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
-    return turnos.find(t =>
+    return todayTurnos.find(t =>
       dayjs.tz(t.turn_date, "America/Bogota").format('YYYY-MM-DD') === hoy
     );
-  }, [turnos]);
+  }, [todayTurnos]); // Cambiar dependencia de turnos a todayTurnos
 
   // Encuentra el juzgado de turno hoy
   const juzgadoHoy = useMemo(() => {
@@ -240,8 +269,16 @@ const Home = () => {
     try {
       const res = await axios.get("http://localhost:5000/api/turnos");
       setTurnos(res.data);
+      
+      // Actualizar también los turnos de hoy
+      const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
+      const resHoy = await axios.get("http://localhost:5000/api/turnos", {
+        params: { start: hoy, end: hoy },
+      });
+      setTodayTurnos(resHoy.data);
     } catch {
       setTurnos([]);
+      setTodayTurnos([]);
     }
   };
 
@@ -421,7 +458,6 @@ const Home = () => {
         open={showChangeDialog}
         onClose={() => setShowChangeDialog(false)}
         onChange={async (nuevoJuzgado, slotDate) => {
-          // Aquí va la lógica para cambiar el turno en el backend
           try {
             await axios.put(`http://localhost:5000/api/turnos/${changeTurnData.turno_id}`, {
               nuevo_juzgado_id: nuevoJuzgado.id,
@@ -429,7 +465,19 @@ const Home = () => {
             });
             showToastMsg("Turno cambiado correctamente");
             setShowChangeDialog(false);
+            
+            // Recargar turnos del calendario
             cargarTurnos();
+            
+            // Si el turno cambiado es de hoy, actualizar también todayTurnos
+            const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
+            const turnDate = dayjs(changeTurnData.turn_date).tz("America/Bogota").format('YYYY-MM-DD');
+            if (turnDate === hoy) {
+              const resHoy = await axios.get("http://localhost:5000/api/turnos", {
+                params: { start: hoy, end: hoy },
+              });
+              setTodayTurnos(resHoy.data);
+            }
           } catch (err) {
             showToastMsg("Error al cambiar el turno");
           }

@@ -633,10 +633,13 @@ button:hover {
     // Ocultar COMPLETAMENTE eventos/juzgados en días de otros meses
     .rbc-event,
     .rbc-event-content,
-    .rbc-show-more {
+    .rbc-show-more,
+    .rbc-event-container,
+    .rbc-addons-dnd-resize-anchor {
       display: none !important;
       visibility: hidden !important;
       opacity: 0 !important;
+      pointer-events: none !important;
     }
 
     // Cualquier otro contenido también debe ser gris y no interactivo
@@ -662,6 +665,33 @@ button:hover {
     }
   }
 
+  // Selector más específico para eventos dentro de días fuera del mes
+  .rbc-month-view .rbc-month-row .rbc-date-cell.rbc-off-range,
+  .rbc-month-view .rbc-month-row .rbc-date-cell.rbc-off-range *,
+  .rbc-month-view .rbc-row .rbc-date-cell.rbc-off-range,
+  .rbc-month-view .rbc-row .rbc-date-cell.rbc-off-range * {
+    pointer-events: none !important;
+    cursor: default !important;
+    
+    .rbc-event,
+    .rbc-event-content {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+  }
+
+  // Ocultar eventos que aparecen en días fuera del mes
+  .rbc-month-view .rbc-row:has(.rbc-off-range) .rbc-event,
+  .rbc-month-view .rbc-month-row:has(.rbc-off-range) .rbc-event {
+    &[style*="left"],
+    &[style*="width"] {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+  }
+
   // Eliminar TODOS los hover effects para días fuera del mes
   .rbc-off-range:hover,
   .rbc-off-range-bg:hover,
@@ -683,18 +713,6 @@ button:hover {
       color: #999 !important;
       background-color: transparent !important;
       background: transparent !important;
-    }
-  }
-
-  // Asegurar que en días fuera del mes NO se vean eventos aunque sean fin de semana
-  .rbc-off-range,
-  .rbc-off-range-bg {
-    .rbc-event-container,
-    .rbc-event-content,
-    .rbc-addons-dnd-resize-anchor {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
     }
   }
 }
