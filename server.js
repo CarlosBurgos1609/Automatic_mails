@@ -18,7 +18,7 @@ const dbConfig = {
   options: {
     encrypt: false,
     trustServerCertificate: true,
-    enableArithAbort: true, // Añadido para consistencia con juzgados.js
+    enableArithAbort: true,
   },
 };
 
@@ -47,7 +47,7 @@ async function connectToDatabase() {
 // Inicializa la conexión al iniciar el servidor
 connectToDatabase();
 
-// Endpoint API
+// Endpoint API básico
 app.get('/api/data', async (req, res) => {
   try {
     const pool = await poolPromise;
@@ -62,28 +62,61 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
-// Visualizar los datos de la base de datos
+// === ROUTERS PARA OBTENER DATOS ===
 const juzgadosRouter = require('./src/backend/bring_data/juzgados')(poolPromise);
 app.use('/api', juzgadosRouter);
+
 const turnosRouter = require('./src/backend/bring_data/turnos')(poolPromise);
 app.use('/api', turnosRouter);
 
-// Insertar datos en la base de datos
+const municipiosRouter = require('./src/backend/bring_data/municipios')(poolPromise);
+app.use('/api', municipiosRouter);
+
+// === ROUTERS PARA INSERTAR DATOS ===
+const insertJuzgadoRouter = require('./src/backend/insert_data/insert_juzgado')(poolPromise);
+app.use('/api', insertJuzgadoRouter);
+
 const changeTurnsRouter = require('./src/backend/insert_data/insert_turns')(poolPromise);
 app.use('/api', changeTurnsRouter);
 
-// Eliminar datos en la base de datos
-const deleteJuzgadoTurnRouter = require('./src/backend/delete_data/delete_juzgado_turn')(poolPromise);
-app.use('/api', deleteJuzgadoTurnRouter);
+// === ROUTERS PARA ACTUALIZAR DATOS ===
+const changeJuzgadoRouter = require('./src/backend/change_data/change_juzgado')(poolPromise);
+app.use('/api', changeJuzgadoRouter);
+
 const changeTurnRouter = require('./src/backend/change_data/change_turn')(poolPromise);
 app.use('/api', changeTurnRouter);
 
-// ...existing code...
-const insertJuzgadoRouter = require('./src/backend/insert_data/insert_juzgado')(poolPromise);
-app.use('/api', insertJuzgadoRouter);
-// ...existing code...
-const municipiosRouter = require('./src/backend/bring_data/municipios')(poolPromise);
-app.use('/api', municipiosRouter);
+// === ROUTERS PARA ELIMINAR DATOS ===
+const deleteJuzgadoTurnRouter = require('./src/backend/delete_data/delete_juzgado_turn')(poolPromise);
+app.use('/api', deleteJuzgadoTurnRouter);
+
+// Middleware para manejar rutas no encontradas - CORREGIDO
+app.use((req, res) => {
+  res.status(404).json({ 
+    error: 'Ruta no encontrada',
+    method: req.method,
+    url: req.originalUrl 
+  });
+});
+
+// Middleware para manejar errores
+app.use((err, req, res, next) => {
+  console.error('❌ Error del servidor:', err);
+  res.status(500).json({ 
+    error: 'Error interno del servidor',
+    details: err.message 
+  });
+});
+
 // Puerto
 const PORT = 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log('📋 Rutas disponibles:');
+  console.log('  GET  /api/juzgados');
+  console.log('  POST /api/juzgados');
+  console.log('  PUT  /api/juzgados/:id');
+  console.log('  GET  /api/turnos');
+  console.log('  POST /api/turnos');
+  console.log('  GET  /api/municipios');
+});
