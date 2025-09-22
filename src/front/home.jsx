@@ -55,7 +55,6 @@ const Home = () => {
   const [changeTurnData, setChangeTurnData] = useState(null);
   const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
   const email = "juzgado007pasto@ejemplo.com";
-
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [todayTurnos, setTodayTurnos] = useState([]); // Nuevo estado para turnos de hoy
@@ -75,7 +74,7 @@ const Home = () => {
   useEffect(() => {
     const cargarTurnosHoy = async () => {
       try {
-        const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
+        const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
         const res = await axios.get("http://localhost:5000/api/turnos", {
           params: { start: hoy, end: hoy },
         });
@@ -108,13 +107,15 @@ const Home = () => {
     if (juzgados.length === 0 || turnos.length === 0) return [];
     return turnos.map((turno) => {
       const juzgado = juzgados.find((j) => j.id === turno.juzgado_id) || {};
-      const start = dayjs.tz(turno.turn_date, "America/Bogota")
+      const start = dayjs
+        .tz(turno.turn_date, "America/Bogota")
         .hour(0)
         .minute(0)
         .second(0)
         .millisecond(0)
         .toDate();
-      const end = dayjs.tz(turno.turn_date, "America/Bogota")
+      const end = dayjs
+        .tz(turno.turn_date, "America/Bogota")
         .hour(23)
         .minute(59)
         .second(59)
@@ -125,9 +126,9 @@ const Home = () => {
         email: juzgado.email || "",
         start,
         end,
-        turno_id: turno.id,           // <--- Agrega el id del turno
-        turn_date: turno.turn_date,   // <--- Agrega la fecha del turno
-        juzgado_id: juzgado.id,       // <--- (opcional) id del juzgado
+        turno_id: turno.id, // <--- Agrega el id del turno
+        turn_date: turno.turn_date, // <--- Agrega la fecha del turno
+        juzgado_id: juzgado.id, // <--- (opcional) id del juzgado
       };
     });
   }, [juzgados, turnos]);
@@ -175,9 +176,9 @@ const Home = () => {
     setSelectedJuzgado({
       nombre: event.title,
       email: event.email,
-      turno_id: event.turno_id,      // <--- id del turno
-      turn_date: event.turn_date,    // <--- fecha del turno
-      juzgado_id: event.juzgado_id,  // <--- (opcional) id del juzgado
+      turno_id: event.turno_id, // <--- id del turno
+      turn_date: event.turn_date, // <--- fecha del turno
+      juzgado_id: event.juzgado_id, // <--- (opcional) id del juzgado
     });
     setShowViewDialog(true);
   };
@@ -195,39 +196,48 @@ const Home = () => {
   const handleSaveJuzgado = async (juzgado, date) => {
     try {
       if (!juzgado?.id || !date) {
-        console.error('Datos incompletos:', { juzgado, date });
-        showToastMsg('Error: Faltan datos del juzgado o fecha');
+        console.error("Datos incompletos:", { juzgado, date });
+        showToastMsg("Error: Faltan datos del juzgado o fecha");
         return;
       }
 
-      const turn_date = dayjs(date).format('YYYY-MM-DD');
-      console.log('Enviando datos al backend:', { juzgado_id: juzgado.id, turn_date, estado_id: 1 });
-
-      const response = await axios.post('http://localhost:5000/api/turnos', {
+      const turn_date = dayjs(date).format("YYYY-MM-DD");
+      console.log("Enviando datos al backend:", {
         juzgado_id: juzgado.id,
         turn_date,
         estado_id: 1,
       });
 
-      console.log('Respuesta del backend:', response.data);
+      const response = await axios.post("http://localhost:5000/api/turnos", {
+        juzgado_id: juzgado.id,
+        turn_date,
+        estado_id: 1,
+      });
+
+      console.log("Respuesta del backend:", response.data);
 
       // Recargar tanto los turnos del calendario como los de hoy
-      const res = await axios.get('http://localhost:5000/api/turnos');
+      const res = await axios.get("http://localhost:5000/api/turnos");
       setTurnos(res.data);
-      
+
       // Si la fecha guardada es hoy, actualizar también todayTurnos
-      const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
+      const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
       if (turn_date === hoy) {
         const resHoy = await axios.get("http://localhost:5000/api/turnos", {
           params: { start: hoy, end: hoy },
         });
         setTodayTurnos(resHoy.data);
       }
-      
-      showToastMsg('Turno guardado correctamente');
+
+      showToastMsg("Turno guardado correctamente");
     } catch (err) {
-      console.error('Error al guardar el turno:', err.response?.data || err.message);
-      showToastMsg(`Error al guardar el turno: ${err.response?.data?.error || err.message}`);
+      console.error(
+        "Error al guardar el turno:",
+        err.response?.data || err.message
+      );
+      showToastMsg(
+        `Error al guardar el turno: ${err.response?.data?.error || err.message}`
+      );
     }
   };
   const dayPropGetter = (date) => {
@@ -253,25 +263,26 @@ const Home = () => {
 
   // Encuentra el turno de hoy (basado en todayTurnos, no en turnos)
   const turnoHoy = useMemo(() => {
-    const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
-    return todayTurnos.find(t =>
-      dayjs.tz(t.turn_date, "America/Bogota").format('YYYY-MM-DD') === hoy
+    const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
+    return todayTurnos.find(
+      (t) =>
+        dayjs.tz(t.turn_date, "America/Bogota").format("YYYY-MM-DD") === hoy
     );
   }, [todayTurnos]); // Cambiar dependencia de turnos a todayTurnos
 
   // Encuentra el juzgado de turno hoy
   const juzgadoHoy = useMemo(() => {
     if (!turnoHoy) return null;
-    return juzgados.find(j => j.id === turnoHoy.juzgado_id);
+    return juzgados.find((j) => j.id === turnoHoy.juzgado_id);
   }, [juzgados, turnoHoy]);
 
   const cargarTurnos = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/turnos");
       setTurnos(res.data);
-      
+
       // Actualizar también los turnos de hoy
-      const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
+      const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
       const resHoy = await axios.get("http://localhost:5000/api/turnos", {
         params: { start: hoy, end: hoy },
       });
@@ -281,13 +292,54 @@ const Home = () => {
       setTodayTurnos([]);
     }
   };
+  // Encuentra el turno del día seleccionado (en la vista actual)
+  const turnoDiaSeleccionado = useMemo(() => {
+    // Si la vista es "month", muestra el turno de hoy (ya manejado por turnoHoy/juzgadoHoy)
+    // Si la vista es "week" o "day", muestra el turno del día seleccionado (date)
+    if (view === "week" || view === "day") {
+      const diaSeleccionado = dayjs(date)
+        .tz("America/Bogota")
+        .format("YYYY-MM-DD");
+      return turnos.find(
+        (t) =>
+          dayjs.tz(t.turn_date, "America/Bogota").format("YYYY-MM-DD") ===
+          diaSeleccionado
+      );
+    }
+    // Por defecto, null (para "month" se usa juzgadoHoy)
+    return null;
+  }, [view, date, turnos]);
 
+  // Encuentra el juzgado del turno del día seleccionado
+  const juzgadoDiaSeleccionado = useMemo(() => {
+    if (!turnoDiaSeleccionado) return null;
+    return juzgados.find((j) => j.id === turnoDiaSeleccionado.juzgado_id);
+  }, [juzgados, turnoDiaSeleccionado]);
+
+  // Cambia el juzgado mostrado según la vista y el día seleccionado
+  const juzgadoParaMostrar = useMemo(() => {
+    if (view === "week" || view === "day") {
+      return juzgadoDiaSeleccionado;
+    }
+    // Para "month" (o cualquier otra), muestra el de hoy
+    return juzgadoHoy;
+  }, [view, juzgadoHoy, juzgadoDiaSeleccionado]);
   const handleRangeChange = (range) => {
     // range puede ser un objeto con start y end (react-big-calendar lo provee)
-    setRange({
-      start: dayjs(range.start).format("YYYY-MM-DD"),
-      end: dayjs(range.end).format("YYYY-MM-DD"),
-    });
+    // Si es un array (semana), toma el primer y último día
+    let start, end;
+    if (Array.isArray(range)) {
+      start = dayjs(range[0]).format("YYYY-MM-DD");
+      end = dayjs(range[range.length - 1]).format("YYYY-MM-DD");
+    } else if (range.start && range.end) {
+      start = dayjs(range.start).format("YYYY-MM-DD");
+      end = dayjs(range.end).format("YYYY-MM-DD");
+    } else {
+      // fallback: usa el día actual
+      start = dayjs().startOf("day").format("YYYY-MM-DD");
+      end = dayjs().endOf("day").format("YYYY-MM-DD");
+    }
+    setRange({ start, end });
   };
 
   useEffect(() => {
@@ -335,9 +387,7 @@ const Home = () => {
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowDialog(true)}
               >
-                {juzgadoHoy
-                  ? juzgadoHoy.name
-                  : "No hay juzgado de turno hoy"}
+                {juzgadoHoy ? juzgadoHoy.name : "No hay juzgado de turno hoy"}
               </h1>
               <div className="juzgado-email flex-row">
                 <h2
@@ -360,7 +410,10 @@ const Home = () => {
         <hr />
       </div>
       <div className="calendar-container">
-        <LoadingDialog open={loadingTurnos} message="Cargando turnos del mes..." />
+        <LoadingDialog
+          open={loadingTurnos}
+          message="Cargando turnos del mes..."
+        />
         <Calendar
           localizer={localizer}
           events={events}
@@ -459,23 +512,31 @@ const Home = () => {
         onClose={() => setShowChangeDialog(false)}
         onChange={async (nuevoJuzgado, slotDate) => {
           try {
-            await axios.put(`http://localhost:5000/api/turnos/${changeTurnData.turno_id}`, {
-              nuevo_juzgado_id: nuevoJuzgado.id,
-              turn_date: changeTurnData.turn_date,
-            });
+            await axios.put(
+              `http://localhost:5000/api/turnos/${changeTurnData.turno_id}`,
+              {
+                nuevo_juzgado_id: nuevoJuzgado.id,
+                turn_date: changeTurnData.turn_date,
+              }
+            );
             showToastMsg("Turno cambiado correctamente");
             setShowChangeDialog(false);
-            
+
             // Recargar turnos del calendario
             cargarTurnos();
-            
+
             // Si el turno cambiado es de hoy, actualizar también todayTurnos
-            const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
-            const turnDate = dayjs(changeTurnData.turn_date).tz("America/Bogota").format('YYYY-MM-DD');
+            const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
+            const turnDate = dayjs(changeTurnData.turn_date)
+              .tz("America/Bogota")
+              .format("YYYY-MM-DD");
             if (turnDate === hoy) {
-              const resHoy = await axios.get("http://localhost:5000/api/turnos", {
-                params: { start: hoy, end: hoy },
-              });
+              const resHoy = await axios.get(
+                "http://localhost:5000/api/turnos",
+                {
+                  params: { start: hoy, end: hoy },
+                }
+              );
               setTodayTurnos(resHoy.data);
             }
           } catch (err) {
@@ -483,11 +544,13 @@ const Home = () => {
           }
         }}
         slotDate={changeTurnData?.turn_date}
-        currentJuzgado={changeTurnData && {
-          name: changeTurnData.nombre,
-          email: changeTurnData.email,
-          id: changeTurnData.juzgado_id,
-        }}
+        currentJuzgado={
+          changeTurnData && {
+            name: changeTurnData.nombre,
+            email: changeTurnData.email,
+            id: changeTurnData.juzgado_id,
+          }
+        }
         showToastMsg={showToastMsg}
       />
     </div>

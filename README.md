@@ -10,8 +10,8 @@ npm install
 npm i '...'
 ```
 ***
-## Comando para instalar sass
+## Comando para instalar Todas las dependencias
 
 ```
-npm install sass
+npm install .
 ```
