@@ -991,6 +991,36 @@ button:hover {
   transform: translateY(0);
 }
 
+.custom-copy .copy-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-copy .main-message {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.custom-copy .juzgado-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.custom-copy .juzgado-details div {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.custom-copy .juzgado-details strong {
+  color: white;
+}
+
 .alert-dialog-backdrop {
   position: fixed;
   top: 0;
