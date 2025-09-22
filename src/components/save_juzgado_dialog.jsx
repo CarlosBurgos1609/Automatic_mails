@@ -7,12 +7,12 @@ export default function SaveJuzgadoDialog({
   juzgadoData, 
   municipioName 
 }) {
-  // Auto-cerrar después de 3 segundos como Copy
+  // Auto-cerrar después de 4 segundos (1 segundo más)
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
         onClose();
-      }, 3000);
+      }, 4000);
       
       return () => clearTimeout(timer);
     }
@@ -21,7 +21,7 @@ export default function SaveJuzgadoDialog({
   if (!show) return null;
 
   return (
-    <div className={`custom-copy${show ? " show" : ""}`}>
+    <div className={`custom-copy custom-copy-juzgado${show ? " show" : ""}`}>
       <img src={checkIcon} alt="check" />
       <div className="copy-content">
         <span className="main-message">¡Juzgado guardado correctamente!</span>
