@@ -25,8 +25,20 @@ dayjs.locale("es");
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+// Configura dayjs para que el domingo sea el primer día de la semana
+dayjs.locale("es", {
+  ...dayjs.Ls.es,
+  weekStart: 0, // 0 = domingo, 1 = lunes
+});
+
 // Usa el localizer solo una vez
 const localizer = dayjsLocalizer(dayjs);
+
+// Configura el inicio de la semana en domingo
+const formats = {
+  ...localizer.formats,
+  firstDayOfWeek: 0, // 0 representa el domingo
+};
 
 const Home = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -210,19 +222,6 @@ const Home = () => {
     };
   };
 
-  const formats = {
-    dayFormat: (date, culture, localizer) =>
-      localizer.format(date, "dddd DD MMMM", culture),
-    dayHeaderFormat: (date, culture, localizer) =>
-      localizer.format(date, "dddd, DD MMMM YYYY", culture),
-    timeGutterFormat: (date, culture, localizer) =>
-      localizer.format(date, "h A", culture),
-    dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
-      localizer.format(start, "DD MMMM", culture) +
-      " - " +
-      localizer.format(end, "DD MMMM YYYY", culture),
-  };
-
   // Encuentra el turno de hoy
   const turnoHoy = useMemo(() => {
     const hoy = dayjs().tz("America/Bogota").format('YYYY-MM-DD');
@@ -342,7 +341,7 @@ const Home = () => {
           onRangeChange={handleRangeChange}
           dayPropGetter={dayPropGetter}
           eventPropGetter={eventPropGetter}
-          formats={formats}
+          culture="es" // Asegúrate de usar la cultura española
           messages={{
             month: "Mes",
             week: "Semana",

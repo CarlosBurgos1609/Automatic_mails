@@ -1613,46 +1613,126 @@ button:hover {
   }
 }
 
-.linear-divide{
-  justify-content: center;
-  @include m.center;
-  width: 90%;
-  height: 4px;
-  background: linear-gradient(to right, $color_blue, $color_green);
-  margin: 3px 0;
-  border-radius: 10px;
-  opacity: 0.4;
+// Estilos para fines de semana en el calendario
+.calendar-container {
+  // Fondo amarillo translúcido para sábados y domingos
+  .rbc-day-bg.rbc-off-range-bg,
+  .rbc-date-cell:nth-child(1),  // Domingo (primera columna)
+  .rbc-date-cell:nth-child(7)   // Sábado (séptima columna)
+  {
+    background-color: rgba(243, 243, 67, 0.1) !important;
+  }
+
+  // Fondo amarillo para las celdas de sábado y domingo en vista de mes
+  .rbc-month-view .rbc-date-cell:first-child,  // Domingo
+  .rbc-month-view .rbc-date-cell:last-child    // Sábado
+  {
+    background-color: rgba(241, 241, 43, 0.1) !important;
+  }
+
+  // Fondo amarillo para las celdas del cuerpo del calendario
+  .rbc-month-view .rbc-day-bg:nth-child(7n+1),  // Domingo
+  .rbc-month-view .rbc-day-bg:nth-child(7n)     // Sábado
+  {
+    background-color: rgba(255, 255, 0, 0.1) !important;
+  }
+
+  // Número rojo para los domingos
+  .rbc-month-view .rbc-day-bg:nth-child(7n+1) .rbc-button-link,
+  .rbc-date-cell:first-child .rbc-button-link
+  {
+    color: #e53935 !important;
+    font-weight: bold !important;
+  }
+
+  // SOLO texto rojo para el header del domingo (SIN fondo amarillo)
+  .rbc-header:first-child {
+    color: #e53935 !important;
+    font-weight: bold !important;
+  }
+
+  // En vista de semana y día - solo texto rojo para domingo
+  .rbc-time-header-cell:first-child {
+    color: #e53935 !important;
+    font-weight: bold !important;
+  }
+
+  // Para los slots de tiempo en vista de semana/día
+  .rbc-time-slot:nth-child(7n+1),  // Domingo
+  .rbc-time-slot:nth-child(7n)     // Sábado
+  {
+    background-color: rgba(255, 255, 0, 0.05) !important;
+  }
 }
 
-.table-container{
-  border-radius: 30px;
-  padding: 20px 0;
-  margin: 0;
-  width: 100vw;
-  max-width: 100vw;
-  align-self: stretch;
+// Estilos para ocultar días de otros meses
+.calendar-container {
+  // Ocultar días que no pertenecen al mes actual
+  .rbc-off-range {
+    background-color: #f5f5f5 !important; // Fondo gris claro
+    pointer-events: none; // No clickeable
+    
+    // Ocultar el número del día
+    .rbc-button-link {
+      display: none !important;
+    }
+    
+    // Ocultar eventos/juzgados en días de otros meses
+    .rbc-event,
+    .rbc-event-content {
+      display: none !important;
+    }
+  }
 
-  .title {
-    background-color: $color_green;
-    border-radius: 20px;
-    margin: 10px auto 30px auto;
-    padding: 40px 0;
-    width: 90%;
-    justify-content: center;
-    text-align: center;
+  // Para las celdas de días fuera del rango del mes actual
+  .rbc-off-range-bg {
+    background-color: #f5f5f5 !important; // Fondo gris claro
+    
+    // Ocultar cualquier contenido
+    * {
+      visibility: hidden !important;
+    }
   }
-  h1 {
-    color: $color_blue;
-    font-size: 30px;
-    @include m.center;
-    text-transform: uppercase;
+
+  // Estilo específico para días fuera del mes en la vista mensual
+  .rbc-month-view {
+    .rbc-off-range {
+      background-color: #e0e0e0 !important; // Gris más visible
+      border: 1px solid #d0d0d0 !important;
+      
+      // Asegurar que no se vea nada dentro
+      .rbc-button-link,
+      .rbc-event,
+      .rbc-event-content,
+      .rbc-show-more {
+        display: none !important;
+      }
+    }
   }
-  .table{
-    width: 90%;
-    margin: auto;
-    border-collapse: collapse;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-  } 
+
+  // Existentes estilos para fines de semana (mantener)
+  // Fondo amarillo para las celdas del cuerpo del calendario (solo días del mes actual)
+  .rbc-month-view .rbc-day-bg:nth-child(7n+1):not(.rbc-off-range),  // Domingo
+  .rbc-month-view .rbc-day-bg:nth-child(7n):not(.rbc-off-range)     // Sábado
+  {
+    background-color: rgba(255, 255, 0, 0.1) !important;
+  }
+
+  // Número rojo para los domingos (solo días del mes actual)
+  .rbc-month-view .rbc-day-bg:nth-child(7n+1):not(.rbc-off-range) .rbc-button-link {
+    color: #e53935 !important;
+    font-weight: bold !important;
+  }
+
+  // SOLO texto rojo para el header del domingo (SIN fondo amarillo)
+  .rbc-header:first-child {
+    color: #e53935 !important;
+    font-weight: bold !important;
+  }
+
+  // En vista de semana y día - solo texto rojo para domingo
+  .rbc-time-header-cell:first-child {
+    color: #e53935 !important;
+    font-weight: bold !important;
+  }
 }
