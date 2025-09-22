@@ -326,6 +326,8 @@ button:hover {
       max-width: 100%;
     }
   }
+
+  
   // celdas de los contenedores de eventos
   .rbc-day-bg {
     background-color: #fff;
@@ -559,6 +561,141 @@ button:hover {
     word-break: break-word !important;
     display: block !important;
     width: 100% !important;
+  }
+}
+// Estilos para fines de semana en el calendario
+.calendar-container {
+  // Fondo amarillo translúcido para sábados y domingos (SOLO días del mes actual)
+  .rbc-month-view .rbc-day-bg:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg),  // Domingo
+  .rbc-month-view .rbc-day-bg:nth-child(7n):not(.rbc-off-range):not(.rbc-off-range-bg)     // Sábado
+  {
+    background-color: rgba(255, 255, 0, 0.1) !important;
+  }
+
+  // Número rojo SOLO para los domingos (días del mes actual)
+  .rbc-month-view .rbc-day-bg:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg) .rbc-button-link {
+    color: #e53935 !important;
+    font-weight: bold !important;
+  }
+
+  // Header del domingo - mantener texto BLANCO en el fondo azul, NO rojo
+  .rbc-header:first-child {
+    color: $color_white !important;
+    font-weight: bold !important;
+    background-color: $color_blue !important;
+  }
+
+  // En vista de semana y día - mantener texto BLANCO para el header del domingo
+  .rbc-time-header-cell:first-child {
+    color: $color_white !important;
+    font-weight: bold !important;
+    background-color: $color_blue !important;
+  }
+
+  // Para los slots de tiempo en vista de semana/día (solo días del mes actual)
+  .rbc-time-slot:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg),  // Domingo
+  .rbc-time-slot:nth-child(7n):not(.rbc-off-range):not(.rbc-off-range-bg)     // Sábado
+  {
+    background-color: rgba(255, 255, 0, 0.05) !important;
+  }
+}
+
+// Estilos para ocultar/deshabilitar días de otros meses - MÁXIMA PRIORIDAD
+.calendar-container {
+  // DÍAS QUE NO PERTENECEN AL MES ACTUAL - Forzar gris sobre CUALQUIER otro estilo
+  .rbc-off-range,
+  .rbc-off-range-bg,
+  .rbc-off-range.rbc-day-bg,
+  .rbc-month-view .rbc-day-bg.rbc-off-range,
+  .rbc-month-view .rbc-off-range,
+  .rbc-month-view .rbc-off-range-bg,
+  // Específicamente para fines de semana fuera del mes
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1),     // Domingo fuera del mes
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n),       // Sábado fuera del mes
+  .rbc-month-view .rbc-off-range-bg:nth-child(7n+1),             // Domingo fuera del mes (bg)
+  .rbc-month-view .rbc-off-range-bg:nth-child(7n)               // Sábado fuera del mes (bg)
+  {
+    background-color: #e0e0e0 !important; // SIEMPRE gris, sin importar si es fin de semana
+    background: #e0e0e0 !important; // Doble aseguranza
+    border: 1px solid #d0d0d0 !important;
+    pointer-events: none !important;
+    cursor: default !important;
+    
+    // Hacer TODO el contenido gris y no clickeable
+    .rbc-button-link {
+      color: #999 !important;
+      background-color: transparent !important;
+      background: transparent !important;
+      pointer-events: none !important;
+      cursor: default !important;
+    }
+    
+    // Ocultar COMPLETAMENTE eventos/juzgados en días de otros meses
+    .rbc-event,
+    .rbc-event-content,
+    .rbc-show-more {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+
+    // Cualquier otro contenido también debe ser gris y no interactivo
+    * {
+      color: #999 !important;
+      pointer-events: none !important;
+      cursor: default !important;
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    // Anular específicamente los estilos de fin de semana
+    &:nth-child(7n+1),
+    &:nth-child(7n) {
+      background-color: #e0e0e0 !important; // Forzar gris sobre amarillo
+      background: #e0e0e0 !important;
+      
+      .rbc-button-link {
+        color: #999 !important; // Forzar gris sobre rojo para domingos
+        background-color: transparent !important;
+        background: transparent !important;
+      }
+    }
+  }
+
+  // Eliminar TODOS los hover effects para días fuera del mes
+  .rbc-off-range:hover,
+  .rbc-off-range-bg:hover,
+  .rbc-off-range .rbc-button-link:hover,
+  .rbc-off-range-bg .rbc-button-link:hover,
+  .rbc-month-view .rbc-day-bg.rbc-off-range:hover,
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1):hover,
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):hover,
+  .rbc-month-view .rbc-off-range-bg:nth-child(7n+1):hover,
+  .rbc-month-view .rbc-off-range-bg:nth-child(7n):hover,
+  .rbc-calendar .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1):hover,
+  .rbc-calendar .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):hover {
+    background-color: #e0e0e0 !important; // Mantener gris en hover
+    background: #e0e0e0 !important;
+    transform: none !important;
+    color: #999 !important;
+    
+    .rbc-button-link {
+      color: #999 !important;
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+  }
+
+  // Asegurar que en días fuera del mes NO se vean eventos aunque sean fin de semana
+  .rbc-off-range,
+  .rbc-off-range-bg {
+    .rbc-event-container,
+    .rbc-event-content,
+    .rbc-addons-dnd-resize-anchor {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
   }
 }
 
@@ -1613,138 +1750,3 @@ button:hover {
   }
 }
 
-// Estilos para fines de semana en el calendario
-.calendar-container {
-  // Fondo amarillo translúcido para sábados y domingos (SOLO días del mes actual)
-  .rbc-month-view .rbc-day-bg:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg),  // Domingo
-  .rbc-month-view .rbc-day-bg:nth-child(7n):not(.rbc-off-range):not(.rbc-off-range-bg)     // Sábado
-  {
-    background-color: rgba(255, 255, 0, 0.1) !important;
-  }
-
-  // Número rojo SOLO para los domingos (días del mes actual)
-  .rbc-month-view .rbc-day-bg:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg) .rbc-button-link {
-    color: #e53935 !important;
-    font-weight: bold !important;
-  }
-
-  // Header del domingo - mantener texto BLANCO en el fondo azul, NO rojo
-  .rbc-header:first-child {
-    color: $color_white !important;
-    font-weight: bold !important;
-    background-color: $color_blue !important;
-  }
-
-  // En vista de semana y día - mantener texto BLANCO para el header del domingo
-  .rbc-time-header-cell:first-child {
-    color: $color_white !important;
-    font-weight: bold !important;
-    background-color: $color_blue !important;
-  }
-
-  // Para los slots de tiempo en vista de semana/día (solo días del mes actual)
-  .rbc-time-slot:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg),  // Domingo
-  .rbc-time-slot:nth-child(7n):not(.rbc-off-range):not(.rbc-off-range-bg)     // Sábado
-  {
-    background-color: rgba(255, 255, 0, 0.05) !important;
-  }
-}
-
-// Estilos para ocultar/deshabilitar días de otros meses - MÁXIMA PRIORIDAD
-.calendar-container {
-  // DÍAS QUE NO PERTENECEN AL MES ACTUAL - Forzar gris sobre CUALQUIER otro estilo
-  .rbc-off-range,
-  .rbc-off-range-bg,
-  .rbc-off-range.rbc-day-bg,
-  .rbc-month-view .rbc-day-bg.rbc-off-range,
-  .rbc-month-view .rbc-off-range,
-  .rbc-month-view .rbc-off-range-bg,
-  // Específicamente para fines de semana fuera del mes
-  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1),     // Domingo fuera del mes
-  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n),       // Sábado fuera del mes
-  .rbc-month-view .rbc-off-range-bg:nth-child(7n+1),             // Domingo fuera del mes (bg)
-  .rbc-month-view .rbc-off-range-bg:nth-child(7n)               // Sábado fuera del mes (bg)
-  {
-    background-color: #e0e0e0 !important; // SIEMPRE gris, sin importar si es fin de semana
-    background: #e0e0e0 !important; // Doble aseguranza
-    border: 1px solid #d0d0d0 !important;
-    pointer-events: none !important;
-    cursor: default !important;
-    
-    // Hacer TODO el contenido gris y no clickeable
-    .rbc-button-link {
-      color: #999 !important;
-      background-color: transparent !important;
-      background: transparent !important;
-      pointer-events: none !important;
-      cursor: default !important;
-    }
-    
-    // Ocultar COMPLETAMENTE eventos/juzgados en días de otros meses
-    .rbc-event,
-    .rbc-event-content,
-    .rbc-show-more {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-    }
-
-    // Cualquier otro contenido también debe ser gris y no interactivo
-    * {
-      color: #999 !important;
-      pointer-events: none !important;
-      cursor: default !important;
-      background-color: transparent !important;
-      background: transparent !important;
-    }
-
-    // Anular específicamente los estilos de fin de semana
-    &:nth-child(7n+1),
-    &:nth-child(7n) {
-      background-color: #e0e0e0 !important; // Forzar gris sobre amarillo
-      background: #e0e0e0 !important;
-      
-      .rbc-button-link {
-        color: #999 !important; // Forzar gris sobre rojo para domingos
-        background-color: transparent !important;
-        background: transparent !important;
-      }
-    }
-  }
-
-  // Eliminar TODOS los hover effects para días fuera del mes
-  .rbc-off-range:hover,
-  .rbc-off-range-bg:hover,
-  .rbc-off-range .rbc-button-link:hover,
-  .rbc-off-range-bg .rbc-button-link:hover,
-  .rbc-month-view .rbc-day-bg.rbc-off-range:hover,
-  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1):hover,
-  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):hover,
-  .rbc-month-view .rbc-off-range-bg:nth-child(7n+1):hover,
-  .rbc-month-view .rbc-off-range-bg:nth-child(7n):hover,
-  .rbc-calendar .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1):hover,
-  .rbc-calendar .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):hover {
-    background-color: #e0e0e0 !important; // Mantener gris en hover
-    background: #e0e0e0 !important;
-    transform: none !important;
-    color: #999 !important;
-    
-    .rbc-button-link {
-      color: #999 !important;
-      background-color: transparent !important;
-      background: transparent !important;
-    }
-  }
-
-  // Asegurar que en días fuera del mes NO se vean eventos aunque sean fin de semana
-  .rbc-off-range,
-  .rbc-off-range-bg {
-    .rbc-event-container,
-    .rbc-event-content,
-    .rbc-addons-dnd-resize-anchor {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-    }
-  }
-}
