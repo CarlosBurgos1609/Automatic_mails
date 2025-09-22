@@ -82,6 +82,8 @@ app.use('/api', changeTurnRouter);
 const insertJuzgadoRouter = require('./src/backend/insert_data/insert_juzgado')(poolPromise);
 app.use('/api', insertJuzgadoRouter);
 // ...existing code...
+const municipiosRouter = require('./src/backend/bring_data/municipios')(poolPromise);
+app.use('/api', municipiosRouter);
 // Puerto
 const PORT = 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

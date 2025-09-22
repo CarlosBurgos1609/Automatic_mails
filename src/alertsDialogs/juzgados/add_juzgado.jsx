@@ -1,18 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function AddJuzgadoDialog({ open, onClose, onSave }) {
   const [codigo, setCodigo] = useState("");
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
-  const [departamento, setDepartamento] = useState("");
+  const [municipioId, setMunicipioId] = useState("");
+  const [municipios, setMunicipios] = useState([]);
   const [error, setError] = useState(false);
   const [correoError, setCorreoError] = useState("");
+  const [loadingMunicipios, setLoadingMunicipios] = useState(false);
+
+  // Cargar municipios cuando se abre el diálogo
+  useEffect(() => {
+    if (open) {
+      setLoadingMunicipios(true);
+      fetch("http://localhost:5000/api/municipios")
+        .then((res) => res.json())
+        .then((data) => {
+          setMunicipios(data);
+        })
+        .catch((error) => {
+          console.error("Error al cargar municipios:", error);
+          setMunicipios([]);
+        })
+        .finally(() => {
+          setLoadingMunicipios(false);
+        });
+    }
+  }, [open]);
 
   const handleGuardar = () => {
     let hasError = false;
     setCorreoError("");
 
-    if (!codigo || !nombre || !correo || !departamento) {
+    if (!codigo || !nombre || !correo || !municipioId) {
       hasError = true;
     }
     if (!correo.includes("@")) {
@@ -23,12 +44,24 @@ export default function AddJuzgadoDialog({ open, onClose, onSave }) {
     setError(hasError);
 
     if (!hasError) {
-      onSave({ codigo, nombre, correo, departamento });
+      // Encontrar el nombre del municipio seleccionado
+      const municipioSeleccionado = municipios.find(
+        (m) => m.id === parseInt(municipioId)
+      );
+
+      onSave({
+        codigo,
+        nombre,
+        correo,
+        municipio_id: municipioId,
+        municipio_name: municipioSeleccionado?.name || "",
+      });
       onClose();
+      // Limpiar formulario
       setCodigo("");
       setNombre("");
       setCorreo("");
-      setDepartamento("");
+      setMunicipioId("");
       setError(false);
       setCorreoError("");
     }
@@ -68,20 +101,28 @@ export default function AddJuzgadoDialog({ open, onClose, onSave }) {
               (error && !correo) || correoError ? "input-error" : ""
             }
           />
-          {correoError && (
-            <div className="error-message">{correoError}</div>
-          )}
+          {correoError && <div className="error-message">{correoError}</div>}
         </div>
         <div className="input-busqueda">
-          <input
-            type="text"
-            placeholder="Departamento"
-            value={departamento}
-            onChange={(e) => setDepartamento(e.target.value)}
-            className={error && !departamento ? "input-error" : ""}
-          />
+          <select
+            value={municipioId}
+            onChange={(e) => setMunicipioId(e.target.value)}
+            className={error && !municipioId ? "input-error" : ""}
+            disabled={loadingMunicipios}
+          >
+            <option value="">
+              {loadingMunicipios
+                ? "Cargando municipios..."
+                : "Seleccionar municipio"}
+            </option>
+            {municipios.map((municipio) => (
+              <option key={municipio.id} value={municipio.id}>
+                {municipio.name}
+              </option>
+            ))}
+          </select>
         </div>
-        {error && (!codigo || !nombre || !correo || !departamento) && (
+        {error && (!codigo || !nombre || !correo || !municipioId) && (
           <div className="error-message">
             Por favor, complete todos los campos obligatorios.
           </div>
