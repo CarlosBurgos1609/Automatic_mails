@@ -87,6 +87,9 @@ const changeTurnRouter = require('./src/backend/change_data/change_turn')(poolPr
 app.use('/api', changeTurnRouter);
 
 // === ROUTERS PARA ELIMINAR DATOS ===
+const deleteJuzgadoRouter = require('./src/backend/delete_data/delete_juzgado')(poolPromise);
+app.use('/api', deleteJuzgadoRouter);
+
 const deleteJuzgadoTurnRouter = require('./src/backend/delete_data/delete_juzgado_turn')(poolPromise);
 app.use('/api', deleteJuzgadoTurnRouter);
 
@@ -113,10 +116,11 @@ const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log('📋 Rutas disponibles:');
-  console.log('  GET  /api/juzgados');
-  console.log('  POST /api/juzgados');
-  console.log('  PUT  /api/juzgados/:id');
-  console.log('  GET  /api/turnos');
-  console.log('  POST /api/turnos');
-  console.log('  GET  /api/municipios');
+  console.log('  GET    /api/juzgados');
+  console.log('  POST   /api/juzgados');
+  console.log('  PUT    /api/juzgados/:id');
+  console.log('  DELETE /api/juzgados/:id');
+  console.log('  GET    /api/turnos');
+  console.log('  POST   /api/turnos');
+  console.log('  GET    /api/municipios');
 });

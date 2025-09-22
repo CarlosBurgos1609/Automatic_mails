@@ -6,9 +6,10 @@ export default function SaveJuzgadoDialog({
   onClose, 
   juzgadoData, 
   municipioName,
-  isEdit = false // Nueva prop para distinguir entre crear y editar
+  isEdit = false,
+  isDelete = false // Nueva prop para distinguir eliminación
 }) {
-  // Auto-cerrar después de 4 segundos (1 segundo más)
+  // Auto-cerrar después de 4 segundos
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
@@ -21,7 +22,12 @@ export default function SaveJuzgadoDialog({
 
   if (!show) return null;
 
-  const mensaje = isEdit ? "¡Juzgado actualizado correctamente!" : "¡Juzgado guardado correctamente!";
+  let mensaje = "¡Juzgado guardado correctamente!";
+  if (isDelete) {
+    mensaje = "¡Juzgado eliminado correctamente!";
+  } else if (isEdit) {
+    mensaje = "¡Juzgado actualizado correctamente!";
+  }
 
   return (
     <div className={`custom-copy custom-copy-juzgado${show ? " show" : ""}`}>

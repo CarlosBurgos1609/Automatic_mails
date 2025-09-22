@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Copy from "../../components/Copy";
 import AddJuzgadoDialog from "../juzgados/add_juzgado";
 import EditJuzgadoDialog from "../juzgados/edit_juzgado";
+import DeleteJuzgadoDialog from "../juzgados/delete_juzgado";
 import SaveJuzgadoDialog from "../../components/save_juzgado_dialog";
 import add from "../../assets/icons/add.png";
 import deleteIcon from "../../assets/icons/delete.png";
@@ -11,9 +12,11 @@ import juzgado from "../../assets/icons/juzgado.png";
 export default function JuzgadoDialog({ open, onClose }) {
   const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
   const [showEditJuzgadoDialog, setShowEditJuzgadoDialog] = useState(false);
+  const [showDeleteJuzgadoDialog, setShowDeleteJuzgadoDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [savedJuzgadoData, setSavedJuzgadoData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
 
   const handleSaveNuevoJuzgado = (juzgadoData) => {
     // Cerrar el diálogo de agregar
@@ -22,6 +25,7 @@ export default function JuzgadoDialog({ open, onClose }) {
     // Guardar los datos para mostrar en el diálogo de éxito
     setSavedJuzgadoData(juzgadoData);
     setIsEditMode(false);
+    setIsDeleteMode(false);
     
     // Mostrar diálogo de éxito
     setShowSuccessDialog(true);
@@ -34,6 +38,20 @@ export default function JuzgadoDialog({ open, onClose }) {
     // Guardar los datos para mostrar en el diálogo de éxito
     setSavedJuzgadoData(juzgadoData);
     setIsEditMode(true);
+    setIsDeleteMode(false);
+    
+    // Mostrar diálogo de éxito
+    setShowSuccessDialog(true);
+  };
+
+  const handleDeleteJuzgado = (juzgadoData) => {
+    // Cerrar el diálogo de eliminar
+    setShowDeleteJuzgadoDialog(false);
+    
+    // Guardar los datos para mostrar en el diálogo de éxito
+    setSavedJuzgadoData(juzgadoData);
+    setIsEditMode(false);
+    setIsDeleteMode(true);
     
     // Mostrar diálogo de éxito
     setShowSuccessDialog(true);
@@ -43,6 +61,7 @@ export default function JuzgadoDialog({ open, onClose }) {
     setShowSuccessDialog(false);
     setSavedJuzgadoData(null);
     setIsEditMode(false);
+    setIsDeleteMode(false);
     
     // Cerrar el diálogo general
     onClose();
@@ -72,7 +91,10 @@ export default function JuzgadoDialog({ open, onClose }) {
             Editar Juzgado
           </button>
           
-          <button className="delete-btn">
+          <button 
+            className="delete-btn"
+            onClick={() => setShowDeleteJuzgadoDialog(true)}
+          >
             <img src={deleteIcon} alt="Eliminar" />
             Eliminar Juzgado
           </button>
@@ -95,6 +117,12 @@ export default function JuzgadoDialog({ open, onClose }) {
         onSave={handleSaveEditJuzgado}
       />
 
+      <DeleteJuzgadoDialog
+        open={showDeleteJuzgadoDialog}
+        onClose={() => setShowDeleteJuzgadoDialog(false)}
+        onDelete={handleDeleteJuzgado}
+      />
+
       {/* El diálogo de éxito ahora está en el nivel superior */}
       <SaveJuzgadoDialog
         show={showSuccessDialog}
@@ -102,6 +130,7 @@ export default function JuzgadoDialog({ open, onClose }) {
         juzgadoData={savedJuzgadoData}
         municipioName={savedJuzgadoData?.municipio_name}
         isEdit={isEditMode}
+        isDelete={isDeleteMode}
       />
     </>
   );
