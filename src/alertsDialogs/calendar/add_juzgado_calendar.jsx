@@ -165,7 +165,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                 disabled={!juzgadoSeleccionado}
               >
                 {juzgadoSeleccionado 
-                  ? `Guardar Turno - ${juzgadoSeleccionado.code}` 
+                  ? `Guardar Turno` 
                   : "Seleccione un Juzgado"}
               </button>
               <button className="close-button-full" onClick={handleDialogClose}>
