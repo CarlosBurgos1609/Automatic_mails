@@ -125,13 +125,24 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                   >
                     <div className={`juzgado-header ${juzgadoSeleccionado?.id === juzgado.id ? 'selected' : ''}`}>
                       {juzgado.code} - {juzgado.name}
+                      {juzgadoSeleccionado?.id === juzgado.id && (
+                        <span className="selected-indicator">
+                          ✓
+                        </span>
+                      )}
                     </div>
                     <div className="juzgado-email-row">
                       <span>{juzgado.email}</span>
                       {juzgadoSeleccionado?.id === juzgado.id && (
-                        <span className="selected-badge">
-                          ✓ SELECCIONADO
-                        </span>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCopyEmail();
+                          }}
+                          className="quick-copy-btn"
+                        >
+                          📋 Copiar
+                        </button>
                       )}
                     </div>
                   </div>
@@ -139,36 +150,23 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
               )}
             </div>
 
+            {/* Mensaje de error */}
             {error && (
               <div className="error-message">
                 {error}
               </div>
             )}
 
-            {/* Información del juzgado seleccionado */}
-            {juzgadoSeleccionado && (
-              <div className="juzgado-preview">
-                <div className="preview-title">
-                  Juzgado Seleccionado:
-                </div>
-                <div className="preview-details">
-                  <strong>Código:</strong> {juzgadoSeleccionado.code}<br />
-                  <strong>Nombre:</strong> {juzgadoSeleccionado.name}<br />
-                  <strong>Email:</strong> {juzgadoSeleccionado.email}
-                </div>
-                <button onClick={handleCopyEmail} className="copy-email-btn">
-                  📋 Copiar Email
-                </button>
-              </div>
-            )}
-
+            {/* Botones de acción */}
             <div className="dialog-actions flex-column">
               <button
                 className={`edit-button-full save-button ${!juzgadoSeleccionado ? 'disabled' : ''}`}
                 onClick={handleGuardar}
                 disabled={!juzgadoSeleccionado}
               >
-                {juzgadoSeleccionado ? "Guardar Turno" : "Seleccione un Juzgado"}
+                {juzgadoSeleccionado 
+                  ? `Guardar Turno - ${juzgadoSeleccionado.code}` 
+                  : "Seleccione un Juzgado"}
               </button>
               <button className="close-button-full" onClick={handleDialogClose}>
                 Cerrar

@@ -2095,6 +2095,36 @@ button:hover {
     }
   }
 }
+// Media query especial para pantallas muy pequeñas
+@media (max-width: 320px) {
+  .add-juzgado-calendar-dialog {
+    max-width: 100vw;
+    min-width: 98vw;
+    margin: 2px;
+    padding: 10px 6px 10px 6px;
+    
+    .juzgados-list {
+      min-height: 150px;
+      
+      .juzgado-item {
+        padding: 8px 6px;
+        
+        .juzgado-header {
+          font-size: 13px;
+        }
+        
+        .juzgado-email-row {
+          font-size: 11px;
+          
+          span {
+            font-size: 11px;
+          }
+        }
+      }
+    }
+  }
+}
+
 
 // ===== ESTILOS PARA DIÁLOGOS DE GESTIÓN DE JUZGADOS =====
 
