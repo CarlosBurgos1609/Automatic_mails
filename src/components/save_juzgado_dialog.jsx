@@ -7,9 +7,9 @@ export default function SaveJuzgadoDialog({
   juzgadoData, 
   municipioName,
   isEdit = false,
-  isDelete = false // Nueva prop para distinguir eliminación
+  isDelete = false
 }) {
-  // Auto-cerrar después de 4 segundos
+  // Auto-cerrar después de 3 segundos
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {

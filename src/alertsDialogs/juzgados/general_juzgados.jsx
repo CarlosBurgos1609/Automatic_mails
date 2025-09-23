@@ -62,6 +62,14 @@ export default function JuzgadoDialog({ open, onClose }) {
     setSavedJuzgadoData(null);
     setIsEditMode(false);
     setIsDeleteMode(false);
+  };
+
+  const handleGeneralDialogClose = () => {
+    // Cerrar también el diálogo de éxito si está abierto
+    setShowSuccessDialog(false);
+    setSavedJuzgadoData(null);
+    setIsEditMode(false);
+    setIsDeleteMode(false);
     
     // Cerrar el diálogo general
     onClose();
@@ -99,7 +107,7 @@ export default function JuzgadoDialog({ open, onClose }) {
             Eliminar Juzgado
           </button>
           
-          <button className="close-preview-btn" onClick={onClose}>
+          <button className="close-preview-btn" onClick={handleGeneralDialogClose}>
             Cerrar 
           </button>
         </div>
