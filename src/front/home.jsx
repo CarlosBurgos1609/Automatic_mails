@@ -1,155 +1,121 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import Header from "./header";
-import "../styles/styles.scss";
-import { Calendar, dayjsLocalizer } from "react-big-calendar";
+import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { Calendar, dayjsLocalizer } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
+// Components
+import Header from "./header";
+import Buttons from "../components/buttons";
+import Toast from "../components/Copy";
+import LoadingDialog from "../components/LoadingDialog";
+import SaveJuzgadoDialog from "../components/save_juzgado_dialog";
+
+// Graphics
 import AreaChartInteractive from "../grafics/area";
 import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
 import RadarChartComponent from "../grafics/radar1";
-import Toast from "../components/Copy";
+
+// Dialogs
 import JuzgadoDialog from "../alertsDialogs/date_section/open_juzgado_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/calendar/view_juzgado";
-import Buttons from "../components/buttons";
 import AddJuzgadoCalendarDialog from "../alertsDialogs/calendar/add_juzgado_calendar";
-import axios from "axios";
 import ChangeJuzgadoTurnDialog from "../alertsDialogs/calendar/change_juzgado_turn";
-import LoadingDialog from "../components/LoadingDialog";
 import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 import EditJuzgadoDialog from "../alertsDialogs/juzgados/edit_juzgado";
 import DeleteJuzgadoDialog from "../alertsDialogs/juzgados/delete_juzgado";
-import SaveJuzgadoDialog from "../components/save_juzgado_dialog";
 import GeneralJuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados";
 
-// Configuración inicial de dayjs (solo una vez)
+// Styles
+import "../styles/styles.scss";
+
+// ===== DAYJS CONFIGURATION =====
 dayjs.locale("es");
 dayjs.extend(utc);
 dayjs.extend(timezone);
-dayjs.locale("es", { ...dayjs.Ls.es, weekStart: 0 });
 
+dayjs.locale("es", {
+  ...dayjs.Ls.es,
+  weekStart: 0, // 0 = domingo, 1 = lunes
+});
+
+// ===== CALENDAR CONFIGURATION =====
 const localizer = dayjsLocalizer(dayjs);
 
-// Configuraciones constantes
-const TIMEZONE = "America/Bogota";
-const API_BASE = "http://localhost:5000/api";
+const formats = {
+  ...localizer.formats,
+  firstDayOfWeek: 0, // 0 representa el domingo
+};
 
 const Home = () => {
-  // Estados principales
-  const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [view, setView] = useState("month");
-  const [date, setDate] = useState(new Date());
+  // ===== STATE MANAGEMENT =====
   
-  // Estados de datos
+  // General states
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [todayTurnos, setTodayTurnos] = useState([]);
+  const [loadingTurnos, setLoadingTurnos] = useState(false);
   
-  // Estados de diálogos - agrupados para mejor performance
-  const [dialogs, setDialogs] = useState({
-    showDialog: false,
-    showViewDialog: false,
-    showAddDialog: false,
-    showChangeDialog: false,
-    showAddJuzgadoDialog: false,
-    showGeneralJuzgadosDialog: false,
-    showAddNewJuzgadoDialog: false,
-    showEditJuzgadoDialog: false,
-    showDeleteJuzgadoDialog: false,
-    showJuzgadoSuccessDialog: false,
-  });
+  // Calendar states
+  const [view, setView] = useState("month");
+  const [date, setDate] = useState(new Date());
+  const [range, setRange] = useState({ start: null, end: null });
   
-  // Estados auxiliares
+  // Dialog states
+  const [showDialog, setShowDialog] = useState(false);
+  const [showViewDialog, setShowViewDialog] = useState(false);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showChangeDialog, setShowChangeDialog] = useState(false);
+  const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
+  
+  // Juzgado management states
+  const [showGeneralJuzgadosDialog, setShowGeneralJuzgadosDialog] = useState(false);
+  const [showAddNewJuzgadoDialog, setShowAddNewJuzgadoDialog] = useState(false);
+  const [showEditJuzgadoDialog, setShowEditJuzgadoDialog] = useState(false);
+  const [showDeleteJuzgadoDialog, setShowDeleteJuzgadoDialog] = useState(false);
+  const [showJuzgadoSuccessDialog, setShowJuzgadoSuccessDialog] = useState(false);
+  
+  // Selection and data states
   const [selectedJuzgado, setSelectedJuzgado] = useState(null);
   const [selectedSlotDate, setSelectedSlotDate] = useState(null);
   const [changeTurnData, setChangeTurnData] = useState(null);
-  const [toastMsgs, setToastMsgs] = useState([]);
-  const [loadingTurnos, setLoadingTurnos] = useState(false);
-  const [range, setRange] = useState({ start: null, end: null });
-  
-  // Estados para juzgados
   const [savedJuzgadoData, setSavedJuzgadoData] = useState(null);
+  
+  // Mode states
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
+  
+  // Toast states
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+  const [toastMsgs, setToastMsgs] = useState([]);
 
-  // Función helper para actualizar diálogos
-  const updateDialog = useCallback((dialogName, value) => {
-    setDialogs(prev => ({ ...prev, [dialogName]: value }));
-  }, []);
-
-  // API calls optimizadas
-  const apiCalls = useMemo(() => ({
-    fetchJuzgados: async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/juzgados`);
-        return res.data;
-      } catch (error) {
-        console.error("Error al cargar juzgados:", error);
-        return [];
-      }
-    },
-    
-    fetchTurnos: async (params = {}) => {
-      try {
-        const res = await axios.get(`${API_BASE}/turnos`, { params });
-        return res.data;
-      } catch (error) {
-        console.error("Error al cargar turnos:", error);
-        return [];
-      }
-    },
-    
-    fetchTodayTurnos: async () => {
-      const hoy = dayjs().tz(TIMEZONE).format("YYYY-MM-DD");
-      return apiCalls.fetchTurnos({ start: hoy, end: hoy });
-    }
-  }), []);
-
-  // Cargar datos iniciales
-  useEffect(() => {
-    const loadInitialData = async () => {
-      setLoadingTurnos(true);
-      
-      try {
-        const [juzgadosData, turnosData, todayData] = await Promise.all([
-          apiCalls.fetchJuzgados(),
-          apiCalls.fetchTurnos(),
-          apiCalls.fetchTodayTurnos()
-        ]);
-        
-        setJuzgados(juzgadosData);
-        setTurnos(turnosData);
-        setTodayTurnos(todayData);
-      } catch (error) {
-        console.error("Error cargando datos iniciales:", error);
-      } finally {
-        setLoadingTurnos(false);
-      }
-    };
-
-    loadInitialData();
-  }, [apiCalls]);
-
-  // Optimizar actualización de fecha/hora (cada 30 segundos en lugar de 10)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentDateTime(new Date());
-    }, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Memoizar eventos del calendario
+  // ===== COMPUTED VALUES =====
+  
+  // Events for calendar
   const events = useMemo(() => {
-    if (!juzgados.length || !turnos.length) return [];
-    
+    if (juzgados.length === 0 || turnos.length === 0) return [];
     return turnos.map((turno) => {
       const juzgado = juzgados.find((j) => j.id === turno.juzgado_id) || {};
-      const start = dayjs.tz(turno.turn_date, TIMEZONE).startOf('day').toDate();
-      const end = dayjs.tz(turno.turn_date, TIMEZONE).endOf('day').toDate();
-      
+      const start = dayjs
+        .tz(turno.turn_date, "America/Bogota")
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toDate();
+      const end = dayjs
+        .tz(turno.turn_date, "America/Bogota")
+        .hour(23)
+        .minute(59)
+        .second(59)
+        .millisecond(999)
+        .toDate();
       return {
         title: juzgado.name || "Juzgado",
         email: juzgado.email || "",
@@ -162,63 +128,204 @@ const Home = () => {
     });
   }, [juzgados, turnos]);
 
-  // Memoizar juzgado de hoy
-  const juzgadoHoy = useMemo(() => {
-    const hoy = dayjs().tz(TIMEZONE).format("YYYY-MM-DD");
-    const turnoHoy = todayTurnos.find(t => 
-      dayjs.tz(t.turn_date, TIMEZONE).format("YYYY-MM-DD") === hoy
+  // Today's shift
+  const turnoHoy = useMemo(() => {
+    const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
+    return todayTurnos.find(
+      (t) =>
+        dayjs.tz(t.turn_date, "America/Bogota").format("YYYY-MM-DD") === hoy
     );
-    
-    if (!turnoHoy) return null;
-    return juzgados.find(j => j.id === turnoHoy.juzgado_id);
-  }, [todayTurnos, juzgados]);
+  }, [todayTurnos]);
 
-  // Funciones optimizadas
-  const showToastMsg = useCallback((msg) => {
-    setToastMsgs(prev => [...prev, msg]);
-    setTimeout(() => {
-      setToastMsgs(prev => prev.slice(1));
-    }, 2000);
+  // Today's juzgado
+  const juzgadoHoy = useMemo(() => {
+    if (!turnoHoy) return null;
+    return juzgados.find((j) => j.id === turnoHoy.juzgado_id);
+  }, [juzgados, turnoHoy]);
+
+  // Selected day shift
+  const turnoDiaSeleccionado = useMemo(() => {
+    if (view === "week" || view === "day") {
+      const diaSeleccionado = dayjs(date)
+        .tz("America/Bogota")
+        .format("YYYY-MM-DD");
+      return turnos.find(
+        (t) =>
+          dayjs.tz(t.turn_date, "America/Bogota").format("YYYY-MM-DD") ===
+          diaSeleccionado
+      );
+    }
+    return null;
+  }, [view, date, turnos]);
+
+  // Selected day juzgado
+  const juzgadoDiaSeleccionado = useMemo(() => {
+    if (!turnoDiaSeleccionado) return null;
+    return juzgados.find((j) => j.id === turnoDiaSeleccionado.juzgado_id);
+  }, [juzgados, turnoDiaSeleccionado]);
+
+  // Juzgado to display
+  const juzgadoParaMostrar = useMemo(() => {
+    if (view === "week" || view === "day") {
+      return juzgadoDiaSeleccionado;
+    }
+    return juzgadoHoy;
+  }, [view, juzgadoHoy, juzgadoDiaSeleccionado]);
+
+  // ===== DATA LOADING FUNCTIONS =====
+  
+  const cargarJuzgados = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/juzgados");
+      setJuzgados(res.data);
+    } catch (error) {
+      console.error("Error al cargar juzgados:", error);
+      setJuzgados([]);
+    }
+  };
+
+  const cargarTurnos = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/turnos");
+      setTurnos(res.data);
+
+      const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
+      const resHoy = await axios.get("http://localhost:5000/api/turnos", {
+        params: { start: hoy, end: hoy },
+      });
+      setTodayTurnos(resHoy.data);
+    } catch {
+      setTurnos([]);
+      setTodayTurnos([]);
+    }
+  };
+
+  const recargarDatos = async () => {
+    await Promise.all([cargarJuzgados(), cargarTurnos()]);
+  };
+
+  // ===== EFFECTS =====
+  
+  // Load initial data
+  useEffect(() => {
+    cargarJuzgados();
   }, []);
 
-  const formatDateTime = useCallback((date) => {
-    return date.toLocaleString("es-CO", {
-      timeZone: TIMEZONE,
+  useEffect(() => {
+    const cargarTurnosHoy = async () => {
+      try {
+        const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
+        const res = await axios.get("http://localhost:5000/api/turnos", {
+          params: { start: hoy, end: hoy },
+        });
+        setTodayTurnos(res.data);
+      } catch {
+        setTodayTurnos([]);
+      }
+    };
+
+    cargarTurnosHoy();
+  }, []);
+
+  useEffect(() => {
+    setLoadingTurnos(true);
+    axios
+      .get("http://localhost:5000/api/turnos")
+      .then((res) => {
+        setTurnos(res.data);
+        setLoadingTurnos(false);
+      })
+      .catch(() => {
+        setTurnos([]);
+        setLoadingTurnos(false);
+      });
+  }, []);
+
+  // Update current time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Handle range changes
+  useEffect(() => {
+    if (range.start && range.end) {
+      setLoadingTurnos(true);
+      axios
+        .get("http://localhost:5000/api/turnos", {
+          params: { start: range.start, end: range.end },
+        })
+        .then((res) => setTurnos(res.data))
+        .catch(() => setTurnos([]))
+        .finally(() => setLoadingTurnos(false));
+    }
+  }, [range.start, range.end]);
+
+  // Set initial month range
+  useEffect(() => {
+    const startOfMonth = dayjs().startOf("month").format("YYYY-MM-DD");
+    const endOfMonth = dayjs().endOf("month").format("YYYY-MM-DD");
+    setRange({ start: startOfMonth, end: endOfMonth });
+  }, []);
+
+  // ===== UTILITY FUNCTIONS =====
+  
+  const formatDateTime = (date) => {
+    const options = {
+      timeZone: "America/Bogota",
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-    });
-  }, []);
+    };
+    return date.toLocaleString("es-CO", options);
+  };
 
-  const recargarDatos = useCallback(async () => {
-    try {
-      const [juzgadosData, turnosData, todayData] = await Promise.all([
-        apiCalls.fetchJuzgados(),
-        apiCalls.fetchTurnos(),
-        apiCalls.fetchTodayTurnos()
-      ]);
-      
-      setJuzgados(juzgadosData);
-      setTurnos(turnosData);
-      setTodayTurnos(todayData);
-    } catch (error) {
-      console.error("Error recargando datos:", error);
-    }
-  }, [apiCalls]);
+  const showToastMsg = (msg) => {
+    setToastMsgs((prev) => [...prev, msg]);
+    setTimeout(() => {
+      setToastMsgs((prev) => prev.slice(1));
+    }, 2000);
+  };
 
-  // Handlers para eventos del calendario
-  const handleSelectSlot = useCallback(({ start }) => {
-    const hasEvent = events.some(ev => dayjs(ev.start).isSame(dayjs(start), "day"));
+  const dayPropGetter = (date) => {
+    const isToday = dayjs(date).isSame(dayjs(), "day");
+    return {
+      className: isToday ? "rbc-today" : "",
+      style: isToday
+        ? { backgroundColor: "#bafaba", border: "2px solid #003f75" }
+        : {},
+    };
+  };
+
+  const eventPropGetter = (event) => {
+    return {
+      style: {
+        backgroundColor: "#bdf3bd",
+        color: "#003f75",
+        borderRadius: "4px",
+        border: "1px solid #003f75",
+      },
+    };
+  };
+
+  // ===== EVENT HANDLERS =====
+  
+  const handleSelectSlot = ({ start }) => {
+    const hasEvent = events.some((ev) =>
+      dayjs(ev.start).isSame(dayjs(start), "day")
+    );
     if (!hasEvent) {
       setSelectedSlotDate(start);
-      updateDialog('showAddDialog', true);
+      setShowAddDialog(true);
     }
-  }, [events, updateDialog]);
+  };
 
-  const handleSelectEvent = useCallback((event) => {
+  const handleSelectEvent = (event) => {
     setSelectedJuzgado({
       nombre: event.title,
       email: event.email,
@@ -226,94 +333,116 @@ const Home = () => {
       turn_date: event.turn_date,
       juzgado_id: event.juzgado_id,
     });
-    updateDialog('showViewDialog', true);
-  }, [updateDialog]);
+    setShowViewDialog(true);
+  };
 
-  const handleCopyEmail = useCallback(() => {
-    if (juzgadoHoy?.email) {
+  const handleCopyEmail = () => {
+    if (juzgadoHoy && juzgadoHoy.email) {
       navigator.clipboard.writeText(juzgadoHoy.email).then(() => {
         showToastMsg("¡Se copió con éxito!");
       });
     }
-  }, [juzgadoHoy?.email, showToastMsg]);
+  };
 
-  // Handlers para gestión de juzgados
-  const handleSaveNuevoJuzgado = useCallback(async (juzgadoData) => {
-    updateDialog('showAddNewJuzgadoDialog', false);
-    updateDialog('showGeneralJuzgadosDialog', false);
-    
+  const handleSaveJuzgado = async (juzgado, date) => {
+    try {
+      if (!juzgado?.id || !date) {
+        console.error("Datos incompletos:", { juzgado, date });
+        showToastMsg("Error: Faltan datos del juzgado o fecha");
+        return;
+      }
+
+      const turn_date = dayjs(date).format("YYYY-MM-DD");
+      console.log("Enviando datos al backend:", {
+        juzgado_id: juzgado.id,
+        turn_date,
+        estado_id: 1,
+      });
+
+      const response = await axios.post("http://localhost:5000/api/turnos", {
+        juzgado_id: juzgado.id,
+        turn_date,
+        estado_id: 1,
+      });
+
+      console.log("Respuesta del backend:", response.data);
+      await recargarDatos();
+      showToastMsg("Turno guardado correctamente");
+    } catch (err) {
+      console.error(
+        "Error al guardar el turno:",
+        err.response?.data || err.message
+      );
+      showToastMsg(
+        `Error al guardar el turno: ${err.response?.data?.error || err.message}`
+      );
+    }
+  };
+
+  const handleRangeChange = (range) => {
+    let start, end;
+    if (Array.isArray(range)) {
+      start = dayjs(range[0]).format("YYYY-MM-DD");
+      end = dayjs(range[range.length - 1]).format("YYYY-MM-DD");
+    } else if (range.start && range.end) {
+      start = dayjs(range.start).format("YYYY-MM-DD");
+      end = dayjs(range.end).format("YYYY-MM-DD");
+    } else {
+      start = dayjs().startOf("day").format("YYYY-MM-DD");
+      end = dayjs().endOf("day").format("YYYY-MM-DD");
+    }
+    setRange({ start, end });
+  };
+
+  // ===== JUZGADO MANAGEMENT HANDLERS =====
+  
+  const handleSaveNuevoJuzgado = async (juzgadoData) => {
+    setShowAddNewJuzgadoDialog(false);
+    setShowGeneralJuzgadosDialog(false);
     setSavedJuzgadoData(juzgadoData);
     setIsEditMode(false);
     setIsDeleteMode(false);
-    updateDialog('showJuzgadoSuccessDialog', true);
-    
+    setShowJuzgadoSuccessDialog(true);
     await recargarDatos();
-  }, [updateDialog, recargarDatos]);
+  };
 
-  const handleSaveEditJuzgado = useCallback(async (juzgadoData) => {
-    updateDialog('showEditJuzgadoDialog', false);
-    updateDialog('showGeneralJuzgadosDialog', false);
-    
+  const handleSaveEditJuzgado = async (juzgadoData) => {
+    setShowEditJuzgadoDialog(false);
+    setShowGeneralJuzgadosDialog(false);
     setSavedJuzgadoData(juzgadoData);
     setIsEditMode(true);
     setIsDeleteMode(false);
-    updateDialog('showJuzgadoSuccessDialog', true);
-    
+    setShowJuzgadoSuccessDialog(true);
     await recargarDatos();
-  }, [updateDialog, recargarDatos]);
+  };
 
-  const handleDeleteJuzgado = useCallback(async (juzgadoData) => {
-    updateDialog('showDeleteJuzgadoDialog', false);
-    updateDialog('showGeneralJuzgadosDialog', false);
-    
+  const handleDeleteJuzgado = async (juzgadoData) => {
+    setShowDeleteJuzgadoDialog(false);
+    setShowGeneralJuzgadosDialog(false);
     setSavedJuzgadoData(juzgadoData);
     setIsEditMode(false);
     setIsDeleteMode(true);
-    updateDialog('showJuzgadoSuccessDialog', true);
-    
+    setShowJuzgadoSuccessDialog(true);
     await recargarDatos();
-  }, [updateDialog, recargarDatos]);
+  };
 
-  // Props para el calendario (memoizadas)
-  const calendarProps = useMemo(() => ({
-    dayPropGetter: (date) => {
-      const isToday = dayjs(date).isSame(dayjs(), "day");
-      return {
-        className: isToday ? "rbc-today" : "",
-        style: isToday
-          ? { backgroundColor: "#bafaba", border: "2px solid #003f75" }
-          : {},
-      };
-    },
-    
-    eventPropGetter: () => ({
-      style: {
-        backgroundColor: "#bdf3bd",
-        color: "#003f75",
-        borderRadius: "4px",
-        border: "1px solid #003f75",
-      },
-    }),
-    
-    messages: {
-      month: "Mes",
-      week: "Semana",
-      day: "Día",
-      today: "Hoy",
-      previous: "Anterior",
-      next: "Siguiente",
-      agenda: "Agenda",
-    }
-  }), []);
+  const handleJuzgadoSuccessDialogClose = () => {
+    setShowJuzgadoSuccessDialog(false);
+    setSavedJuzgadoData(null);
+    setIsEditMode(false);
+    setIsDeleteMode(false);
+  };
 
+  // ===== RENDER =====
+  
   return (
     <div className="home-container">
       <Header />
+      
       <div className="title">
         <h1>Automatización de Correos Electrónicos</h1>
       </div>
       
-      {/* Sección principal */}
       <div className="flex-row content-wrapper">
         <div className="flex-row content-003">
           <div className="flex-column date-section">
@@ -326,20 +455,20 @@ const Home = () => {
           </div>
           
           <div className="flex-column juzgado-section">
-            <div className="juzgado">
+            <div className="juzgado ">
               <h1>Juzgado Abierto</h1>
             </div>
             <div className="name-juzgado flex-column">
               <h1
                 style={{ cursor: "pointer" }}
-                onClick={() => updateDialog('showDialog', true)}
+                onClick={() => setShowDialog(true)}
               >
                 {juzgadoHoy ? juzgadoHoy.name : "No hay juzgado de turno hoy"}
               </h1>
               <div className="juzgado-email flex-row">
                 <h2
                   style={{ cursor: "pointer" }}
-                  onClick={() => updateDialog('showDialog', true)}
+                  onClick={() => setShowDialog(true)}
                 >
                   {juzgadoHoy ? juzgadoHoy.email : ""}
                 </h2>
@@ -353,12 +482,11 @@ const Home = () => {
           </div>
         </div>
       </div>
-
+      
       <div className="linear-divide flex-column">
         <hr />
       </div>
-
-      {/* Calendario */}
+      
       <div className="calendar-container">
         <LoadingDialog
           open={loadingTurnos}
@@ -378,21 +506,30 @@ const Home = () => {
           selectable={true}
           onSelectSlot={handleSelectSlot}
           onSelectEvent={handleSelectEvent}
-          dayPropGetter={calendarProps.dayPropGetter}
-          eventPropGetter={calendarProps.eventPropGetter}
+          onRangeChange={handleRangeChange}
+          dayPropGetter={dayPropGetter}
+          eventPropGetter={eventPropGetter}
           culture="es"
-          messages={calendarProps.messages}
+          messages={{
+            month: "Mes",
+            week: "Semana",
+            day: "Día",
+            today: "Hoy",
+            previous: "Anterior",
+            next: "Siguiente",
+            agenda: "Agenda",
+          }}
         />
       </div>
-
+      
       <div className="download-container">
-        <Buttons onJuzgadosClick={() => updateDialog('showGeneralJuzgadosDialog', true)} />
+        <Buttons onJuzgadosClick={() => setShowGeneralJuzgadosDialog(true)} />
       </div>
-
-      {/* Gráficas - Lazy loading opcional */}
+      
       <div className="linear-divide flex-column">
         <hr />
       </div>
+      
       <div className="grafic-content flex-column">
         <div className="title">
           <h1>Gráficas</h1>
@@ -406,11 +543,11 @@ const Home = () => {
           <RadarChartComponent />
         </div>
       </div>
-
-      {/* Lista de juzgados */}
+      
       <div className="linear-divide flex-column">
         <hr />
       </div>
+      
       <div className="table-container flex-column">
         <div className="title">
           <h1>Lista de Juzgados</h1>
@@ -418,102 +555,121 @@ const Home = () => {
         <div className="table-content"></div>
       </div>
 
-      {/* Toasts */}
+      {/* Toast notifications */}
       <div className="toast-container">
         {toastMsgs.map((msg, idx) => (
           <Toast key={idx} show={true} message={msg} />
         ))}
       </div>
 
-      {/* Todos los diálogos */}
+      {/* Main dialogs */}
       <JuzgadoDialog
-        open={dialogs.showDialog}
-        onClose={() => updateDialog('showDialog', false)}
+        open={showDialog}
+        onClose={() => setShowDialog(false)}
         juzgadoHoy={juzgadoHoy}
         showToastMsg={showToastMsg}
       />
-
+      
       <ViewJuzgadoDialog
-        open={dialogs.showViewDialog}
+        open={showViewDialog}
         onClose={() => {
-          updateDialog('showViewDialog', false);
+          setShowViewDialog(false);
           setSelectedJuzgado(null);
         }}
         juzgado={selectedJuzgado}
         showToastMsg={showToastMsg}
-        onTurnoEliminado={recargarDatos}
+        onTurnoEliminado={cargarTurnos}
         onChangeTurn={(juzgado) => {
           setChangeTurnData(juzgado);
-          updateDialog('showViewDialog', false);
-          updateDialog('showChangeDialog', true);
+          setShowViewDialog(false);
+          setShowChangeDialog(true);
         }}
       />
-
+      
       <AddJuzgadoCalendarDialog
-        open={dialogs.showAddDialog}
-        onClose={() => updateDialog('showAddDialog', false)}
-        onSave={async (juzgado, date) => {
-          try {
-            const turn_date = dayjs(date).format("YYYY-MM-DD");
-            await axios.post(`${API_BASE}/turnos`, {
-              juzgado_id: juzgado.id,
-              turn_date,
-              estado_id: 1,
-            });
-            await recargarDatos();
-            showToastMsg("Turno guardado correctamente");
-          } catch (err) {
-            showToastMsg("Error al guardar el turno");
-          }
-        }}
+        open={showAddDialog}
+        onClose={() => setShowAddDialog(false)}
+        onSave={handleSaveJuzgado}
         slotDate={selectedSlotDate}
         showToastMsg={showToastMsg}
       />
+      
+      <ChangeJuzgadoTurnDialog
+        open={showChangeDialog}
+        onClose={() => setShowChangeDialog(false)}
+        onChange={async (nuevoJuzgado, slotDate) => {
+          try {
+            await axios.put(
+              `http://localhost:5000/api/turnos/${changeTurnData.turno_id}`,
+              {
+                nuevo_juzgado_id: nuevoJuzgado.id,
+                turn_date: changeTurnData.turn_date,
+              }
+            );
+            showToastMsg("Turno cambiado correctamente");
+            setShowChangeDialog(false);
+            await recargarDatos();
+          } catch (err) {
+            showToastMsg("Error al cambiar el turno");
+          }
+        }}
+        slotDate={changeTurnData?.turn_date}
+        currentJuzgado={
+          changeTurnData && {
+            name: changeTurnData.nombre,
+            email: changeTurnData.email,
+            id: changeTurnData.juzgado_id,
+          }
+        }
+        showToastMsg={showToastMsg}
+      />
+      
+      <AddJuzgadoDialog
+        open={showAddJuzgadoDialog}
+        onClose={() => setShowAddJuzgadoDialog(false)}
+        onSave={recargarDatos}
+      />
 
-      {/* Diálogos de gestión de juzgados */}
+      {/* Juzgado management dialogs */}
       <GeneralJuzgadosDialog
-        open={dialogs.showGeneralJuzgadosDialog}
-        onClose={() => updateDialog('showGeneralJuzgadosDialog', false)}
+        open={showGeneralJuzgadosDialog}
+        onClose={() => setShowGeneralJuzgadosDialog(false)}
         onAddJuzgado={() => {
-          updateDialog('showGeneralJuzgadosDialog', false);
-          updateDialog('showAddNewJuzgadoDialog', true);
+          setShowGeneralJuzgadosDialog(false);
+          setShowAddNewJuzgadoDialog(true);
         }}
         onEditJuzgado={() => {
-          updateDialog('showGeneralJuzgadosDialog', false);
-          updateDialog('showEditJuzgadoDialog', true);
+          setShowGeneralJuzgadosDialog(false);
+          setShowEditJuzgadoDialog(true);
         }}
         onDeleteJuzgado={() => {
-          updateDialog('showGeneralJuzgadosDialog', false);
-          updateDialog('showDeleteJuzgadoDialog', true);
+          setShowGeneralJuzgadosDialog(false);
+          setShowDeleteJuzgadoDialog(true);
         }}
       />
 
       <AddJuzgadoDialog
-        open={dialogs.showAddNewJuzgadoDialog}
-        onClose={() => updateDialog('showAddNewJuzgadoDialog', false)}
+        open={showAddNewJuzgadoDialog}
+        onClose={() => setShowAddNewJuzgadoDialog(false)}
         onSave={handleSaveNuevoJuzgado}
       />
 
       <EditJuzgadoDialog
-        open={dialogs.showEditJuzgadoDialog}
-        onClose={() => updateDialog('showEditJuzgadoDialog', false)}
+        open={showEditJuzgadoDialog}
+        onClose={() => setShowEditJuzgadoDialog(false)}
         onSave={handleSaveEditJuzgado}
       />
 
       <DeleteJuzgadoDialog
-        open={dialogs.showDeleteJuzgadoDialog}
-        onClose={() => updateDialog('showDeleteJuzgadoDialog', false)}
+        open={showDeleteJuzgadoDialog}
+        onClose={() => setShowDeleteJuzgadoDialog(false)}
         onDelete={handleDeleteJuzgado}
       />
 
+      {/* Success dialog */}
       <SaveJuzgadoDialog
-        show={dialogs.showJuzgadoSuccessDialog}
-        onClose={() => {
-          updateDialog('showJuzgadoSuccessDialog', false);
-          setSavedJuzgadoData(null);
-          setIsEditMode(false);
-          setIsDeleteMode(false);
-        }}
+        show={showJuzgadoSuccessDialog}
+        onClose={handleJuzgadoSuccessDialogClose}
         juzgadoData={savedJuzgadoData}
         municipioName={savedJuzgadoData?.municipio_name}
         isEdit={isEditMode}
