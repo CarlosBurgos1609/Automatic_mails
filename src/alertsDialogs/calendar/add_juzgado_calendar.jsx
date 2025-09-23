@@ -55,10 +55,8 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     onSave(juzgadoSeleccionado, slotDate);
     showToastMsg("Se guardó correctamente");
     
-    // Limpiar estado
-    setBusqueda("");
-    setJuzgadoSeleccionado(null);
-    onClose();
+    // Limpiar estado y cerrar inmediatamente
+    handleDialogClose();
   };
 
   const handleCopyEmail = () => {
@@ -70,9 +68,11 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
   };
 
   const handleDialogClose = () => {
+    // Limpieza inmediata para cierre rápido
     setBusqueda("");
     setJuzgadoSeleccionado(null);
     setError("");
+    setLoadingJuzgados(false);
     onClose();
   };
 
@@ -88,19 +88,11 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
       <Copy show={showCopy} message="Se guardó correctamente" />
       {open && !showCopy && (
         <div className="alert-dialog-backdrop">
-          <div className="alert-dialog add-juzgado-dialog">
+          <div className="alert-dialog add-juzgado-dialog add-juzgado-calendar-dialog">
             <h1>Agregar Turno del Juzgado</h1>
             
             {fechaSeleccionada && (
-              <div style={{ 
-                marginBottom: "16px", 
-                padding: "12px", 
-                backgroundColor: "#e6f0fa", 
-                borderRadius: "8px",
-                color: "#003f75",
-                fontWeight: "bold",
-                textAlign: "center"
-              }}>
+              <div className="fecha-seleccionada">
                 📅 Fecha seleccionada: {fechaSeleccionada}
               </div>
             )}
@@ -111,26 +103,17 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                 placeholder="Buscar juzgado por nombre, código o email..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                style={{ textTransform: 'none' }}
               />
             </div>
 
-            {/* Lista de juzgados con diseño similar al de editar */}
-            <div style={{ 
-              maxHeight: "350px", 
-              overflowY: "auto", 
-              width: "100%",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "8px",
-              marginBottom: "16px"
-            }}>
+            {/* Lista de juzgados */}
+            <div className="juzgados-list">
               {loadingJuzgados ? (
-                <div style={{ textAlign: "center", padding: "20px" }}>
+                <div className="loading-state">
                   Cargando juzgados...
                 </div>
               ) : juzgadosFiltrados.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                <div className="empty-state">
                   {busqueda ? "No se encontraron juzgados" : "No hay juzgados disponibles"}
                 </div>
               ) : (
@@ -138,53 +121,15 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                   <div
                     key={juzgado.id}
                     onClick={() => handleSeleccionarJuzgado(juzgado)}
-                    style={{
-                      padding: "12px",
-                      border: juzgadoSeleccionado?.id === juzgado.id 
-                        ? "2px solid #003f75" 
-                        : "1px solid #ddd",
-                      borderRadius: "6px",
-                      margin: "8px 0",
-                      cursor: "pointer",
-                      backgroundColor: juzgadoSeleccionado?.id === juzgado.id 
-                        ? "#e6f0fa" 
-                        : "#f9f9f9",
-                      transition: "all 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (juzgadoSeleccionado?.id !== juzgado.id) {
-                        e.target.style.backgroundColor = "#f0f7ff";
-                        e.target.style.borderColor = "#003f75";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (juzgadoSeleccionado?.id !== juzgado.id) {
-                        e.target.style.backgroundColor = "#f9f9f9";
-                        e.target.style.borderColor = "#ddd";
-                      }
-                    }}
+                    className={`juzgado-item ${juzgadoSeleccionado?.id === juzgado.id ? 'selected' : ''}`}
                   >
-                    <div style={{ 
-                      fontWeight: "bold", 
-                      color: juzgadoSeleccionado?.id === juzgado.id ? "#003f75" : "#333",
-                      marginBottom: "4px"
-                    }}>
+                    <div className={`juzgado-header ${juzgadoSeleccionado?.id === juzgado.id ? 'selected' : ''}`}>
                       {juzgado.code} - {juzgado.name}
                     </div>
-                    <div style={{ 
-                      fontSize: "14px", 
-                      color: "#666",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center"
-                    }}>
+                    <div className="juzgado-email-row">
                       <span>{juzgado.email}</span>
                       {juzgadoSeleccionado?.id === juzgado.id && (
-                        <span style={{ 
-                          color: "#003f75", 
-                          fontWeight: "bold",
-                          fontSize: "12px"
-                        }}>
+                        <span className="selected-badge">
                           ✓ SELECCIONADO
                         </span>
                       )}
@@ -195,40 +140,23 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
             </div>
 
             {error && (
-              <div className="error-message" style={{ marginBottom: "16px" }}>
+              <div className="error-message">
                 {error}
               </div>
             )}
 
             {/* Información del juzgado seleccionado */}
             {juzgadoSeleccionado && (
-              <div style={{
-                marginBottom: "16px",
-                padding: "12px",
-                backgroundColor: "#f0f7ff",
-                borderRadius: "8px",
-                border: "1px solid #003f75"
-              }}>
-                <div style={{ fontWeight: "bold", color: "#003f75", marginBottom: "8px" }}>
+              <div className="juzgado-preview">
+                <div className="preview-title">
                   Juzgado Seleccionado:
                 </div>
-                <div style={{ fontSize: "14px", color: "#333", marginBottom: "8px" }}>
+                <div className="preview-details">
                   <strong>Código:</strong> {juzgadoSeleccionado.code}<br />
                   <strong>Nombre:</strong> {juzgadoSeleccionado.name}<br />
                   <strong>Email:</strong> {juzgadoSeleccionado.email}
                 </div>
-                <button 
-                  onClick={handleCopyEmail} 
-                  style={{
-                    padding: "6px 12px",
-                    backgroundColor: "#003f75",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "12px"
-                  }}
-                >
+                <button onClick={handleCopyEmail} className="copy-email-btn">
                   📋 Copiar Email
                 </button>
               </div>
@@ -236,13 +164,9 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
 
             <div className="dialog-actions flex-column">
               <button
-                className="edit-button-full"
+                className={`edit-button-full save-button ${!juzgadoSeleccionado ? 'disabled' : ''}`}
                 onClick={handleGuardar}
                 disabled={!juzgadoSeleccionado}
-                style={{
-                  backgroundColor: juzgadoSeleccionado ? "#003f75" : "#ccc",
-                  cursor: juzgadoSeleccionado ? "pointer" : "not-allowed"
-                }}
               >
                 {juzgadoSeleccionado ? "Guardar Turno" : "Seleccione un Juzgado"}
               </button>

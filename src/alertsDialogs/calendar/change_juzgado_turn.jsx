@@ -75,9 +75,12 @@ export default function ChangeJuzgadoTurnDialog({
   };
 
   const handleClose = () => {
+    // Limpieza inmediata para cierre rápido
     setBusqueda("");
     setNuevoJuzgado(null);
     setError("");
+    setIsChanging(false);
+    setLoading(false);
     onClose();
   };
 
@@ -85,26 +88,15 @@ export default function ChangeJuzgadoTurnDialog({
 
   return (
     <div className="alert-dialog-backdrop">
-      <div className="alert-dialog add-juzgado-dialog">
+      <div className="alert-dialog add-juzgado-dialog change-juzgado-dialog">
         <h1>Cambiar Turno de Juzgado</h1>
         
         {/* Información del turno actual */}
-        <div style={{ 
-          marginBottom: "20px", 
-          padding: "16px", 
-          backgroundColor: "#e6f0fa", 
-          borderRadius: "8px",
-          border: "1px solid #003f75"
-        }}>
-          <div style={{ 
-            fontWeight: "bold", 
-            color: "#003f75", 
-            marginBottom: "8px",
-            fontSize: "16px"
-          }}>
+        <div className="turno-info">
+          <div className="fecha-info">
             📅 Fecha: {fechaSeleccionada}
           </div>
-          <div style={{ color: "#003f75", fontSize: "14px" }}>
+          <div className="juzgado-actual">
             <strong>Juzgado actual:</strong>{" "}
             {currentJuzgado
               ? `${currentJuzgado.name} (${currentJuzgado.email})`
@@ -120,26 +112,17 @@ export default function ChangeJuzgadoTurnDialog({
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             disabled={loading || isChanging}
-            style={{ textTransform: 'none' }}
           />
         </div>
 
         {/* Lista de juzgados */}
-        <div style={{ 
-          maxHeight: "300px", 
-          overflowY: "auto", 
-          width: "100%",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "8px",
-          marginBottom: "16px"
-        }}>
+        <div className="juzgados-list">
           {loading ? (
-            <div style={{ textAlign: "center", padding: "20px" }}>
+            <div className="loading-state">
               Cargando juzgados...
             </div>
           ) : juzgadosFiltrados.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+            <div className="empty-state">
               {busqueda ? "No se encontraron juzgados" : "No hay juzgados disponibles"}
             </div>
           ) : (
@@ -147,44 +130,17 @@ export default function ChangeJuzgadoTurnDialog({
               <div
                 key={juzgado.id}
                 onClick={() => handleSeleccionarJuzgado(juzgado)}
-                style={{
-                  padding: "12px",
-                  border: nuevoJuzgado?.id === juzgado.id ? "2px solid #003f75" : "1px solid #ddd",
-                  borderRadius: "6px",
-                  margin: "8px 0",
-                  cursor: "pointer",
-                  backgroundColor: nuevoJuzgado?.id === juzgado.id ? "#e6f0fa" : "#f9f9f9",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  if (nuevoJuzgado?.id !== juzgado.id) {
-                    e.target.style.backgroundColor = "#f0f8ff";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (nuevoJuzgado?.id !== juzgado.id) {
-                    e.target.style.backgroundColor = "#f9f9f9";
-                  }
-                }}
+                className={`juzgado-item ${nuevoJuzgado?.id === juzgado.id ? 'selected' : ''}`}
               >
-                <div style={{ 
-                  fontWeight: "bold", 
-                  color: "#003f75",
-                  marginBottom: "4px"
-                }}>
+                <div className="juzgado-name">
                   {juzgado.code} - {juzgado.name}
                   {nuevoJuzgado?.id === juzgado.id && (
-                    <span style={{ 
-                      marginLeft: "8px", 
-                      fontSize: "12px", 
-                      color: "#28a745",
-                      fontWeight: "normal"
-                    }}>
+                    <span className="selected-indicator">
                       ✓ Seleccionado
                     </span>
                   )}
                 </div>
-                <div style={{ fontSize: "14px", color: "#666" }}>
+                <div className="juzgado-email">
                   📧 {juzgado.email}
                 </div>
               </div>
@@ -194,24 +150,14 @@ export default function ChangeJuzgadoTurnDialog({
 
         {/* Juzgado seleccionado */}
         {nuevoJuzgado && (
-          <div style={{ 
-            marginBottom: "16px", 
-            padding: "12px", 
-            backgroundColor: "#d4edda", 
-            borderRadius: "8px",
-            border: "1px solid #28a745"
-          }}>
-            <div style={{ 
-              fontWeight: "bold", 
-              color: "#155724",
-              marginBottom: "4px"
-            }}>
+          <div className="juzgado-seleccionado">
+            <div className="selection-title">
               ✅ Nuevo juzgado seleccionado:
             </div>
-            <div style={{ color: "#155724", fontSize: "14px" }}>
+            <div className="selection-details">
               {nuevoJuzgado.code} - {nuevoJuzgado.name}
             </div>
-            <div style={{ color: "#155724", fontSize: "14px" }}>
+            <div className="selection-details">
               📧 {nuevoJuzgado.email}
             </div>
           </div>
@@ -219,7 +165,7 @@ export default function ChangeJuzgadoTurnDialog({
 
         {/* Mensaje de error */}
         {error && (
-          <div className="error-message" style={{ marginBottom: "16px" }}>
+          <div className="error-message">
             {error}
           </div>
         )}
@@ -227,13 +173,9 @@ export default function ChangeJuzgadoTurnDialog({
         {/* Botones de acción */}
         <div className="dialog-actions flex-column">
           <button
-            className="edit-button-full"
+            className={`edit-button-full confirm-button ${!nuevoJuzgado ? 'disabled' : ''}`}
             onClick={handleGuardar}
             disabled={!nuevoJuzgado || isChanging || loading}
-            style={{
-              backgroundColor: nuevoJuzgado ? "#28a745" : "#ccc",
-              cursor: nuevoJuzgado && !isChanging && !loading ? "pointer" : "not-allowed"
-            }}
           >
             {isChanging ? "Cambiando turno..." : "Confirmar Cambio"}
           </button>

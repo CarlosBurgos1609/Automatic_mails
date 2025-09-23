@@ -55,8 +55,6 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
     setError("");
     
     try {
-      console.log('🗑️ Eliminando juzgado:', juzgadoSeleccionado);
-
       const response = await fetch(
         `http://localhost:5000/api/juzgados/${juzgadoSeleccionado.id}`,
         {
@@ -67,9 +65,6 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
         }
       );
 
-      console.log('📥 Response status:', response.status);
-
-      // Verificar si la respuesta es JSON antes de parsearlo
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         const textResponse = await response.text();
@@ -78,13 +73,10 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
       }
 
       const result = await response.json();
-      console.log('📥 Response data:', result);
 
       if (response.ok) {
-        // Obtener nombre del municipio para mostrar en el mensaje
         const municipio = municipios.find(m => m.id === juzgadoSeleccionado.municipio_id);
         
-        // Preparar los datos para el diálogo de éxito
         const deletedData = {
           codigo: juzgadoSeleccionado.code,
           nombre: juzgadoSeleccionado.name,
@@ -92,15 +84,13 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
           municipio_name: municipio?.name || "",
         };
 
-        // Limpiar y volver al paso 1
+        // Limpiar y cerrar inmediatamente
         handleVolver();
 
-        // Llamar a onDelete con los datos
         if (onDelete) {
           onDelete(deletedData);
         }
       } else {
-        // Manejar errores específicos
         if (response.status === 409) {
           setError(result.error || "El juzgado tiene turnos asociados y no puede ser eliminado");
         } else if (response.status === 404) {
@@ -118,6 +108,7 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
   };
 
   const handleVolver = () => {
+    // Limpieza inmediata para navegación rápida
     setStep(1);
     setJuzgadoSeleccionado(null);
     setError("");
@@ -125,7 +116,10 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
   };
 
   const handleDialogClose = () => {
+    // Limpieza completa e inmediata
     handleVolver();
+    setLoadingJuzgados(false);
+    setIsDeleting(false);
     onClose();
   };
 
@@ -144,36 +138,32 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
 
   return (
     <div className="alert-dialog-backdrop">
-      <div className="alert-dialog add-juzgado-dialog">
+      <div className="alert-dialog add-juzgado-dialog juzgado-management-dialog delete-juzgado-dialog">
         {step === 1 ? (
           // PASO 1: Lista de juzgados
           <>
-            <h1 style={{ color: "#e53935" }}>Seleccionar Juzgado para Eliminar</h1>
+            <h1>Seleccionar Juzgado para Eliminar</h1>
             
-            <div className="input-busqueda">
+            <div className="step-indicator list-step">
+              Paso 1: Seleccione el juzgado que desea eliminar
+            </div>
+            
+            <div className="search-input">
               <input
                 type="text"
                 placeholder="Buscar juzgado por nombre, código o email..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                style={{ textTransform: 'none' }}
               />
             </div>
 
-            <div style={{ 
-              maxHeight: "400px", 
-              overflowY: "auto", 
-              width: "100%",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "8px"
-            }}>
+            <div className="juzgados-list">
               {loadingJuzgados ? (
-                <div style={{ textAlign: "center", padding: "20px" }}>
+                <div className="loading-state">
                   Cargando juzgados...
                 </div>
               ) : juzgadosFiltrados.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                <div className="empty-state">
                   {busqueda ? "No se encontraron juzgados" : "No hay juzgados disponibles"}
                 </div>
               ) : (
@@ -181,28 +171,12 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
                   <div
                     key={juzgado.id}
                     onClick={() => handleSeleccionarJuzgado(juzgado)}
-                    style={{
-                      padding: "12px",
-                      border: "1px solid #ddd",
-                      borderRadius: "6px",
-                      margin: "8px 0",
-                      cursor: "pointer",
-                      backgroundColor: "#f9f9f9",
-                      transition: "background-color 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#ffe6e6";
-                      e.target.style.borderColor = "#e53935";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "#f9f9f9";
-                      e.target.style.borderColor = "#ddd";
-                    }}
+                    className="juzgado-item delete-hover"
                   >
-                    <div style={{ fontWeight: "bold", color: "#e53935" }}>
+                    <div className="juzgado-name delete-mode">
                       {juzgado.code} - {juzgado.name}
                     </div>
-                    <div style={{ fontSize: "14px", color: "#666" }}>
+                    <div className="juzgado-email">
                       {juzgado.email}
                     </div>
                   </div>
@@ -210,7 +184,7 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
               )}
             </div>
 
-            <div className="dialog-actions flex-column">
+            <div className="action-buttons">
               <button className="close-button-full" onClick={handleDialogClose}>
                 Cerrar
               </button>
@@ -219,81 +193,53 @@ export default function DeleteJuzgadoDialog({ open, onClose, onDelete }) {
         ) : (
           // PASO 2: Confirmación de eliminación
           <>
-            <h1 style={{ color: "#e53935" }}>⚠️ Confirmar Eliminación</h1>
+            <h1>⚠️ Confirmar Eliminación</h1>
             
-            <div style={{ 
-              marginBottom: "16px", 
-              padding: "16px", 
-              backgroundColor: "#fff0f0", 
-              borderRadius: "8px",
-              border: "2px solid #e53935",
-              color: "#e53935",
-              textAlign: "center"
-            }}>
-              <div style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "8px" }}>
-                ¿Está seguro que desea eliminar este juzgado?
-              </div>
-              <div style={{ fontSize: "14px", marginBottom: "12px" }}>
-                Esta acción no se puede deshacer.
-              </div>
-              
-              <div style={{ 
-                backgroundColor: "#fff", 
-                padding: "12px", 
-                borderRadius: "6px",
-                color: "#003f75",
-                fontWeight: "bold"
-              }}>
-                <div><strong>Código:</strong> {juzgadoSeleccionado?.code}</div>
-                <div><strong>Nombre:</strong> {juzgadoSeleccionado?.name}</div>
-                <div><strong>Email:</strong> {juzgadoSeleccionado?.email}</div>
-                {municipioSeleccionado && (
-                  <div><strong>Municipio:</strong> {municipioSeleccionado.name}</div>
-                )}
+            <div className="confirm-delete-section">
+              <div className="delete-warning">
+                <div className="warning-title">
+                  ¿Está seguro que desea eliminar este juzgado?
+                </div>
+                <div className="warning-subtitle">
+                  Esta acción no se puede deshacer.
+                </div>
+                
+                <div className="juzgado-details">
+                  <div><strong>Código:</strong> {juzgadoSeleccionado?.code}</div>
+                  <div><strong>Nombre:</strong> {juzgadoSeleccionado?.name}</div>
+                  <div><strong>Email:</strong> {juzgadoSeleccionado?.email}</div>
+                  {municipioSeleccionado && (
+                    <div><strong>Municipio:</strong> {municipioSeleccionado.name}</div>
+                  )}
+                </div>
               </div>
             </div>
 
             {error && (
-              <div style={{ 
-                padding: "12px", 
-                backgroundColor: "#fff0f0", 
-                color: "#e53935", 
-                borderRadius: "6px",
-                marginBottom: "16px",
-                textAlign: "center",
-                fontSize: "14px",
-                border: "1px solid #e53935"
-              }}>
+              <div className="error-message center">
                 {error}
               </div>
             )}
 
-            <div className="dialog-actions flex-column">
+            <div className="action-buttons">
               <button
-                className="close-button-full"
+                className="primary-button delete-button"
                 onClick={handleEliminar}
                 disabled={isDeleting}
-                style={{ 
-                  backgroundColor: "#e53935", 
-                  color: "#fff",
-                  border: "2px solid #e53935"
-                }}
               >
                 {isDeleting ? "Eliminando..." : "SÍ, ELIMINAR JUZGADO"}
               </button>
               <button
-                className="edit-button-full"
+                className="secondary-button"
                 onClick={handleVolver}
                 disabled={isDeleting}
-                style={{ backgroundColor: "#666", marginTop: "8px" }}
               >
                 Volver a la Lista
               </button>
               <button
-                className="edit-button-full"
+                className="cancel-button"
                 onClick={handleDialogClose}
                 disabled={isDeleting}
-                style={{ backgroundColor: "#003f75", marginTop: "8px" }}
               >
                 Cancelar
               </button>

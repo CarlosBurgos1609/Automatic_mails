@@ -6,7 +6,8 @@ $color_white: #ffffff;
 $color_green: #bafaba;
 $color_light_green: #bdf3bd;
 $header-height: 90px;
-$filter-blue-image: brightness(0) saturate(100%) invert(13%) sepia(99%) saturate(7470%) hue-rotate(196deg) brightness(95%) contrast(105%);
+$filter-blue-image: brightness(0) saturate(100%) invert(13%) sepia(99%)
+  saturate(7470%) hue-rotate(196deg) brightness(95%) contrast(105%);
 
 * {
   font-family: "Arial", sans-serif;
@@ -28,7 +29,7 @@ button {
 }
 
 button:hover {
-  transform: scale(0.9);
+  transform: scale(0.98);
   background-color: $color_green;
   color: $color_blue;
 }
@@ -327,7 +328,6 @@ button:hover {
     }
   }
 
-  
   // celdas de los contenedores de eventos
   .rbc-day-bg {
     background-color: #fff;
@@ -531,7 +531,7 @@ button:hover {
     z-index: 102 !important;
   }
 
-  .rbc-time-header-cell{
+  .rbc-time-header-cell {
     width: 100%;
   }
   // Override any default styles that might hide buttons
@@ -573,7 +573,9 @@ button:hover {
   }
 
   // Número rojo SOLO para los domingos (días del mes actual)
-  .rbc-month-view .rbc-day-bg:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg) .rbc-button-link {
+  .rbc-month-view
+    .rbc-day-bg:nth-child(7n + 1):not(.rbc-off-range):not(.rbc-off-range-bg)
+    .rbc-button-link {
     color: #e53935 !important;
     font-weight: bold !important;
   }
@@ -620,7 +622,7 @@ button:hover {
     border: 1px solid #d0d0d0 !important;
     pointer-events: none !important;
     cursor: default !important;
-    
+
     // Hacer TODO el contenido gris y no clickeable
     .rbc-button-link {
       color: #999 !important;
@@ -629,7 +631,7 @@ button:hover {
       pointer-events: none !important;
       cursor: default !important;
     }
-    
+
     // Ocultar COMPLETAMENTE eventos/juzgados en días de otros meses
     .rbc-event,
     .rbc-event-content,
@@ -649,11 +651,11 @@ button:hover {
     }
 
     // Anular específicamente los estilos de fin de semana
-    &:nth-child(7n+1),
+    &:nth-child(7n + 1),
     &:nth-child(7n) {
       background-color: #e0e0e0 !important; // Forzar gris sobre amarillo
       background: #e0e0e0 !important;
-      
+
       .rbc-button-link {
         color: #999 !important; // Forzar gris sobre rojo para domingos
         background-color: transparent !important;
@@ -668,17 +670,19 @@ button:hover {
   .rbc-off-range .rbc-button-link:hover,
   .rbc-off-range-bg .rbc-button-link:hover,
   .rbc-month-view .rbc-day-bg.rbc-off-range:hover,
-  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1):hover,
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n + 1):hover,
   .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):hover,
-  .rbc-month-view .rbc-off-range-bg:nth-child(7n+1):hover,
+  .rbc-month-view .rbc-off-range-bg:nth-child(7n + 1):hover,
   .rbc-month-view .rbc-off-range-bg:nth-child(7n):hover,
-  .rbc-calendar .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1):hover,
+  .rbc-calendar
+    .rbc-month-view
+    .rbc-day-bg.rbc-off-range:nth-child(7n + 1):hover,
   .rbc-calendar .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):hover {
     background-color: #e0e0e0 !important; // Mantener gris en hover
     background: #e0e0e0 !important;
     transform: none !important;
     color: #999 !important;
-    
+
     .rbc-button-link {
       color: #999 !important;
       background-color: transparent !important;
@@ -1228,7 +1232,7 @@ button:hover {
   background: $color_green;
   color: $color_blue;
   border: 2px solid $color_blue;
-  img{
+  img {
     filter: $filter-blue-image;
   }
 }
@@ -1297,8 +1301,8 @@ button:hover {
 .delete-festive-btn img {
   width: 22px;
   height: 22px;
-  filter: brightness(0) saturate(100%) invert(17%) sepia(99%) saturate(7490%) hue-rotate(357deg) brightness(97%) contrast(119%);
-  
+  filter: brightness(0) saturate(100%) invert(17%) sepia(99%) saturate(7490%)
+    hue-rotate(357deg) brightness(97%) contrast(119%);
 }
 .delete-festive-btn:hover,
 .delete-festive-btn:active {
@@ -1616,7 +1620,6 @@ button:hover {
   flex-wrap: wrap;
 }
 
-
 .add-juzgado-dialog .filtro-btn {
   display: flex;
   align-items: center;
@@ -1634,7 +1637,7 @@ button:hover {
   border: 2px solid #fff;
   background: #003f75;
   color: #fff;
-  box-shadow: 0 0 0 3px $color_blue; 
+  box-shadow: 0 0 0 3px $color_blue;
   position: relative;
   z-index: 1;
 }
@@ -1788,18 +1791,18 @@ button:hover {
   z-index: 10001 !important;
   max-width: 350px;
   padding: 12px 20px 12px 12px;
-  
+
   .copy-content {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    
+
     .main-message {
       font-weight: bold;
       font-size: 15px;
       margin-bottom: 4px;
     }
-    
+
     .juzgado-details {
       display: flex;
       flex-direction: column;
@@ -1810,11 +1813,11 @@ button:hover {
       background: rgba(0, 63, 117, 0.08);
       border-radius: 4px;
       border-left: 3px solid #003f75;
-      
+
       div {
         color: #003f75;
         line-height: 1.3;
-        
+
         strong {
           color: #003f75;
           font-weight: 600;
@@ -1822,7 +1825,7 @@ button:hover {
       }
     }
   }
-  
+
   img {
     width: 24px;
     height: 24px;
@@ -1837,19 +1840,19 @@ button:hover {
     padding: 10px 16px 10px 10px;
     top: 20px;
     right: 20px;
-    
+
     .copy-content {
       .main-message {
         font-size: 14px;
       }
-      
+
       .juzgado-details {
         font-size: 11px;
         padding: 5px 6px;
         gap: 1px;
       }
     }
-    
+
     img {
       width: 20px;
       height: 20px;
@@ -1857,3 +1860,628 @@ button:hover {
   }
 }
 
+// ===== ESTILOS PARA DIÁLOGOS DE CALENDARIO =====
+
+// --- Estilos para cambio de turno de juzgado ---
+.change-juzgado-dialog {
+  .turno-info {
+    margin-bottom: 20px;
+    padding: 16px;
+    background-color: #e6f0fa;
+    border-radius: 8px;
+    border: 1px solid #003f75;
+
+    .fecha-info {
+      font-weight: bold;
+      color: #003f75;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .juzgado-actual {
+      color: #003f75;
+      font-size: 14px;
+
+      strong {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .juzgados-list {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 16px;
+
+    .loading-state {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    .juzgado-item {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin: 8px 0;
+      cursor: pointer;
+      background-color: #f9f9f9;
+      transition: all 0.2s;
+
+      &.selected {
+        border: 2px solid #003f75;
+        background-color: #e6f0fa;
+      }
+
+      &:hover:not(.selected) {
+        background-color: #f0f8ff;
+      }
+
+      .juzgado-name {
+        font-weight: bold;
+        color: #003f75;
+        margin-bottom: 4px;
+
+        .selected-indicator {
+          margin-left: 8px;
+          font-size: 12px;
+          color: #28a745;
+          font-weight: normal;
+        }
+      }
+
+      .juzgado-email {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+  }
+
+  .juzgado-seleccionado {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #d4edda;
+    border-radius: 8px;
+    border: 1px solid #28a745;
+
+    .selection-title {
+      font-weight: bold;
+      color: #155724;
+      margin-bottom: 4px;
+    }
+
+    .selection-details {
+      color: #155724;
+      font-size: 14px;
+    }
+  }
+
+  .confirm-button {
+    background-color: #28a745;
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    &:not(:disabled):hover {
+      background-color: white;
+      color: #218838;
+      border: 1px solid #218838;
+      border-color: #218838;
+    }
+  }
+}
+
+// --- Estilos para agregar juzgado al calendario ---
+.add-juzgado-calendar-dialog {
+  .fecha-seleccionada {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #e6f0fa;
+    border-radius: 8px;
+    color: #003f75;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .juzgados-list {
+    max-height: 350px;
+    overflow-y: auto;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 16px;
+
+    .juzgado-item {
+      padding: 12px;
+      border-radius: 6px;
+      margin: 8px 0;
+      cursor: pointer;
+      background-color: #f9f9f9;
+      transition: all 0.2s;
+
+      &.selected {
+        border: 2px solid #003f75;
+        background-color: #e6f0fa;
+      }
+
+      &:hover:not(.selected) {
+        background-color: #f0f7ff;
+        border-color: #003f75;
+      }
+
+      .juzgado-header {
+        font-weight: bold;
+        margin-bottom: 4px;
+
+        &.selected {
+          color: #003f75;
+        }
+      }
+
+      .juzgado-email-row {
+        font-size: 14px;
+        color: #666;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .selected-badge {
+          color: #003f75;
+          font-weight: bold;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+
+  .juzgado-preview {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #f0f7ff;
+    border-radius: 8px;
+    border: 1px solid #003f75;
+
+    .preview-title {
+      font-weight: bold;
+      color: #003f75;
+      margin-bottom: 8px;
+    }
+
+    .preview-details {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 8px;
+
+      strong {
+        color: #003f75;
+      }
+    }
+
+    .copy-email-btn {
+      padding: 6px 12px;
+      background-color: #003f75;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #002a54;
+      }
+    }
+  }
+
+  .save-button {
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ===== ESTILOS PARA DIÁLOGOS DE GESTIÓN DE JUZGADOS =====
+
+// --- Estilos comunes para diálogos de gestión ---
+.juzgado-management-dialog {
+  .step-indicator {
+    margin-bottom: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    color: #003f75;
+    font-weight: bold;
+    width: 100%;
+
+    &.list-step {
+      background-color: #e6f0fa;
+      width: 100%;
+      text-align: center;
+    }
+
+    &.edit-step {
+      background-color: #e6f0fa;
+      border: 1px solid #003f75;
+
+      .current-info {
+        font-size: 14px;
+        font-weight: normal;
+        margin-top: 4px;
+      }
+    }
+
+    &.delete-step {
+      background-color: #fff0f0;
+      border: 2px solid #e53935;
+      color: #e53935;
+      text-align: center;
+
+      .warning-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .warning-subtitle {
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .juzgado-details {
+        background-color: #fff;
+        padding: 12px;
+        border-radius: 6px;
+        color: #003f75;
+        font-weight: bold;
+
+        div {
+          margin-bottom: 4px;
+
+          strong {
+            color: #003f75;
+          }
+        }
+      }
+    }
+  }
+
+  .search-input {
+    margin-bottom: 16px;
+    width: 100%;
+
+    input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.2s;
+
+      &:focus {
+        border: 1.5px solid #003f75;
+      }
+    }
+  }
+
+  .juzgados-list {
+    max-height: 400px;
+    overflow-y: auto;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+
+    .loading-state,
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    .juzgado-item {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin: 8px 0;
+      cursor: pointer;
+      background-color: #f9f9f9;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #e6f0fa;
+        border-color: #003f75;
+      }
+
+      &.delete-hover:hover {
+        background-color: #ffe6e6;
+        border-color: #e53935;
+      }
+
+      .juzgado-name {
+        font-weight: bold;
+        color: #003f75;
+
+        &.delete-mode {
+          color: #e53935;
+        }
+      }
+
+      .juzgado-email {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+  }
+
+  .form-section {
+    width: 100%;
+    .form-group {
+      margin-bottom: 12px;
+      
+
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        outline: none;
+        transition: border 0.2s;
+
+        &:focus {
+          border: 1.5px solid #003f75;
+        }
+
+        &.input-error {
+          border: 2px solid #e53935;
+          background-color: #fff0f0;
+        }
+
+        &:disabled {
+          background-color: #f5f5f5;
+          color: #666;
+          cursor: not-allowed;
+        }
+      }
+
+      input[type="text"] {
+        text-transform: uppercase;
+      }
+
+      input[type="email"] {
+        text-transform: lowercase;
+      }
+
+      select {
+        cursor: pointer;
+
+        &:disabled {
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .error-message {
+      color: #e53935;
+      font-size: 15px;
+      margin-bottom: 10px;
+      text-align: left;
+      width: 100%;
+
+      &.center {
+        text-align: center;
+        padding: 12px;
+        background-color: #fff0f0;
+        border-radius: 6px;
+        border: 1px solid #e53935;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+    width: 100%;
+
+    .primary-button {
+      background-color: #003f75;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+
+      &:hover:not(:disabled) {
+        background-color: #bafaba;
+        color: #003f75;
+      }
+
+      &:disabled {
+        background-color: #ccc;
+        color: #666;
+        cursor: not-allowed;
+      }
+
+      &.update-button {
+        background-color: #003f75;
+      }
+
+      &.delete-button {
+        background-color: #e53935;
+        border: 2px solid #e53935;
+
+        &:hover:not(:disabled) {
+          background-color: white;
+          color: #e53935;
+        }
+      }
+    }
+
+    .secondary-button {
+      background-color: #331268;
+      color: #fff;
+      margin-top: 8px;
+      font-size: 16px;
+      font-weight: bold;
+
+      &:hover:not(:disabled) {
+        background-color: #6f42b8;
+      }
+
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+    }
+
+    .cancel-button {
+      background-color: #fff;
+      border: 2px solid #e53935;
+      color: #e53935;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+
+      &:hover:not(:disabled) {
+        background-color: #e53935;
+        color: #fff;
+        border-radius: white;
+        font-size: 18px;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+// --- Estilos específicos para el diálogo de eliminar ---
+.delete-juzgado-dialog {
+  h1 {
+    color: #e53935;
+  }
+
+  .confirm-delete-section {
+    .warning-icon {
+      font-size: 24px;
+      margin-right: 8px;
+    }
+
+    .delete-warning {
+      margin-bottom: 16px;
+      padding: 16px;
+      background-color: #fff0f0;
+      border-radius: 8px;
+      border: 2px solid #e53935;
+      color: #e53935;
+      text-align: center;
+
+      .warning-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .warning-subtitle {
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      .juzgado-details {
+        background-color: #fff;
+        padding: 12px;
+        border-radius: 6px;
+        color: #003f75;
+        font-weight: bold;
+
+        div {
+          margin-bottom: 4px;
+
+          strong {
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===== RESPONSIVE DESIGN =====
+@media (max-width: 768px) {
+  .change-juzgado-dialog,
+  .add-juzgado-calendar-dialog,
+  .juzgado-management-dialog {
+    .juzgados-list {
+      max-height: 250px;
+    }
+
+    .turno-info,
+    .fecha-seleccionada,
+    .step-indicator {
+      padding: 12px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .juzgado-item {
+      padding: 10px;
+
+      .juzgado-name {
+        font-size: 14px;
+      }
+
+      .juzgado-email {
+        font-size: 12px;
+      }
+    }
+
+    .action-buttons {
+      .primary-button,
+      .secondary-button,
+      .cancel-button {
+        font-size: 16px;
+        padding: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .change-juzgado-dialog,
+  .add-juzgado-calendar-dialog,
+  .juzgado-management-dialog {
+    .juzgados-list {
+      max-height: 200px;
+      padding: 6px;
+    }
+
+    .juzgado-item {
+      padding: 8px;
+      margin: 6px 0;
+    }
+
+    .form-section {
+      .form-group {
+        input,
+        select {
+          padding: 6px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

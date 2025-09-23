@@ -92,9 +92,6 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
           municipio_id: municipioId,
         };
 
-        console.log('📤 Enviando datos:', juzgadoData);
-        console.log('🎯 URL:', `http://localhost:5000/api/juzgados/${juzgadoSeleccionado.id}`);
-
         const response = await fetch(
           `http://localhost:5000/api/juzgados/${juzgadoSeleccionado.id}`,
           {
@@ -106,22 +103,16 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
           }
         );
 
-        console.log('📥 Response status:', response.status);
-        console.log('📥 Response headers:', response.headers);
-
-        // Verificar si la respuesta es JSON antes de parsearlo
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
           const textResponse = await response.text();
           console.error('❌ Respuesta no es JSON:', textResponse);
-          throw new Error('El servidor devolvió una respuesta no válida (HTML en lugar de JSON)');
+          throw new Error('El servidor devolvió una respuesta no válida');
         }
 
         const result = await response.json();
-        console.log('📥 Response data:', result);
 
         if (response.ok) {
-          // Preparar los datos para el diálogo de éxito
           const savedData = {
             codigo: juzgadoData.code,
             nombre: juzgadoData.name,
@@ -129,10 +120,9 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
             municipio_name: municipioSeleccionado?.name || "",
           };
 
-          // Limpiar formulario y volver al paso 1
+          // Limpiar y cerrar inmediatamente
           handleVolver();
 
-          // Llamar a onSave con los datos
           if (onSave) {
             onSave(savedData);
           }
@@ -149,6 +139,7 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
   };
 
   const handleVolver = () => {
+    // Limpieza inmediata para navegación rápida
     setStep(1);
     setJuzgadoSeleccionado(null);
     setCodigo("");
@@ -161,7 +152,11 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
   };
 
   const handleDialogClose = () => {
+    // Limpieza completa e inmediata
     handleVolver();
+    setLoadingJuzgados(false);
+    setLoadingMunicipios(false);
+    setIsLoading(false);
     onClose();
   };
 
@@ -180,36 +175,32 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
 
   return (
     <div className="alert-dialog-backdrop">
-      <div className="alert-dialog add-juzgado-dialog">
+      <div className="alert-dialog add-juzgado-dialog juzgado-management-dialog">
         {step === 1 ? (
           // PASO 1: Lista de juzgados
           <>
             <h1>Seleccionar Juzgado para Editar</h1>
             
-            <div className="input-busqueda">
+            <div className="step-indicator list-step">
+              Paso 1: Seleccione el juzgado que desea editar
+            </div>
+            
+            <div className="search-input">
               <input
                 type="text"
                 placeholder="Buscar juzgado por nombre, código o email..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                style={{ textTransform: 'none' }}
               />
             </div>
 
-            <div style={{ 
-              maxHeight: "400px", 
-              overflowY: "auto", 
-              width: "100%",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "8px"
-            }}>
+            <div className="juzgados-list">
               {loadingJuzgados ? (
-                <div style={{ textAlign: "center", padding: "20px" }}>
+                <div className="loading-state">
                   Cargando juzgados...
                 </div>
               ) : juzgadosFiltrados.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "20px", color: "#666" }}>
+                <div className="empty-state">
                   {busqueda ? "No se encontraron juzgados" : "No hay juzgados disponibles"}
                 </div>
               ) : (
@@ -217,26 +208,12 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
                   <div
                     key={juzgado.id}
                     onClick={() => handleSeleccionarJuzgado(juzgado)}
-                    style={{
-                      padding: "12px",
-                      border: "1px solid #ddd",
-                      borderRadius: "6px",
-                      margin: "8px 0",
-                      cursor: "pointer",
-                      backgroundColor: "#f9f9f9",
-                      transition: "background-color 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "#e6f0fa";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "#f9f9f9";
-                    }}
+                    className="juzgado-item"
                   >
-                    <div style={{ fontWeight: "bold", color: "#003f75" }}>
+                    <div className="juzgado-name">
                       {juzgado.code} - {juzgado.name}
                     </div>
-                    <div style={{ fontSize: "14px", color: "#666" }}>
+                    <div className="juzgado-email">
                       {juzgado.email}
                     </div>
                   </div>
@@ -244,8 +221,8 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
               )}
             </div>
 
-            <div className="dialog-actions flex-column">
-              <button className="close-button-full" onClick={handleDialogClose}>
+            <div className="action-buttons">
+              <button className="cancel-button" onClick={handleDialogClose}>
                 Cerrar
               </button>
             </div>
@@ -255,105 +232,94 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
           <>
             <h1>Editar Juzgado</h1>
             
-            <div style={{ 
-              marginBottom: "16px", 
-              padding: "12px", 
-              backgroundColor: "#e6f0fa", 
-              borderRadius: "8px",
-              color: "#003f75",
-              fontWeight: "bold"
-            }}>
+            <div className="step-indicator edit-step">
               Editando: {juzgadoSeleccionado?.code} - {juzgadoSeleccionado?.name}
               {municipioActual && (
-                <div style={{ fontSize: "14px", fontWeight: "normal", marginTop: "4px" }}>
+                <div className="current-info">
                   Municipio actual: {municipioActual.name}
                 </div>
               )}
             </div>
 
-            <div className="input-busqueda">
-              <input
-                type="text"
-                placeholder="# Código del juzgado"
-                value={codigo}
-                onChange={(e) => setCodigo(e.target.value)}
-                className={error && !codigo ? "input-error" : ""}
-                disabled={isLoading}
-                style={{ textTransform: 'uppercase' }}
-              />
-            </div>
-
-            <div className="input-busqueda">
-              <input
-                type="text"
-                placeholder="Nombre del juzgado"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                className={error && !nombre ? "input-error" : ""}
-                disabled={isLoading}
-                style={{ textTransform: 'uppercase' }}
-              />
-            </div>
-
-            <div className="input-busqueda">
-              <input
-                type="email"
-                placeholder="Correo electrónico"
-                value={correo}
-                onChange={(e) => setCorreo(e.target.value)}
-                className={
-                  (error && !correo) || correoError ? "input-error" : ""
-                }
-                disabled={isLoading}
-                style={{ textTransform: 'lowercase' }}
-              />
-              {correoError && <div className="error-message">{correoError}</div>}
-            </div>
-
-            <div className="input-busqueda">
-              <select
-                value={municipioId}
-                onChange={(e) => setMunicipioId(e.target.value)}
-                className={error && !municipioId ? "input-error" : ""}
-                disabled={loadingMunicipios || isLoading}
-              >
-                <option value="">
-                  {loadingMunicipios
-                    ? "Cargando municipios..."
-                    : "Seleccionar municipio"}
-                </option>
-                {municipios.map((municipio) => (
-                  <option key={municipio.id} value={municipio.id}>
-                    {municipio.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {error && (!codigo || !nombre || !correo || !municipioId) && (
-              <div className="error-message">
-                Por favor, complete todos los campos obligatorios.
+            <div className="form-section">
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="# Código del juzgado"
+                  value={codigo}
+                  onChange={(e) => setCodigo(e.target.value)}
+                  className={error && !codigo ? "input-error" : ""}
+                  disabled={isLoading}
+                />
               </div>
-            )}
 
-            <div className="dialog-actions flex-column">
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Nombre del juzgado"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  className={error && !nombre ? "input-error" : ""}
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="form-group">
+                <input
+                  type="email"
+                  placeholder="Correo electrónico"
+                  value={correo}
+                  onChange={(e) => setCorreo(e.target.value)}
+                  className={(error && !correo) || correoError ? "input-error" : ""}
+                  disabled={isLoading}
+                />
+                {correoError && <div className="error-message">{correoError}</div>}
+              </div>
+
+              <div className="form-group">
+                <select
+                  value={municipioId}
+                  onChange={(e) => setMunicipioId(e.target.value)}
+                  className={error && !municipioId ? "input-error" : ""}
+                  disabled={loadingMunicipios || isLoading}
+                >
+                  <option value="">
+                    {loadingMunicipios
+                      ? "Cargando municipios..."
+                      : "Seleccionar municipio"}
+                  </option>
+                  {municipios.map((municipio) => (
+                    <option key={municipio.id} value={municipio.id}>
+                      {municipio.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {error && (!codigo || !nombre || !correo || !municipioId) && (
+                <div className="error-message">
+                  Por favor, complete todos los campos obligatorios.
+                </div>
+              )}
+            </div>
+
+            <div className="action-buttons">
               <button
-                className="edit-button-full"
+                className="primary-button update-button"
                 onClick={handleGuardar}
                 disabled={isLoading}
               >
                 {isLoading ? "Actualizando..." : "Actualizar Juzgado"}
               </button>
               <button
-                className="edit-button-full"
+                className="secondary-button"
                 onClick={handleVolver}
                 disabled={isLoading}
-                style={{ backgroundColor: "#666", marginTop: "8px" }}
               >
                 Volver a la Lista
               </button>
               <button
-                className="close-button-full"
+                className="cancel-button"
                 onClick={handleDialogClose}
                 disabled={isLoading}
               >
