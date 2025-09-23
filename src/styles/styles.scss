@@ -1728,6 +1728,8 @@ button:hover {
   margin-bottom: 10px;
   text-align: left;
   width: 100%;
+  text-align: center;
+  font-weight: bold;
 }
 
 @media (max-width: 900px) {
@@ -2282,14 +2284,17 @@ button:hover {
       margin-bottom: 10px;
       text-align: left;
       width: 100%;
+      
 
       &.center {
+        width: 100%;
         text-align: center;
         padding: 12px;
         background-color: #fff0f0;
         border-radius: 6px;
         border: 1px solid #e53935;
         font-size: 14px;
+        
       }
     }
   }
