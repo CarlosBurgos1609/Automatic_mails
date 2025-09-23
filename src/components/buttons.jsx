@@ -9,9 +9,8 @@ import juzgado from "../assets/icons/juzgado.png";
 import Copy from "./Copy";
 import JuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados"
 import FestivDialog from "../alertsDialogs/festivs/general_festivs"
-// import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 
-export default function Buttons({ calendarRef, onAddJuzgado }) {
+export default function Buttons({ onJuzgadosClick }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showJuzgadosDialog, setShowJuzgadosDialog] = useState(false);
@@ -38,6 +37,7 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
     // Por ejemplo: setJuzgados([...juzgados, nuevoJuzgado]);
     // O mostrar un toast de éxito
   };
+  
   const handleSaveNuevoFestivo = (nuevoJuzgado) => {
     // Aquí puedes agregar el nuevo juzgado a tu lista o hacer lo que necesites
     // Por ejemplo: setJuzgados([...juzgados, nuevoJuzgado]);
@@ -51,31 +51,15 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
         Descargar en PDF
       </button>
 
-      {/* <button
-        className="add-btn"
-        onClick={() => setShowAddJuzgadoDialog(true)}
-        style={{ marginBottom: "16px" }}
-      >
-        <img src={add} alt="Añadir" />
-        Agregar Nuevo Juzgado
-      </button>
-      <button className="delete-btn" onClick={handleShare}>
-        <img src={deleteIcon} alt="Eliminar" />
-        Eliminar Juzgado
-      </button>
-      
-      <button className="delete-festive-btn" onClick={handleShare}>
-        <img src={festive} alt="Eliminar festivo" />
-        Eliminar Festivo
-      </button> */}
       <button
         className="add-btn"
-        onClick={() => setShowJuzgadosDialog(true)}
+        onClick={onJuzgadosClick}
         style={{ marginBottom: "16px" }}
       >
-        <img src={juzgado} alt="Añadir" />
+        <img src={juzgado} alt="Juzgados" />
         Juzgados
       </button>
+      
       <button
         className="add-festive-btn"
         onClick={() => setShowFestivDialog(true)}
@@ -89,7 +73,9 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
         <img src={shareIcon} alt="Compartir" />
         Compartir
       </button>
+      
       <Copy show={showToast} message="¡Enlace copiado correctamente!" />
+      
       {showPreview && (
         <div className="pdf-preview-modal">
           <div className="pdf-preview-content">
@@ -115,11 +101,7 @@ export default function Buttons({ calendarRef, onAddJuzgado }) {
           </div>
         </div>
       )}
-      <JuzgadosDialog
-        open={showJuzgadosDialog}
-        onClose={() => setShowJuzgadosDialog(false)}
-        onSave={handleSaveNuevoJuzgado}
-      />
+      
       <FestivDialog
         open={showFestivDialog}
         onClose={() => setShowFestivDialog(false)}

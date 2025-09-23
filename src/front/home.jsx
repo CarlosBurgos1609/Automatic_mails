@@ -20,7 +20,11 @@ import axios from "axios";
 import ChangeJuzgadoTurnDialog from "../alertsDialogs/calendar/change_juzgado_turn";
 import LoadingDialog from "../components/LoadingDialog";
 import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
-// ...resto del código...
+import EditJuzgadoDialog from "../alertsDialogs/juzgados/edit_juzgado";
+import DeleteJuzgadoDialog from "../alertsDialogs/juzgados/delete_juzgado";
+import SaveJuzgadoDialog from "../components/save_juzgado_dialog";
+import GeneralJuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados";
+
 // Extiende plugins solo una vez
 dayjs.locale("es");
 dayjs.extend(utc);
@@ -55,10 +59,21 @@ const Home = () => {
   const [showChangeDialog, setShowChangeDialog] = useState(false);
   const [changeTurnData, setChangeTurnData] = useState(null);
   const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
+  
+  // Estados para la gestión de juzgados
+  const [showGeneralJuzgadosDialog, setShowGeneralJuzgadosDialog] = useState(false);
+  const [showAddNewJuzgadoDialog, setShowAddNewJuzgadoDialog] = useState(false);
+  const [showEditJuzgadoDialog, setShowEditJuzgadoDialog] = useState(false);
+  const [showDeleteJuzgadoDialog, setShowDeleteJuzgadoDialog] = useState(false);
+  const [showJuzgadoSuccessDialog, setShowJuzgadoSuccessDialog] = useState(false);
+  const [savedJuzgadoData, setSavedJuzgadoData] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+
   const email = "juzgado007pasto@ejemplo.com";
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
-  const [todayTurnos, setTodayTurnos] = useState([]); // Nuevo estado para turnos de hoy
+  const [todayTurnos, setTodayTurnos] = useState([]);
   const [toastMsgs, setToastMsgs] = useState([]);
   const [range, setRange] = useState({ start: null, end: null });
   const [loadingTurnos, setLoadingTurnos] = useState(false);
@@ -301,6 +316,53 @@ const Home = () => {
     await Promise.all([cargarJuzgados(), cargarTurnos()]);
   };
 
+  // Funciones para gestión de juzgados
+  const handleSaveNuevoJuzgado = async (juzgadoData) => {
+    setShowAddNewJuzgadoDialog(false);
+    setShowGeneralJuzgadosDialog(false);
+    
+    setSavedJuzgadoData(juzgadoData);
+    setIsEditMode(false);
+    setIsDeleteMode(false);
+    setShowJuzgadoSuccessDialog(true);
+    
+    // Recargar datos para reflejar cambios
+    await recargarDatos();
+  };
+
+  const handleSaveEditJuzgado = async (juzgadoData) => {
+    setShowEditJuzgadoDialog(false);
+    setShowGeneralJuzgadosDialog(false);
+    
+    setSavedJuzgadoData(juzgadoData);
+    setIsEditMode(true);
+    setIsDeleteMode(false);
+    setShowJuzgadoSuccessDialog(true);
+    
+    // Recargar datos para reflejar cambios
+    await recargarDatos();
+  };
+
+  const handleDeleteJuzgado = async (juzgadoData) => {
+    setShowDeleteJuzgadoDialog(false);
+    setShowGeneralJuzgadosDialog(false);
+    
+    setSavedJuzgadoData(juzgadoData);
+    setIsEditMode(false);
+    setIsDeleteMode(true);
+    setShowJuzgadoSuccessDialog(true);
+    
+    // Recargar datos para reflejar cambios
+    await recargarDatos();
+  };
+
+  const handleJuzgadoSuccessDialogClose = () => {
+    setShowJuzgadoSuccessDialog(false);
+    setSavedJuzgadoData(null);
+    setIsEditMode(false);
+    setIsDeleteMode(false);
+  };
+
   // Encuentra el turno del día seleccionado (en la vista actual)
   const turnoDiaSeleccionado = useMemo(() => {
     // Si la vista es "month", muestra el turno de hoy (ya manejado por turnoHoy/juzgadoHoy)
@@ -453,7 +515,7 @@ const Home = () => {
         />
       </div>
       <div className="download-container">
-        <Buttons />
+        <Buttons onJuzgadosClick={() => setShowGeneralJuzgadosDialog(true)} />
       </div>
       <div className="linear-divide flex-column">
         <hr />
@@ -488,6 +550,7 @@ const Home = () => {
         ))}
       </div>
 
+      {/* Diálogos existentes */}
       <JuzgadoDialog
         open={showDialog}
         onClose={() => setShowDialog(false)}
@@ -551,6 +614,52 @@ const Home = () => {
         open={showAddJuzgadoDialog}
         onClose={() => setShowAddJuzgadoDialog(false)}
         onSave={recargarDatos} // Pasa la función que recarga tanto juzgados como turnos
+      />
+
+      {/* Diálogos de gestión de juzgados */}
+      <GeneralJuzgadosDialog
+        open={showGeneralJuzgadosDialog}
+        onClose={() => setShowGeneralJuzgadosDialog(false)}
+        onAddJuzgado={() => {
+          setShowGeneralJuzgadosDialog(false);
+          setShowAddNewJuzgadoDialog(true);
+        }}
+        onEditJuzgado={() => {
+          setShowGeneralJuzgadosDialog(false);
+          setShowEditJuzgadoDialog(true);
+        }}
+        onDeleteJuzgado={() => {
+          setShowGeneralJuzgadosDialog(false);
+          setShowDeleteJuzgadoDialog(true);
+        }}
+      />
+
+      <AddJuzgadoDialog
+        open={showAddNewJuzgadoDialog}
+        onClose={() => setShowAddNewJuzgadoDialog(false)}
+        onSave={handleSaveNuevoJuzgado}
+      />
+
+      <EditJuzgadoDialog
+        open={showEditJuzgadoDialog}
+        onClose={() => setShowEditJuzgadoDialog(false)}
+        onSave={handleSaveEditJuzgado}
+      />
+
+      <DeleteJuzgadoDialog
+        open={showDeleteJuzgadoDialog}
+        onClose={() => setShowDeleteJuzgadoDialog(false)}
+        onDelete={handleDeleteJuzgado}
+      />
+
+      {/* Diálogo de éxito para juzgados */}
+      <SaveJuzgadoDialog
+        show={showJuzgadoSuccessDialog}
+        onClose={handleJuzgadoSuccessDialogClose}
+        juzgadoData={savedJuzgadoData}
+        municipioName={savedJuzgadoData?.municipio_name}
+        isEdit={isEditMode}
+        isDelete={isDeleteMode}
       />
     </div>
   );
