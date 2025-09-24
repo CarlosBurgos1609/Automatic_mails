@@ -13,6 +13,11 @@ import Buttons from "../components/buttons";
 import Toast from "../components/Copy";
 import LoadingDialog from "../components/calendar/LoadingDialog";
 import SaveJuzgadoDialog from "../components/juzgados_dialogs/save_juzgado_dialog";
+import SaveFestivDialog from "../components/festiv/save_festiv_dialog";
+
+// Error Dialogs
+import ErrorJuzgadoDialog from "../components/juzgados_dialogs/error_juzgado_dialog";
+import ErrorFestivDialog from "../components/festiv/error_festiv_dialog";
 
 // Graphics
 import AreaChartInteractive from "../grafics/area";
@@ -30,7 +35,6 @@ import EditJuzgadoDialog from "../alertsDialogs/juzgados/edit_juzgado";
 import DeleteJuzgadoDialog from "../alertsDialogs/juzgados/delete_juzgado";
 import GeneralJuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados";
 import FestivDialog from "../alertsDialogs/festivs/general_festivs";
-// import SaveJuzgadoDialog from "../components/save_juzgado_dialog";
 
 // Styles
 import "../styles/styles.scss";
@@ -42,16 +46,11 @@ dayjs.extend(timezone);
 
 dayjs.locale("es", {
   ...dayjs.Ls.es,
-  weekStart: 0, // 0 = domingo, 1 = lunes
+  weekStart: 0,
 });
 
 // ===== CALENDAR CONFIGURATION =====
 const localizer = dayjsLocalizer(dayjs);
-
-const formats = {
-  ...localizer.formats,
-  firstDayOfWeek: 0, // 0 representa el domingo
-};
 
 const Home = () => {
   // ===== STATE MANAGEMENT =====
@@ -80,20 +79,28 @@ const Home = () => {
   const [showAddNewJuzgadoDialog, setShowAddNewJuzgadoDialog] = useState(false);
   const [showEditJuzgadoDialog, setShowEditJuzgadoDialog] = useState(false);
   const [showDeleteJuzgadoDialog, setShowDeleteJuzgadoDialog] = useState(false);
+  
+  // Juzgado success/error states
   const [showJuzgadoSuccessDialog, setShowJuzgadoSuccessDialog] = useState(false);
+  const [showJuzgadoErrorDialog, setShowJuzgadoErrorDialog] = useState(false);
+  const [juzgadoErrorMessage, setJuzgadoErrorMessage] = useState("");
+  const [juzgadoOperationType, setJuzgadoOperationType] = useState("guardar");
   
   // Festivos states
   const [showGeneralFestivsDialog, setShowGeneralFestivsDialog] = useState(false);
+  
+  // Festivos success/error states
   const [showFestivSuccessDialog, setShowFestivSuccessDialog] = useState(false);
-  const [savedFestivData, setSavedFestivData] = useState(null);
-  const [isFestivEditMode, setIsFestivEditMode] = useState(false);
-  const [isFestivDeleteMode, setIsFestivDeleteMode] = useState(false);
+  const [showFestivErrorDialog, setShowFestivErrorDialog] = useState(false);
+  const [festivErrorMessage, setFestivErrorMessage] = useState("");
+  const [festivOperationType, setFestivOperationType] = useState("guardar");
 
-  // Selection and data states
+  // Data states
   const [selectedJuzgado, setSelectedJuzgado] = useState(null);
   const [selectedSlotDate, setSelectedSlotDate] = useState(null);
   const [changeTurnData, setChangeTurnData] = useState(null);
   const [savedJuzgadoData, setSavedJuzgadoData] = useState(null);
+  const [savedFestivData, setSavedFestivData] = useState(null);
   
   // Mode states
   const [isEditMode, setIsEditMode] = useState(false);
@@ -106,7 +113,6 @@ const Home = () => {
 
   // ===== COMPUTED VALUES =====
   
-  // Events for calendar
   const events = useMemo(() => {
     if (juzgados.length === 0 || turnos.length === 0) return [];
     return turnos.map((turno) => {
@@ -137,7 +143,6 @@ const Home = () => {
     });
   }, [juzgados, turnos]);
 
-  // Today's shift
   const turnoHoy = useMemo(() => {
     const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
     return todayTurnos.find(
@@ -146,40 +151,10 @@ const Home = () => {
     );
   }, [todayTurnos]);
 
-  // Today's juzgado
   const juzgadoHoy = useMemo(() => {
     if (!turnoHoy) return null;
     return juzgados.find((j) => j.id === turnoHoy.juzgado_id);
   }, [juzgados, turnoHoy]);
-
-  // Selected day shift
-  const turnoDiaSeleccionado = useMemo(() => {
-    if (view === "week" || view === "day") {
-      const diaSeleccionado = dayjs(date)
-        .tz("America/Bogota")
-        .format("YYYY-MM-DD");
-      return turnos.find(
-        (t) =>
-          dayjs.tz(t.turn_date, "America/Bogota").format("YYYY-MM-DD") ===
-          diaSeleccionado
-      );
-    }
-    return null;
-  }, [view, date, turnos]);
-
-  // Selected day juzgado
-  const juzgadoDiaSeleccionado = useMemo(() => {
-    if (!turnoDiaSeleccionado) return null;
-    return juzgados.find((j) => j.id === turnoDiaSeleccionado.juzgado_id);
-  }, [juzgados, turnoDiaSeleccionado]);
-
-  // Juzgado to display
-  const juzgadoParaMostrar = useMemo(() => {
-    if (view === "week" || view === "day") {
-      return juzgadoDiaSeleccionado;
-    }
-    return juzgadoHoy;
-  }, [view, juzgadoHoy, juzgadoDiaSeleccionado]);
 
   // ===== DATA LOADING FUNCTIONS =====
   
@@ -215,7 +190,6 @@ const Home = () => {
 
   // ===== EFFECTS =====
   
-  // Load initial data
   useEffect(() => {
     cargarJuzgados();
   }, []);
@@ -250,7 +224,6 @@ const Home = () => {
       });
   }, []);
 
-  // Update current time
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentDateTime(new Date());
@@ -258,7 +231,6 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Handle range changes
   useEffect(() => {
     if (range.start && range.end) {
       setLoadingTurnos(true);
@@ -272,7 +244,6 @@ const Home = () => {
     }
   }, [range.start, range.end]);
 
-  // Set initial month range
   useEffect(() => {
     const startOfMonth = dayjs().startOf("month").format("YYYY-MM-DD");
     const endOfMonth = dayjs().endOf("month").format("YYYY-MM-DD");
@@ -362,29 +333,17 @@ const Home = () => {
       }
 
       const turn_date = dayjs(date).format("YYYY-MM-DD");
-      console.log("Enviando datos al backend:", {
-        juzgado_id: juzgado.id,
-        turn_date,
-        estado_id: 1,
-      });
-
       const response = await axios.post("http://localhost:5000/api/turnos", {
         juzgado_id: juzgado.id,
         turn_date,
         estado_id: 1,
       });
 
-      console.log("Respuesta del backend:", response.data);
       await recargarDatos();
       showToastMsg("Turno guardado correctamente");
     } catch (err) {
-      console.error(
-        "Error al guardar el turno:",
-        err.response?.data || err.message
-      );
-      showToastMsg(
-        `Error al guardar el turno: ${err.response?.data?.error || err.message}`
-      );
+      console.error("Error al guardar el turno:", err);
+      showToastMsg(`Error al guardar el turno: ${err.response?.data?.error || err.message}`);
     }
   };
 
@@ -406,33 +365,51 @@ const Home = () => {
   // ===== JUZGADO MANAGEMENT HANDLERS =====
   
   const handleSaveNuevoJuzgado = async (juzgadoData) => {
-    setShowAddNewJuzgadoDialog(false);
-    setShowGeneralJuzgadosDialog(false);
-    setSavedJuzgadoData(juzgadoData);
-    setIsEditMode(false);
-    setIsDeleteMode(false);
-    setShowJuzgadoSuccessDialog(true);
-    await recargarDatos();
+    try {
+      setShowAddNewJuzgadoDialog(false);
+      setShowGeneralJuzgadosDialog(false);
+      setSavedJuzgadoData(juzgadoData);
+      setIsEditMode(false);
+      setIsDeleteMode(false);
+      setShowJuzgadoSuccessDialog(true);
+      await recargarDatos();
+    } catch (error) {
+      setJuzgadoErrorMessage(error.message || "Error desconocido al guardar el juzgado");
+      setJuzgadoOperationType("guardar");
+      setShowJuzgadoErrorDialog(true);
+    }
   };
 
   const handleSaveEditJuzgado = async (juzgadoData) => {
-    setShowEditJuzgadoDialog(false);
-    setShowGeneralJuzgadosDialog(false);
-    setSavedJuzgadoData(juzgadoData);
-    setIsEditMode(true);
-    setIsDeleteMode(false);
-    setShowJuzgadoSuccessDialog(true);
-    await recargarDatos();
+    try {
+      setShowEditJuzgadoDialog(false);
+      setShowGeneralJuzgadosDialog(false);
+      setSavedJuzgadoData(juzgadoData);
+      setIsEditMode(true);
+      setIsDeleteMode(false);
+      setShowJuzgadoSuccessDialog(true);
+      await recargarDatos();
+    } catch (error) {
+      setJuzgadoErrorMessage(error.message || "Error desconocido al actualizar el juzgado");
+      setJuzgadoOperationType("editar");
+      setShowJuzgadoErrorDialog(true);
+    }
   };
 
   const handleDeleteJuzgado = async (juzgadoData) => {
-    setShowDeleteJuzgadoDialog(false);
-    setShowGeneralJuzgadosDialog(false);
-    setSavedJuzgadoData(juzgadoData);
-    setIsEditMode(false);
-    setIsDeleteMode(true);
-    setShowJuzgadoSuccessDialog(true);
-    await recargarDatos();
+    try {
+      setShowDeleteJuzgadoDialog(false);
+      setShowGeneralJuzgadosDialog(false);
+      setSavedJuzgadoData(juzgadoData);
+      setIsEditMode(false);
+      setIsDeleteMode(true);
+      setShowJuzgadoSuccessDialog(true);
+      await recargarDatos();
+    } catch (error) {
+      setJuzgadoErrorMessage(error.message || "Error desconocido al eliminar el juzgado");
+      setJuzgadoOperationType("eliminar");
+      setShowJuzgadoErrorDialog(true);
+    }
   };
 
   const handleJuzgadoSuccessDialogClose = () => {
@@ -442,58 +419,67 @@ const Home = () => {
     setIsDeleteMode(false);
   };
 
+  const handleJuzgadoErrorDialogClose = () => {
+    setShowJuzgadoErrorDialog(false);
+    setJuzgadoErrorMessage("");
+    setJuzgadoOperationType("guardar");
+  };
+
   // ===== FESTIVOS HANDLERS =====
   
   const handleSaveNuevoFestivo = async (festivoData) => {
     try {
-      const response = await fetch("http://localhost:5000/api/festivs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: festivoData.nombre,
-          date: festivoData.fecha,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setSavedFestivData(festivoData);
-        setIsFestivEditMode(false);
-        setIsFestivDeleteMode(false);
-        setShowFestivSuccessDialog(true);
-        showToastMsg("Día festivo agregado correctamente");
-      } else {
-        showToastMsg(`Error: ${result.error}`);
-      }
+      setSavedFestivData(festivoData);
+      setIsEditMode(false);
+      setIsDeleteMode(false);
+      setShowFestivSuccessDialog(true);
+      showToastMsg("Día festivo agregado correctamente");
     } catch (error) {
-      showToastMsg("Error al agregar el día festivo");
+      setFestivErrorMessage(error.message || "Error desconocido al guardar el día festivo");
+      setFestivOperationType("guardar");
+      setShowFestivErrorDialog(true);
     }
   };
 
   const handleSaveEditFestivo = async (festivoData) => {
-    setSavedFestivData(festivoData);
-    setIsFestivEditMode(true);
-    setIsFestivDeleteMode(false);
-    setShowFestivSuccessDialog(true);
-    showToastMsg("Día festivo actualizado correctamente");
+    try {
+      setSavedFestivData(festivoData);
+      setIsEditMode(true);
+      setIsDeleteMode(false);
+      setShowFestivSuccessDialog(true);
+      showToastMsg("Día festivo actualizado correctamente");
+    } catch (error) {
+      setFestivErrorMessage(error.message || "Error desconocido al actualizar el día festivo");
+      setFestivOperationType("editar");
+      setShowFestivErrorDialog(true);
+    }  
   };
 
   const handleDeleteFestivo = async (festivoData) => {
-    setSavedFestivData(festivoData);
-    setIsFestivEditMode(false);
-    setIsFestivDeleteMode(true);
-    setShowFestivSuccessDialog(true);
-    showToastMsg("Día festivo eliminado correctamente");
+    try {
+      setSavedFestivData(festivoData);
+      setIsEditMode(false);
+      setIsDeleteMode(true);
+      setShowFestivSuccessDialog(true);
+      showToastMsg("Día festivo eliminado correctamente");
+    } catch (error) {
+      setFestivErrorMessage(error.message || "Error desconocido al eliminar el día festivo");
+      setFestivOperationType("eliminar");
+      setShowFestivErrorDialog(true);
+    }
   };
 
   const handleFestivSuccessDialogClose = () => {
     setShowFestivSuccessDialog(false);
     setSavedFestivData(null);
-    setIsFestivEditMode(false);
-    setIsFestivDeleteMode(false);
+    setIsEditMode(false);
+    setIsDeleteMode(false);
+  };
+
+  const handleFestivErrorDialogClose = () => {
+    setShowFestivErrorDialog(false);
+    setFestivErrorMessage("");
+    setFestivOperationType("guardar");
   };
 
   // ===== RENDER =====
@@ -689,12 +675,6 @@ const Home = () => {
         }
         showToastMsg={showToastMsg}
       />
-      
-      <AddJuzgadoDialog
-        open={showAddJuzgadoDialog}
-        onClose={() => setShowAddJuzgadoDialog(false)}
-        onSave={recargarDatos}
-      />
 
       {/* Juzgado management dialogs */}
       <GeneralJuzgadosDialog
@@ -741,18 +721,43 @@ const Home = () => {
         onDeleteFestiv={handleDeleteFestivo}
       />
 
-      {/* Success dialog for festivs */}
+      {/* ===== SUCCESS DIALOGS ===== */}
+      
+      {/* Juzgado success dialog */}
       <SaveJuzgadoDialog
+        show={showJuzgadoSuccessDialog}
+        onClose={handleJuzgadoSuccessDialogClose}
+        juzgadoData={savedJuzgadoData}
+        municipioName={savedJuzgadoData?.municipio_name || ""}
+        isEdit={isEditMode}
+        isDelete={isDeleteMode}
+      />
+
+      {/* Festiv success dialog */}
+      <SaveFestivDialog
         show={showFestivSuccessDialog}
         onClose={handleFestivSuccessDialogClose}
-        juzgadoData={savedFestivData && {
-          codigo: "FESTIVO",
-          nombre: savedFestivData.nombre,
-          correo: savedFestivData.fecha,
-        }}
-        municipioName={isFestivDeleteMode ? "ELIMINADO" : isFestivEditMode ? "ACTUALIZADO" : "AGREGADO"}
-        isEdit={isFestivEditMode}
-        isDelete={isFestivDeleteMode}
+        festivData={savedFestivData}
+        isEdit={isEditMode}
+        isDelete={isDeleteMode}
+      />
+
+      {/* ===== ERROR DIALOGS ===== */}
+      
+      {/* Juzgado error dialog */}
+      <ErrorJuzgadoDialog
+        show={showJuzgadoErrorDialog}
+        onClose={handleJuzgadoErrorDialogClose}
+        errorMessage={juzgadoErrorMessage}
+        operationType={juzgadoOperationType}
+      />
+
+      {/* Festiv error dialog */}
+      <ErrorFestivDialog
+        show={showFestivErrorDialog}
+        onClose={handleFestivErrorDialogClose}
+        errorMessage={festivErrorMessage}
+        operationType={festivOperationType}
       />
     </div>
   );
