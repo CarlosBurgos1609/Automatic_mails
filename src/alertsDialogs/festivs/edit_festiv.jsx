@@ -14,11 +14,11 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
   const [step, setStep] = useState(1);
   const [festivs, setFestivs] = useState([]);
   const [festivoSeleccionado, setFestivoSeleccionado] = useState(null);
-  
+
   // Estados del formulario
   const [nombre, setNombre] = useState("");
   const [fecha, setFecha] = useState(dayjs());
-  
+
   const [loadingFestivs, setLoadingFestivs] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -28,8 +28,11 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
   // ✅ Función para normalizar fechas desde el backend
   const normalizeFecha = (fechaString) => {
     // Si viene en formato YYYY-MM-DD, crearlo como fecha local
-    if (typeof fechaString === 'string' && fechaString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      return dayjs(fechaString, 'YYYY-MM-DD');
+    if (
+      typeof fechaString === "string" &&
+      fechaString.match(/^\d{4}-\d{2}-\d{2}$/)
+    ) {
+      return dayjs(fechaString, "YYYY-MM-DD");
     }
     // Si viene como objeto Date o ISO string, usar UTC y convertir a local
     return dayjs.utc(fechaString).local();
@@ -51,18 +54,18 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
     setError("");
     try {
       const response = await fetch("http://localhost:5000/api/festivs");
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (Array.isArray(data)) {
         // ✅ Procesar fechas al recibir datos
-        const festivsNormalizados = data.map(festivo => ({
+        const festivsNormalizados = data.map((festivo) => ({
           ...festivo,
-          date: festivo.date // Mantener el formato original del backend
+          date: festivo.date, // Mantener el formato original del backend
         }));
         setFestivs(festivsNormalizados);
       } else {
@@ -91,13 +94,14 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
   const handleGuardar = async () => {
     if (!nombre.trim() || !fecha || errorFecha) {
       setError("Por favor, complete todos los campos obligatorios.");
-      if (!fecha || errorFecha) setErrorFecha("Por favor, seleccione una fecha válida");
+      if (!fecha || errorFecha)
+        setErrorFecha("Por favor, seleccione una fecha válida");
       return;
     }
 
     setIsLoading(true);
     setError("");
-    
+
     try {
       const festivoData = {
         name: nombre.trim().toUpperCase(),
@@ -105,7 +109,7 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
         date: fecha.format("YYYY-MM-DD"),
       };
 
-      console.log('🔍 Enviando datos al backend:', festivoData);
+      console.log("🔍 Enviando datos al backend:", festivoData);
 
       const response = await fetch(
         `http://localhost:5000/api/festivs/${festivoSeleccionado.id}`,
@@ -127,7 +131,7 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
         };
 
         handleVolver();
-        
+
         if (onSave) {
           onSave(savedData);
         }
@@ -169,12 +173,15 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
   };
 
   // ✅ Filtrar festivos con fechas normalizadas
-  const festivsFiltrados = Array.isArray(festivs) ? festivs.filter(
-    (f) =>
-      f && f.name && 
-      (f.name.toLowerCase().includes(busqueda.toLowerCase()) ||
-      formatearFecha(f.date).includes(busqueda))
-  ) : [];
+  const festivsFiltrados = Array.isArray(festivs)
+    ? festivs.filter(
+        (f) =>
+          f &&
+          f.name &&
+          (f.name.toLowerCase().includes(busqueda.toLowerCase()) ||
+            formatearFecha(f.date).includes(busqueda))
+      )
+    : [];
 
   if (!open) return null;
 
@@ -184,11 +191,11 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
         {step === 1 ? (
           <>
             <h1>Seleccionar Festivo para Editar</h1>
-            
+
             <div className="step-indicator list-step">
               Paso 1: Seleccione el festivo que desea editar
             </div>
-            
+
             <div className="search-input">
               <input
                 type="text"
@@ -199,19 +206,17 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
             </div>
 
             {error && !loadingFestivs && (
-              <div className="error-message">
-                {error}
-              </div>
+              <div className="error-message">{error}</div>
             )}
 
             <div className="juzgados-list">
               {loadingFestivs ? (
-                <div className="loading-state">
-                  Cargando festivos...
-                </div>
+                <div className="loading-state">Cargando festivos...</div>
               ) : festivsFiltrados.length === 0 ? (
                 <div className="empty-state">
-                  {busqueda ? "No se encontraron festivos" : "No hay festivos disponibles"}
+                  {busqueda
+                    ? "No se encontraron festivos"
+                    : "No hay festivos disponibles"}
                 </div>
               ) : (
                 festivsFiltrados.map((festivo) => (
@@ -220,9 +225,7 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
                     onClick={() => handleSeleccionarFestivo(festivo)}
                     className="juzgado-item"
                   >
-                    <div className="juzgado-name">
-                      {festivo.name}
-                    </div>
+                    <div className="juzgado-name">{festivo.name}</div>
                     <div className="juzgado-email">
                       📅 {formatearFecha(festivo.date)}
                     </div>
@@ -240,7 +243,7 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
         ) : (
           <>
             <h1>Editar Día Festivo</h1>
-            
+
             <div className="step-indicator edit-step">
               Editando: {festivoSeleccionado?.name}
               <div className="current-info">
@@ -275,7 +278,9 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
                   className={errorFecha ? "input-error" : ""}
                   disabled={isLoading}
                 />
-                {errorFecha && <div className="error-message">{errorFecha}</div>}
+                {errorFecha && (
+                  <div className="error-message">{errorFecha}</div>
+                )}
               </div>
 
               <div className="calendar-election">
