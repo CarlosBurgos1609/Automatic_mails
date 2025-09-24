@@ -1,5 +1,5 @@
 import React from "react";
-import loadingImg from "../assets/animation/loading.webp";
+import loadingImg from "../../assets/animation/loading.webp";
 
 export default function LoadingDialog({ open, message = "Cargando..." }) {
   if (!open) return null;

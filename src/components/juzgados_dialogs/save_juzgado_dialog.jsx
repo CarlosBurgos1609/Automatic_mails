@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import checkIcon from "../assets/icons/check.png";
+import checkIcon from "../../assets/icons/check.png";
 
 export default function SaveJuzgadoDialog({ 
   show, 

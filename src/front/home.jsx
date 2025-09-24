@@ -11,8 +11,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import Header from "./header";
 import Buttons from "../components/buttons";
 import Toast from "../components/Copy";
-import LoadingDialog from "../components/LoadingDialog";
-import SaveJuzgadoDialog from "../components/save_juzgado_dialog";
+import LoadingDialog from "../components/calendar/LoadingDialog";
+import SaveJuzgadoDialog from "../components/juzgados_dialogs/save_juzgado_dialog";
 
 // Graphics
 import AreaChartInteractive from "../grafics/area";
