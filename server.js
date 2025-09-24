@@ -72,12 +72,18 @@ app.use('/api', turnosRouter);
 const municipiosRouter = require('./src/backend/bring_data/municipios')(poolPromise);
 app.use('/api', municipiosRouter);
 
+const festivsRouter = require('./src/backend/bring_data/festivs')(poolPromise);
+app.use('/api', festivsRouter);
+
 // === ROUTERS PARA INSERTAR DATOS ===
 const insertJuzgadoRouter = require('./src/backend/insert_data/insert_juzgado')(poolPromise);
 app.use('/api', insertJuzgadoRouter);
 
 const changeTurnsRouter = require('./src/backend/insert_data/insert_turns')(poolPromise);
 app.use('/api', changeTurnsRouter);
+
+const insertFestivRouter = require('./src/backend/insert_data/insert_festiv')(poolPromise);
+app.use('/api', insertFestivRouter);
 
 // === ROUTERS PARA ACTUALIZAR DATOS ===
 const changeJuzgadoRouter = require('./src/backend/change_data/change_juzgado')(poolPromise);
@@ -86,12 +92,18 @@ app.use('/api', changeJuzgadoRouter);
 const changeTurnRouter = require('./src/backend/change_data/change_turn')(poolPromise);
 app.use('/api', changeTurnRouter);
 
+const changeFestivsRouter = require('./src/backend/change_data/change_festivs')(poolPromise);
+app.use('/api', changeFestivsRouter);
+
 // === ROUTERS PARA ELIMINAR DATOS ===
 const deleteJuzgadoRouter = require('./src/backend/delete_data/delete_juzgado')(poolPromise);
 app.use('/api', deleteJuzgadoRouter);
 
 const deleteJuzgadoTurnRouter = require('./src/backend/delete_data/delete_juzgado_turn')(poolPromise);
 app.use('/api', deleteJuzgadoTurnRouter);
+
+const deleteFestivsRouter = require('./src/backend/delete_data/delete_festivs')(poolPromise);
+app.use('/api', deleteFestivsRouter);
 
 // Middleware para manejar rutas no encontradas - CORREGIDO
 app.use((req, res) => {
@@ -123,4 +135,8 @@ app.listen(PORT, () => {
   console.log('  GET    /api/turnos');
   console.log('  POST   /api/turnos');
   console.log('  GET    /api/municipios');
+  console.log('  GET    /api/festivs');
+  console.log('  POST   /api/festivs');
+  console.log('  PUT    /api/festivs/:id');
+  console.log('  DELETE /api/festivs/:id');
 });

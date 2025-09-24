@@ -8,6 +8,7 @@ import { FaGlassCheers } from "react-icons/fa";
 export default function AddFestiveDialog({ open, onClose, onSave }) {
   const [nombre, setNombre] = useState("");
   const [fecha, setFecha] = useState(dayjs());
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [errorFecha, setErrorFecha] = useState("");
 
@@ -32,71 +33,150 @@ export default function AddFestiveDialog({ open, onClose, onSave }) {
     }
   };
 
-  const handleGuardar = () => {
-    if (!nombre || !fecha || errorFecha) {
+  const handleGuardar = async () => {
+    // ✅ Validaciones mejoradas
+    if (!nombre.trim() || !fecha || errorFecha) {
       setError("Por favor, complete todos los campos obligatorios.");
-      if (!fecha || errorFecha) setErrorFecha("Por favor, seleccione una fecha válida");
+      if (!fecha || errorFecha) {
+        setErrorFecha("Por favor, seleccione una fecha válida");
+      }
       return;
     }
-    setError(""); // Limpiar error si todo está bien
-    onSave({
-      nombre,
-      fecha: fecha.format("YYYY-MM-DD"),
-    });
-    onClose();
+
+    setIsLoading(true);
+    setError(""); // Limpiar errores previos
+
+    try {
+      // ✅ Preparar datos para enviar
+      const festivoData = {
+        name: nombre.trim().toUpperCase(), // Consistente con el backend
+        date: fecha.format("YYYY-MM-DD"),
+      };
+
+      console.log("🔍 Enviando datos al backend:", festivoData);
+
+      // ✅ Llamada al backend
+      const response = await fetch("http://localhost:5000/api/festivs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(festivoData),
+      });
+
+      const result = await response.json();
+      console.log("🔍 Respuesta del backend:", result);
+
+      if (response.ok) {
+        // ✅ Éxito - preparar datos para el componente padre
+        const savedData = {
+          nombre: festivoData.name,
+          fecha: festivoData.date,
+        };
+
+        console.log("✅ Festivo guardado exitosamente:", savedData);
+
+        // ✅ Limpiar formulario ANTES de cerrar
+        handleClose();
+
+        // ✅ Notificar al componente padre
+        if (onSave) {
+          onSave(savedData);
+        }
+      } else {
+        // ✅ Error del servidor
+        console.error("❌ Error del servidor:", result.error);
+        setError(result.error || "Error al guardar el festivo");
+      }
+    } catch (error) {
+      // ✅ Error de conexión
+      console.error("❌ Error al guardar festivo:", error);
+      setError(`Error de conexión: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ✅ Función para limpiar y cerrar
+  const handleClose = () => {
     setNombre("");
     setFecha(dayjs());
+    setError("");
     setErrorFecha("");
+    setIsLoading(false);
+    onClose();
   };
 
   if (!open) return null;
 
   return (
     <div className="alert-dialog-backdrop">
-      <div className="alert-dialog add-juzgado-dialog">
+      <div className="alert-dialog add-juzgado-dialog juzgado-management-dialog">
         <h1>
-          <FaGlassCheers size={24} /> Agregar Nuevo Día Festivo
+          <FaGlassCheers size={24} style={{ color: "#e53935" }} /> Agregar Nuevo
+          Día Festivo
         </h1>
-        <div className="input-busqueda">
-          <input
-            type="text"
-            placeholder="Nombre del día festivo"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            className={error && !nombre ? "input-error" : ""}
-          />
-        </div>
-        <div className="input-busqueda">
-          <input
-            type="date"
-            value={fecha.format("YYYY-MM-DD")}
-            onChange={handleFechaInputChange}
-            placeholder="Fecha (YYYY-MM-DD)"
-            className={errorFecha ? "input-error" : ""}
-          />
-          {errorFecha && <span className="error-message">{errorFecha}</span>}
-        </div>
-        {error && <div className="error-message">{error}</div>}
-        <div className="calendar-election">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <StaticDatePicker
-              displayStaticWrapperAs="desktop"
-              value={fecha}
-              onChange={handleFechaChange}
-              showToolbar={false}
-              slotProps={{
-                actionBar: { actions: [] },
-                toolbar: { hidden: true },
-              }}
+
+        {/* ✅ Sección del formulario con estilos consistentes */}
+        <div className="form-section">
+          <div className="form-group">
+            <input
+              type="text"
+              placeholder="Nombre del día festivo (ej: AÑO NUEVO)"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className={error && !nombre.trim() ? "input-error" : ""}
+              disabled={isLoading}
+              maxLength={255}
             />
-          </LocalizationProvider>
+          </div>
+
+          <div className="form-group">
+            <input
+              type="date"
+              value={fecha.format("YYYY-MM-DD")}
+              onChange={handleFechaInputChange}
+              className={errorFecha ? "input-error" : ""}
+              disabled={isLoading}
+            />
+            {errorFecha && <div className="error-message">{errorFecha}</div>}
+          </div>
+
+          <div className="calendar-election">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <StaticDatePicker
+                displayStaticWrapperAs="desktop"
+                value={fecha}
+                onChange={handleFechaChange}
+                disabled={isLoading}
+                showToolbar={false}
+                slotProps={{
+                  actionBar: { actions: [] },
+                  toolbar: { hidden: true },
+                }}
+              />
+            </LocalizationProvider>
+          </div>
+
+          {/* ✅ Mostrar errores de manera consistente */}
+          {error && <div className="error-message">{error}</div>}
         </div>
-        <div className="dialog-actions flex-column">
-          <button className="edit-button-full" onClick={handleGuardar}>
-            Guardar
+
+        {/* ✅ Botones con estilos consistentes */}
+        <div className="action-buttons">
+          <button
+            className="primary-button"
+            onClick={handleGuardar}
+            disabled={isLoading || !nombre.trim() || errorFecha}
+          >
+            {isLoading ? "Guardando..." : "Guardar Día Festivo"}
           </button>
-          <button className="close-button-full" onClick={onClose}>
-            Cerrar
+          <button
+            className="cancel-button"
+            onClick={handleClose}
+            disabled={isLoading}
+          >
+            Cancelar
           </button>
         </div>
       </div>

@@ -29,6 +29,8 @@ import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 import EditJuzgadoDialog from "../alertsDialogs/juzgados/edit_juzgado";
 import DeleteJuzgadoDialog from "../alertsDialogs/juzgados/delete_juzgado";
 import GeneralJuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados";
+import FestivDialog from "../alertsDialogs/festivs/general_festivs";
+// import SaveJuzgadoDialog from "../components/save_juzgado_dialog";
 
 // Styles
 import "../styles/styles.scss";
@@ -80,6 +82,13 @@ const Home = () => {
   const [showDeleteJuzgadoDialog, setShowDeleteJuzgadoDialog] = useState(false);
   const [showJuzgadoSuccessDialog, setShowJuzgadoSuccessDialog] = useState(false);
   
+  // Festivos states
+  const [showGeneralFestivsDialog, setShowGeneralFestivsDialog] = useState(false);
+  const [showFestivSuccessDialog, setShowFestivSuccessDialog] = useState(false);
+  const [savedFestivData, setSavedFestivData] = useState(null);
+  const [isFestivEditMode, setIsFestivEditMode] = useState(false);
+  const [isFestivDeleteMode, setIsFestivDeleteMode] = useState(false);
+
   // Selection and data states
   const [selectedJuzgado, setSelectedJuzgado] = useState(null);
   const [selectedSlotDate, setSelectedSlotDate] = useState(null);
@@ -433,6 +442,60 @@ const Home = () => {
     setIsDeleteMode(false);
   };
 
+  // ===== FESTIVOS HANDLERS =====
+  
+  const handleSaveNuevoFestivo = async (festivoData) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/festivs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: festivoData.nombre,
+          date: festivoData.fecha,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSavedFestivData(festivoData);
+        setIsFestivEditMode(false);
+        setIsFestivDeleteMode(false);
+        setShowFestivSuccessDialog(true);
+        showToastMsg("Día festivo agregado correctamente");
+      } else {
+        showToastMsg(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      showToastMsg("Error al agregar el día festivo");
+    }
+  };
+
+  const handleSaveEditFestivo = async (festivoData) => {
+    setSavedFestivData(festivoData);
+    setIsFestivEditMode(true);
+    setIsFestivDeleteMode(false);
+    setShowFestivSuccessDialog(true);
+    showToastMsg("Día festivo actualizado correctamente");
+  };
+
+  const handleDeleteFestivo = async (festivoData) => {
+    setSavedFestivData(festivoData);
+    setIsFestivEditMode(false);
+    setIsFestivDeleteMode(true);
+    setShowFestivSuccessDialog(true);
+    showToastMsg("Día festivo eliminado correctamente");
+  };
+
+  const handleFestivSuccessDialogClose = () => {
+    setShowFestivSuccessDialog(false);
+    setSavedFestivData(null);
+    setIsFestivEditMode(false);
+    setIsFestivDeleteMode(false);
+  };
+
   // ===== RENDER =====
   
   return (
@@ -523,7 +586,10 @@ const Home = () => {
       </div>
       
       <div className="download-container">
-        <Buttons onJuzgadosClick={() => setShowGeneralJuzgadosDialog(true)} />
+        <Buttons 
+          onJuzgadosClick={() => setShowGeneralJuzgadosDialog(true)}
+          onFestivsClick={() => setShowGeneralFestivsDialog(true)}
+        />
       </div>
       
       <div className="linear-divide flex-column">
@@ -666,14 +732,27 @@ const Home = () => {
         onDelete={handleDeleteJuzgado}
       />
 
-      {/* Success dialog */}
+      {/* Festivos management dialogs */}
+      <FestivDialog
+        open={showGeneralFestivsDialog}
+        onClose={() => setShowGeneralFestivsDialog(false)}
+        onAddFestiv={handleSaveNuevoFestivo}
+        onEditFestiv={handleSaveEditFestivo}
+        onDeleteFestiv={handleDeleteFestivo}
+      />
+
+      {/* Success dialog for festivs */}
       <SaveJuzgadoDialog
-        show={showJuzgadoSuccessDialog}
-        onClose={handleJuzgadoSuccessDialogClose}
-        juzgadoData={savedJuzgadoData}
-        municipioName={savedJuzgadoData?.municipio_name}
-        isEdit={isEditMode}
-        isDelete={isDeleteMode}
+        show={showFestivSuccessDialog}
+        onClose={handleFestivSuccessDialogClose}
+        juzgadoData={savedFestivData && {
+          codigo: "FESTIVO",
+          nombre: savedFestivData.nombre,
+          correo: savedFestivData.fecha,
+        }}
+        municipioName={isFestivDeleteMode ? "ELIMINADO" : isFestivEditMode ? "ACTUALIZADO" : "AGREGADO"}
+        isEdit={isFestivEditMode}
+        isDelete={isFestivDeleteMode}
       />
     </div>
   );
