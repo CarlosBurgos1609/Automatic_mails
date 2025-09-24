@@ -1702,19 +1702,19 @@ button:hover {
 .add-juzgado-dialog .close-button-full {
   width: 100%;
   padding: 12px 0;
-  border-radius: 8px;
-  border: 2px solid #e53935;
-  font-size: 18px;
-  font-weight: 600;
+  border-radius: 8px !important;
+  border: 2px solid #e53935 !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
   cursor: pointer;
-  background: #fff;
-  color: #e53935;
+  background: #fff !important;
+  color: #e53935 !important;
   transition: background 0.2s, color 0.2s;
 }
 .add-juzgado-dialog .close-button-full:hover,
 .add-juzgado-dialog .close-button-full:active {
-  background: #e53935;
-  color: #fff;
+  background: #e53935 !important;
+  color: #fff !important;
 }
 
 .add-juzgado-dialog .input-error {

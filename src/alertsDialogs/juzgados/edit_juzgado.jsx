@@ -323,7 +323,7 @@ export default function EditJuzgadoDialog({ open, onClose, onSave }) {
                 onClick={handleDialogClose}
                 disabled={isLoading}
               >
-                Cerrar
+                Cancelar
               </button>
             </div>
           </>
