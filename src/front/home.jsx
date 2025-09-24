@@ -60,6 +60,8 @@ const Home = () => {
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [todayTurnos, setTodayTurnos] = useState([]);
+  // ✅ AGREGAR ESTADO PARA FESTIVOS
+  const [festivs, setFestivs] = useState([]);
   const [loadingTurnos, setLoadingTurnos] = useState(false);
   
   // Calendar states
@@ -143,6 +145,21 @@ const Home = () => {
     });
   }, [juzgados, turnos]);
 
+  // ✅ COMPUTED VALUE PARA FECHAS FESTIVAS
+  const festiveDates = useMemo(() => {
+    if (!Array.isArray(festivs)) return new Set();
+    
+    const dates = new Set();
+    festivs.forEach(festiv => {
+      if (festiv.date) {
+        const dateStr = dayjs(festiv.date).format('YYYY-MM-DD');
+        dates.add(dateStr);
+      }
+    });
+    
+    return dates;
+  }, [festivs]);
+
   const turnoHoy = useMemo(() => {
     const hoy = dayjs().tz("America/Bogota").format("YYYY-MM-DD");
     return todayTurnos.find(
@@ -168,6 +185,19 @@ const Home = () => {
     }
   };
 
+  // ✅ FUNCIÓN PARA CARGAR FESTIVOS
+  const cargarFestivs = async () => {
+    try {
+      console.log('🔍 Cargando festivos...');
+      const res = await axios.get("http://localhost:5000/api/festivs");
+      console.log('✅ Festivos cargados:', res.data);
+      setFestivs(Array.isArray(res.data) ? res.data : []);
+    } catch (error) {
+      console.error("❌ Error al cargar festivos:", error);
+      setFestivs([]);
+    }
+  };
+
   const cargarTurnos = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/turnos");
@@ -185,13 +215,15 @@ const Home = () => {
   };
 
   const recargarDatos = async () => {
-    await Promise.all([cargarJuzgados(), cargarTurnos()]);
+    await Promise.all([cargarJuzgados(), cargarTurnos(), cargarFestivs()]);
   };
 
   // ===== EFFECTS =====
   
   useEffect(() => {
+    // ✅ CARGAR JUZGADOS Y FESTIVOS AL INICIO
     cargarJuzgados();
+    cargarFestivs();
   }, []);
 
   useEffect(() => {
@@ -272,13 +304,44 @@ const Home = () => {
     }, 2000);
   };
 
+  // ✅ FUNCIÓN ACTUALIZADA PARA INCLUIR DÍAS FESTIVOS
   const dayPropGetter = (date) => {
     const isToday = dayjs(date).isSame(dayjs(), "day");
-    return {
-      className: isToday ? "rbc-today" : "",
-      style: isToday
-        ? { backgroundColor: "#bafaba", border: "2px solid #003f75" }
-        : {},
+    const dateStr = dayjs(date).format('YYYY-MM-DD');
+    const isFestive = festiveDates.has(dateStr);
+    
+    let className = "";
+    let style = {};
+    let dataProps = {};
+    
+    if (isToday) {
+      className = "rbc-today";
+      style = { 
+        backgroundColor: "#bafaba", 
+        border: "2px solid #003f75" 
+      };
+    }
+    
+    if (isFestive) {
+      className += " rbc-festive-day";
+      
+      const festivoInfo = festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr);
+      if (festivoInfo) {
+        style = {
+          ...style,
+          '--festivo-name': `"🎉 ${festivoInfo.name}"`,
+          '--festivo-date': `"${dayjs(festivoInfo.date).format('DD/MM/YYYY')}"`,
+          position: 'relative'
+        };
+        
+        dataProps['data-festivo-name'] = festivoInfo.name;
+      }
+    }
+    
+    return { 
+      className, 
+      style,
+      ...dataProps
     };
   };
 
@@ -425,16 +488,29 @@ const Home = () => {
     setJuzgadoOperationType("guardar");
   };
 
-  // ===== FESTIVOS HANDLERS =====
+  // ===== FESTIVOS HANDLERS - CORREGIDOS =====
   
   const handleSaveNuevoFestivo = async (festivoData) => {
     try {
+      console.log('✅ Home - Recibido nuevo festivo:', festivoData);
+      
+      // ✅ CERRAR EL DIÁLOGO GENERAL
+      setShowGeneralFestivsDialog(false);
+      
+      // ✅ ESTABLECER DATOS DEL FESTIVO GUARDADO
       setSavedFestivData(festivoData);
       setIsEditMode(false);
       setIsDeleteMode(false);
+      
+      // ✅ MOSTRAR DIÁLOGO DE ÉXITO
       setShowFestivSuccessDialog(true);
-      showToastMsg("Día festivo agregado correctamente");
+      
+      // ✅ RECARGAR FESTIVOS PARA ACTUALIZAR EL CALENDARIO
+      await cargarFestivs();
+      
+      console.log('✅ Home - Mostrando diálogo de éxito para nuevo festivo');
     } catch (error) {
+      console.error('❌ Home - Error al manejar nuevo festivo:', error);
       setFestivErrorMessage(error.message || "Error desconocido al guardar el día festivo");
       setFestivOperationType("guardar");
       setShowFestivErrorDialog(true);
@@ -443,12 +519,25 @@ const Home = () => {
 
   const handleSaveEditFestivo = async (festivoData) => {
     try {
+      console.log('✅ Home - Recibido festivo editado:', festivoData);
+      
+      // ✅ CERRAR EL DIÁLOGO GENERAL
+      setShowGeneralFestivsDialog(false);
+      
+      // ✅ ESTABLECER DATOS DEL FESTIVO EDITADO
       setSavedFestivData(festivoData);
       setIsEditMode(true);
       setIsDeleteMode(false);
+      
+      // ✅ MOSTRAR DIÁLOGO DE ÉXITO
       setShowFestivSuccessDialog(true);
-      showToastMsg("Día festivo actualizado correctamente");
+      
+      // ✅ RECARGAR FESTIVOS PARA ACTUALIZAR EL CALENDARIO
+      await cargarFestivs();
+      
+      console.log('✅ Home - Mostrando diálogo de éxito para festivo editado');
     } catch (error) {
+      console.error('❌ Home - Error al manejar festivo editado:', error);
       setFestivErrorMessage(error.message || "Error desconocido al actualizar el día festivo");
       setFestivOperationType("editar");
       setShowFestivErrorDialog(true);
@@ -457,16 +546,42 @@ const Home = () => {
 
   const handleDeleteFestivo = async (festivoData) => {
     try {
+      console.log('✅ Home - Recibido festivo eliminado:', festivoData);
+      
+      // ✅ CERRAR EL DIÁLOGO GENERAL
+      setShowGeneralFestivsDialog(false);
+      
+      // ✅ ESTABLECER DATOS DEL FESTIVO ELIMINADO
       setSavedFestivData(festivoData);
       setIsEditMode(false);
       setIsDeleteMode(true);
+      
+      // ✅ MOSTRAR DIÁLOGO DE ÉXITO
       setShowFestivSuccessDialog(true);
-      showToastMsg("Día festivo eliminado correctamente");
+      
+      // ✅ RECARGAR FESTIVOS PARA ACTUALIZAR EL CALENDARIO
+      await cargarFestivs();
+      
+      console.log('✅ Home - Mostrando diálogo de éxito para festivo eliminado');
     } catch (error) {
+      console.error('❌ Home - Error al manejar festivo eliminado:', error);
       setFestivErrorMessage(error.message || "Error desconocido al eliminar el día festivo");
       setFestivOperationType("eliminar");
       setShowFestivErrorDialog(true);
     }
+  };
+
+  // ✅ HANDLERS DE ERROR PARA FESTIVOS
+  const handleFestivError = (errorMessage, operationType) => {
+    console.error('❌ Home - Error en festivo:', { errorMessage, operationType });
+    
+    // ✅ CERRAR DIÁLOGO GENERAL SI ESTÁ ABIERTO
+    setShowGeneralFestivsDialog(false);
+    
+    // ✅ MOSTRAR ERROR
+    setFestivErrorMessage(errorMessage);
+    setFestivOperationType(operationType);
+    setShowFestivErrorDialog(true);
   };
 
   const handleFestivSuccessDialogClose = () => {
@@ -712,13 +827,14 @@ const Home = () => {
         onDelete={handleDeleteJuzgado}
       />
 
-      {/* Festivos management dialogs */}
+      {/* ✅ Festivos management dialogs - CORREGIDO */}
       <FestivDialog
         open={showGeneralFestivsDialog}
         onClose={() => setShowGeneralFestivsDialog(false)}
         onAddFestiv={handleSaveNuevoFestivo}
         onEditFestiv={handleSaveEditFestivo}
         onDeleteFestiv={handleDeleteFestivo}
+        onError={handleFestivError}
       />
 
       {/* ===== SUCCESS DIALOGS ===== */}
@@ -733,7 +849,7 @@ const Home = () => {
         isDelete={isDeleteMode}
       />
 
-      {/* Festiv success dialog */}
+      {/* ✅ Festiv success dialog */}
       <SaveFestivDialog
         show={showFestivSuccessDialog}
         onClose={handleFestivSuccessDialogClose}
@@ -752,7 +868,7 @@ const Home = () => {
         operationType={juzgadoOperationType}
       />
 
-      {/* Festiv error dialog */}
+      {/* ✅ Festiv error dialog */}
       <ErrorFestivDialog
         show={showFestivErrorDialog}
         onClose={handleFestivErrorDialogClose}

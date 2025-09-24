@@ -10,7 +10,8 @@ import Copy from "./Copy";
 import JuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados"
 import FestivDialog from "../alertsDialogs/festivs/general_festivs"
 
-export default function Buttons({ onJuzgadosClick }) {
+// ✅ AGREGAR onFestivsClick a las props
+export default function Buttons({ onJuzgadosClick, onFestivsClick }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showJuzgadosDialog, setShowJuzgadosDialog] = useState(false);
@@ -60,9 +61,10 @@ export default function Buttons({ onJuzgadosClick }) {
         Juzgados
       </button>
       
+      {/* ✅ USAR onFestivsClick del componente padre */}
       <button
         className="add-festive-btn"
-        onClick={() => setShowFestivDialog(true)}
+        onClick={onFestivsClick}
         style={{ marginBottom: "16px" }}
       >
         <img src={festive} alt="Añadir festivo" />
@@ -102,11 +104,12 @@ export default function Buttons({ onJuzgadosClick }) {
         </div>
       )}
       
-      <FestivDialog
+      {/* ✅ ELIMINAR este diálogo local ya que se maneja en Home */}
+      {/* <FestivDialog
         open={showFestivDialog}
         onClose={() => setShowFestivDialog(false)}
         onSave={handleSaveNuevoFestivo}
-      />
+      /> */}
     </div>
   );
 }
