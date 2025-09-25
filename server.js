@@ -75,6 +75,15 @@ app.use('/api', municipiosRouter);
 const festivsRouter = require('./src/backend/bring_data/festivs')(poolPromise);
 app.use('/api', festivsRouter);
 
+const correosRouter = require('./src/backend/bring_data/correos')(poolPromise);
+app.use('/api', correosRouter);
+
+const reenviosRouter = require('./src/backend/bring_data/reenvios')(poolPromise);
+app.use('/api', reenviosRouter);
+
+const habeasCorpusRouter = require('./src/backend/bring_data/habeasCorpus')(poolPromise);
+app.use('/api', habeasCorpusRouter);
+
 // === ROUTERS PARA INSERTAR DATOS ===
 const insertJuzgadoRouter = require('./src/backend/insert_data/insert_juzgado')(poolPromise);
 app.use('/api', insertJuzgadoRouter);
