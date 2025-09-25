@@ -60,7 +60,7 @@ const Home = () => {
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [todayTurnos, setTodayTurnos] = useState([]);
-  // ✅ AGREGAR ESTADO PARA FESTIVOS
+  // AGREGAR ESTADO PARA FESTIVOS
   const [festivs, setFestivs] = useState([]);
   const [loadingTurnos, setLoadingTurnos] = useState(false);
   

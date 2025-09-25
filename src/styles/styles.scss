@@ -963,17 +963,7 @@ button:hover {
   }
 }
 
-.excel-document-view {
-  border-radius: 80px;
-  height: 800px;
-  width: 90%;
-  align-self: center;
-  iframe {
-    border-radius: 40px;
-    width: 100%;
-    height: 100%;
-  }
-}
+
 // Copiar de copy.jsx el dialogo para decir que se copio correctamente
 .custom-copy {
   position: fixed;
@@ -1211,6 +1201,7 @@ button:hover {
   height: 38px;
 }
 
+// ====== BOTONES =====
 .pdf-download-btn {
   background: #e53935;
   color: #fff;
