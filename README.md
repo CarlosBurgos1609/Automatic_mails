@@ -40,6 +40,6 @@ npm i '...'
 >    enableArithAbort: true,
 >  },
 >};
-```
+---
 
 
