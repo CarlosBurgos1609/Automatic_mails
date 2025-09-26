@@ -2,9 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Copy from "../../components/Copy";
 import deleteIcon from "../../assets/icons/delete.png";
-import dayjs from "dayjs"; // <--- Asegúrate de importar dayjs
+import dayjs from "dayjs";
 
-export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoEliminado, showToastMsg, onChangeTurn }) {
+export default function ViewJuzgadoDialog({ 
+  open, 
+  onClose, 
+  juzgado, 
+  onTurnoEliminado, 
+  showToastMsg, 
+  onChangeTurn,
+  festivo // ✅ NUEVO PROP PARA FESTIVO
+}) {
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [loading, setLoading] = useState(false);
@@ -51,17 +59,62 @@ export default function ViewJuzgadoDialog({ open, onClose, juzgado, onTurnoElimi
     <div className="alert-dialog-backdrop">
       <div className="alert-dialog">
         <h1>{juzgado?.nombre || "Nombre del Juzgado"}</h1>
+        
         {fechaSeleccionada && (
           <div style={{ marginBottom: "1rem", fontWeight: "bold", color: "#003f75" }}>
             Fecha seleccionada: {fechaSeleccionada}
           </div>
         )}
+
+        {/* ✅ MOSTRAR INFORMACIÓN DEL FESTIVO SI EXISTE */}
+        {festivo && (
+          <div style={{ 
+            marginBottom: "1rem", 
+            padding: "12px", 
+            backgroundColor: "#fff0f0", 
+            border: "2px solid #e53935", 
+            borderRadius: "8px",
+            textAlign: "center"
+          }}>
+            <div style={{ 
+              fontSize: "16px", 
+              fontWeight: "bold", 
+              color: "#e53935",
+              marginBottom: "4px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px"
+            }}>
+              <span>🎉</span>
+              <span>DÍA FESTIVO</span>
+              <span>🎉</span>
+            </div>
+            <div style={{ 
+              fontSize: "14px", 
+              color: "#d32f2f",
+              fontWeight: "600"
+            }}>
+              {festivo.name}
+            </div>
+            <div style={{ 
+              fontSize: "12px", 
+              color: "#666",
+              marginTop: "4px",
+              fontStyle: "italic"
+            }}>
+              {dayjs(festivo.date).format('DD [de] MMMM [de] YYYY')}
+            </div>
+          </div>
+        )}
+        
         <div className="juzgado-email-row">
           <span>{juzgado?.email || "juzgadoejemplo@correo.com"}</span>
           <button className="copy-button" onClick={handleCopy}>
             Copiar
           </button>
         </div>
+        
         <div className="dialog-actions-vertical">
           <button
             className="edit-button-full"
