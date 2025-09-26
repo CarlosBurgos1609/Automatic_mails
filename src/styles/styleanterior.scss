@@ -1,117 +1,5 @@
 @use "mixin" as m;
 
-// ===== IMPORTAR TODOS LOS MÓDULOS =====
-@use "header";
-@use "home";
-@use "calendar";
-@use "documents";
-@use "graphics";
-@use "buttons";
-@use "dialogs";
-@use "notifications";
-
-// ===== ESTILOS GLOBALES =====
-* {
-  font-family: "Arial", sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  width: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  color: m.$color_dark_gray;
-}
-
-body {
-  // background-color: m.$color_light_blue;
-  color: m.$color_blue;
-  font-size: 16px;
-  line-height: 1.5;
-  overflow-x: hidden;
-}
-
-// ===== CLASES UTILITARIAS =====
-.flex-row {
-  @include m.flex-row;
-  gap: 20px;
-}
-
-.flex-column {
-  @include m.flex-column;
-  gap: 10px;
-}
-
-// ===== BOTÓN BASE GLOBAL =====
-button {
-  @include m.button-primary;
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-// ===== SCROLLBAR PERSONALIZADA =====
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: m.$color_gray;
-  border-radius: 4px;
-  
-  &:hover {
-    background: darken(m.$color_gray, 20%);
-  }
-}
-
-// ===== ANIMACIONES GLOBALES =====
-.fade-in {
-  animation: fadeInUp 0.3s ease;
-}
-
-.slide-up {
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-// ===== FOCUS VISIBLE PARA ACCESIBILIDAD =====
-:focus-visible {
-  outline: 2px solid m.$color_blue;
-  outline-offset: 2px;
-}
-
-// ===== SELECCIÓN DE TEXTO =====
-::selection {
-  background-color: m.$color_light_blue;
-  color: m.$color_blue;
-}
-
-::-moz-selection {
-  background-color: m.$color_light_blue;
-  color: m.$color_blue;
-}
-
-// ===== VARIABLES GLOBALES =====
 $color_blue: #003f75;
 $color_light_blue: #e6f0fa;
 $color_white: #ffffff;
@@ -121,20 +9,46 @@ $header-height: 90px;
 $filter-blue-image: brightness(0) saturate(100%) invert(13%) sepia(99%)
   saturate(7470%) hue-rotate(196deg) brightness(95%) contrast(105%);
 
-// ===== RESET Y ESTILOS GENERALES =====
-html, body {
-  height: 100%;
-  width: 100%;
+* {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body {
-  // background-color: $color_light_blue;
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  background-color: $color_blue;
+  color: $color_white;
+  border-radius: 8px;
+  border: none;
+  pointer-events: auto !important;
+  z-index: 5;
+}
+
+button:hover {
+  transform: scale(0.98);
+  background-color: $color_green;
   color: $color_blue;
-  font-size: 16px;
-  line-height: 1.5;
+}
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-// ===== HEADER =====
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
 .header {
   width: 100%;
   background-color: $color_blue;
@@ -145,7 +59,6 @@ body {
 }
 
 .header-top {
-  @include m.flex-row;
   justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
@@ -191,7 +104,6 @@ body {
 
 .nav-menu ul {
   list-style: none;
-  @include m.flex-row;
   justify-content: space-around;
   max-width: 1200px;
   margin: 0 auto;
@@ -2263,6 +2175,8 @@ body {
   }
 }
 
+// ...existing code...
+
 // ===== ESTILOS PARA GESTIÓN DE FESTIVOS =====
 
 // Diálogo de gestión de festivos (usando los mismos estilos que juzgados)
@@ -2899,6 +2813,8 @@ body {
   }
 }
 
+// ...existing code...
+
 // ===== ESTILOS ADICIONALES PARA DIÁLOGO DE ELIMINACIÓN =====
 
 .delete-juzgado-dialog {
@@ -2978,6 +2894,7 @@ body {
     text-align: center;
   }
 }
+// ...existing code...
 
 // ===== DIÁLOGOS DE ÉXITO Y ERROR =====
 
@@ -3134,6 +3051,8 @@ body {
   }
 }
 
+// ...existing code...
+
 // ===== ESTILOS PARA GRÁFICA RADAR =====
 .radar-chart-container {
   background: white;
@@ -3215,3 +3134,5 @@ body {
     }
   }
 }
+
+// ...existing code...

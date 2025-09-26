@@ -1,0 +1,183 @@
+@use "mixin" as m;
+
+// ===== CONTENEDOR PRINCIPAL DEL CALENDARIO =====
+.calendar-loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: m.$color_blue;
+  margin: 1rem 0;
+}
+
+.calendar-container {
+  width: 100%;
+  padding: 20px;
+  overflow-x: auto;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+
+  .rbc-calendar {
+    width: 100%;
+    max-width: 80%;
+    margin: 0 auto;
+    color: m.$color_blue;
+    font-size: 16px;
+    background-color: m.$color_white;
+    border-radius: m.$border-radius;
+    box-shadow: m.$box-shadow;
+    position: relative;
+    z-index: 2;
+  }
+  
+  @media (max-width: 900px) {
+    .rbc-calendar {
+      max-width: 100%;
+    }
+  }
+
+  // ===== CELDAS DEL CALENDARIO =====
+  .rbc-day-bg {
+    background-color: m.$color_white;
+    border: 1px solid m.$color_blue;
+    height: 100px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+  }
+
+  .rbc-selected {
+    background-color: m.$color_green !important;
+    color: m.$color_blue !important;
+    border: 2px solid m.$color_blue !important;
+  }
+
+  .rbc-date-cell {
+    text-align: center;
+    padding: 5px;
+    color: m.$color_blue;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .rbc-button-link {
+    background: none !important;
+    border: none !important;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    pointer-events: auto !important;
+    z-index: 3;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  // ===== EFECTOS HOVER =====
+  .rbc-day-bg:hover,
+  .rbc-button-link:hover {
+    background-color: m.$color_light_green !important;
+    padding: auto;
+    margin: auto;
+  }
+
+  // ===== TOOLBAR =====
+  .rbc-toolbar {
+    padding: 10px;
+    background-color: m.$color_light_blue;
+    border-bottom: 2px solid m.$color_green;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-radius: m.$border-radius;
+    z-index: 100 !important;
+    pointer-events: auto !important;
+    position: relative;
+
+    button {
+      background-color: m.$color_blue;
+      color: m.$color_white;
+      border: none;
+      border-radius: 16px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      pointer-events: auto !important;
+      z-index: 101 !important;
+      position: relative;
+      font-weight: bold;
+
+      &:hover {
+        background-color: m.$color_green;
+        color: m.$color_blue;
+        transform: scale(0.95);
+      }
+    }
+
+    .rbc-active {
+      background-color: m.$color_green !important;
+      color: m.$color_blue !important;
+    }
+
+    .rbc-toolbar-label {
+      font-size: 16px;
+      font-weight: bold;
+      color: m.$color_blue;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .rbc-btn-group {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto !important;
+      z-index: 102 !important;
+    }
+  }
+
+  // ===== FINES DE SEMANA =====
+  .rbc-month-view .rbc-day-bg:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg),
+  .rbc-month-view .rbc-day-bg:nth-child(7n):not(.rbc-off-range):not(.rbc-off-range-bg) {
+    background-color: rgba(255, 255, 0, 0.1) !important;
+  }
+
+  .rbc-month-view .rbc-day-bg:nth-child(7n + 1):not(.rbc-off-range):not(.rbc-off-range-bg) .rbc-button-link {
+    color: m.$color_red !important;
+    font-weight: bold !important;
+  }
+
+  // ===== DÍAS FUERA DEL MES =====
+  .rbc-off-range,
+  .rbc-off-range-bg {
+    background-color: #e0e0e0 !important;
+    border: 1px solid #d0d0d0 !important;
+    pointer-events: none !important;
+    cursor: default !important;
+
+    .rbc-button-link {
+      color: #999 !important;
+      background-color: transparent !important;
+      pointer-events: none !important;
+      cursor: default !important;
+      font-weight: normal !important;
+    }
+
+    .rbc-event,
+    .rbc-event-content {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+  }
+}

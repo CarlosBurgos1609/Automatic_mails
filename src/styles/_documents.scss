@@ -1,0 +1,98 @@
+@use "mixin" as m;
+
+// ===== CONTENEDOR DE DOCUMENTOS =====
+.documents-container {
+  width: 100%;
+  padding: 20px;
+  overflow-x: auto;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+
+  .positioning {
+    width: 90%;
+    height: 100px;
+    margin: auto;
+    border-radius: 30px;
+    @include m.center;
+
+    .title-document {
+      background-color: m.$color_green;
+      border-radius: 20px;
+      margin: 10px;
+      padding: 40px;
+      width: 90%;
+      justify-content: space-between;
+
+      h1 {
+        font-size: 30px;
+        color: m.$color_blue;
+      }
+
+      p {
+        font-size: 17px;
+        color: m.$color_blue;
+      }
+    }
+  }
+  
+  @media (max-width: 750px) {
+    .positioning {
+      width: 50%;
+    }
+  }
+
+  .document {
+    border-radius: m.$border-radius;
+    min-height: 40px;
+    max-height: 50px;
+    padding: 20px;
+    
+    .add {
+      background-color: m.$color_green;
+      border-radius: 9px;
+      margin: 10px;
+      padding: 40px;
+      justify-content: space-between;
+      
+      h1 {
+        font-size: 90px;
+        color: m.$color_blue;
+      }
+      
+      h2 {
+        font-size: 20px;
+        color: m.$color_blue;
+      }
+
+      .document-container-exist {
+        background-color: m.$color_green;
+        border-radius: 9px;
+        margin: 10px;
+        padding: 60px;
+      }
+    }
+    
+    .archive-sheets {
+      background-color: m.$color_green;
+      border-radius: 20px;
+      margin: 10px;
+      padding: 40px;
+      justify-content: space-between;
+      
+      h1 {
+        font-size: 90px;
+        color: m.$color_blue;
+      }
+      
+      h2 {
+        font-size: 20px;
+        color: m.$color_blue;
+      }
+    }
+    
+    iframe {
+      border-radius: 20px;
+    }
+  }
+}

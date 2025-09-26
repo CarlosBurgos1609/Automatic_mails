@@ -1,0 +1,162 @@
+@use "mixin" as m;
+
+// ===== CONTENEDOR PRINCIPAL DE HOME =====
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  max-height: 100%;
+  width: 100%;
+
+  .title {
+    margin-top: m.$header-height;
+    padding: 20px 0;
+    font-size: 20px;
+    @include m.center;
+    color: m.$color_blue;
+    text-align: center;
+  }
+
+  @include m.mobile {
+    .title {
+      margin-top: 400px;
+      width: 100%;
+    }
+  }
+}
+
+.content-wrapper {
+  @include m.center;
+  padding: 20px 0;
+  flex-grow: 1;
+  justify-content: center;
+  width: 80%;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  
+  @media (max-width: 870px) {
+    width: 100%;
+    flex-direction: column;
+    
+    .main-content {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
+}
+
+.content-003 {
+  gap: 20px;
+  @include m.center;
+}
+
+// ===== INFORMACIÓN DE FECHA Y HORA =====
+.date-time {
+  border-radius: 20px;
+  padding: 20px;
+  background-color: m.$color_light_green;
+  text-align: center;
+  margin: 10px;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
+
+  h1 {
+    @include m.center;
+    color: m.$color_blue;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 20px;
+    color: m.$color_blue;
+  }
+}
+
+// ===== INFORMACIÓN DEL JUZGADO =====
+.juzgado {
+  border-radius: 20px;
+  padding: 20px;
+  background-color: m.$color_light_green;
+  text-align: center;
+  margin: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+
+  h1 {
+    font-size: 20px;
+    color: m.$color_blue;
+  }
+}
+
+.name-juzgado {
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  background-color: m.$color_light_green;
+  margin: 10px;
+  width: 100%;
+  max-width: 700px;
+  box-sizing: border-box;
+
+  h1 {
+    font-size: 20px;
+    color: m.$color_blue;
+  }
+  
+  .juzgado-email-container {
+    margin: 10px 0;
+
+    h2 {
+      font-size: 16px;
+      color: m.$color_blue;
+    }
+  }
+  
+  .juzgado-email {
+    margin: 10px 0;
+
+    h2 {
+      font-size: 16px;
+      color: m.$color_blue;
+    }
+    
+    button {
+      background-color: m.$color_blue;
+      color: m.$color_white;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: m.$color_green;
+        color: m.$color_blue;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
+
+// ===== RESPONSIVE =====
+@include m.mobile {
+  .flex-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .content-003 {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .date-time,
+  .juzgado,
+  .name-juzgado {
+    width: 90%;
+    max-width: 500px;
+  }
+}

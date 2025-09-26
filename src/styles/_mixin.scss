@@ -1,9 +1,30 @@
-// src/styles/mixin.scss
+// ===== VARIABLES DE COLORES =====
 $color_blue: #003f75;
 $color_light_blue: #e6f0fa;
 $color_white: #ffffff;
 $color_green: #bafaba;
+$color_light_green: #bdf3bd;
+$color_red: #e53935;
+$color_gray: #666;
+$color_light_gray: #f5f5f5;
+$color_dark_gray: #333;
+$color_success: #28a745;  // ✅ AGREGAR ESTA VARIABLE
+$color_warning: #ffc107;  // ✅ AGREGAR ESTA VARIABLE
+$color_info: #17a2b8;     // ✅ AGREGAR ESTA VARIABLE
 
+// ===== VARIABLES DE LAYOUT =====
+$header-height: 90px;
+$border-radius: 8px;
+$border-radius-large: 20px;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$box-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+$transition-base: all 0.2s ease;  // ✅ AGREGAR ESTA VARIABLE
+
+// ===== VARIABLES DE FILTROS =====
+$filter-blue-image: brightness(0) saturate(100%) invert(13%) sepia(99%)
+  saturate(7470%) hue-rotate(196deg) brightness(95%) contrast(105%);
+
+// ===== MIXINS DE POSICIONAMIENTO =====
 @mixin center {
   align-items: center;
   align-self: center;
@@ -21,4 +42,300 @@ $color_green: #bafaba;
   align-items: right;
   justify-content: right;
   display: flex;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@mixin flex-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+// ===== MIXINS PARA BOTONES =====
+@mixin button-base {
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: $border-radius;
+  border: none;
+  pointer-events: auto !important;
+  z-index: 5;
+  transition: $transition-base;
+  font-weight: 500;
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $color_blue;
+  color: $color_white;
+
+  &:hover {
+    transform: scale(0.98);
+    background-color: $color_green;
+    color: $color_blue;
+  }
+}
+
+@mixin button-danger {
+  @include button-base;
+  background-color: transparent;
+  color: $color_red;
+  border: 2px solid $color_red;
+
+  &:hover {
+    background-color: $color_red;
+    color: $color_white;
+  }
+}
+
+@mixin button-success {
+  @include button-base;
+  background-color: $color_success;
+  color: $color_white;
+
+  &:hover {
+    background-color: darken($color_success, 10%);
+  }
+}
+
+@mixin button-full-width {
+  width: 100%;
+  padding: 14px 0;
+  border-radius: $border-radius;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-base;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  &:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: $box-shadow-hover;
+  }
+}
+
+// ===== MIXINS PARA TARJETAS =====
+@mixin card-base {
+  background: $color_white;
+  border-radius: $border-radius-large;
+  box-shadow: $box-shadow;
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $box-shadow-hover;
+  }
+}
+
+@mixin chart-card {
+  @include card-base;
+  text-align: center;
+  min-width: 300px;
+  flex: 1;
+  
+  h3 {
+    color: $color_blue;
+    font-size: 18px;
+    margin-bottom: 16px;
+    font-weight: bold;
+  }
+  
+  p {
+    color: $color_gray;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+}
+
+// ===== MIXINS PARA ESTADOS =====
+@mixin loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  color: $color_blue;
+  background-color: #f0f8ff;
+  border-radius: $border-radius;
+  font-weight: 500;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@mixin error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  color: $color_red;
+  background-color: #fff5f5;
+  border-radius: $border-radius;
+  border: 1px solid #ffcdd2;
+  font-weight: 500;
+}
+
+@mixin empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  color: $color_gray;
+  background-color: #f9f9f9;
+  border-radius: $border-radius;
+  font-style: italic;
+}
+
+// ===== MIXINS PARA INPUTS =====
+@mixin input-base {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: $border-radius;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  background-color: $color_white;
+
+  &:focus {
+    border-color: $color_blue;
+    box-shadow: 0 0 0 2px rgba(0, 63, 117, 0.2);
+  }
+
+  &.input-error {
+    border-color: $color_red;
+    background-color: #fff5f5;
+    box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.2);
+  }
+
+  &:disabled {
+    background-color: $color_light_gray;
+    color: #999;
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: #999;
+    font-style: italic;
+  }
+}
+
+// ===== MIXINS PARA RESPONSIVE =====
+@mixin mobile {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: 1100px) {
+    @content;
+  }
+}
+
+@mixin small-mobile {
+  @media (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin tiny-mobile {
+  @media (max-width: 320px) {
+    @content;
+  }
+}
+
+// ===== MIXINS PARA DIÁLOGOS =====
+@mixin dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin dialog-base {
+  background: $color_white;
+  border-radius: $border-radius-large;
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+// ===== MIXINS PARA ANIMACIONES =====
+@mixin pulse-animation {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ===== MIXINS PARA TOOLTIPS =====
+@mixin tooltip-base {
+  z-index: 1000;
+  
+  .recharts-default-tooltip {
+    background-color: $color_white !important;
+    border: 1px solid #ccc !important;
+    border-radius: $border-radius !important;
+    box-shadow: $box-shadow-hover !important;
+    font-size: 14px !important;
+    
+    .recharts-tooltip-label {
+      color: $color_blue !important;
+      font-weight: bold !important;
+    }
+    
+    .recharts-tooltip-item {
+      color: $color_gray !important;
+      
+      .recharts-tooltip-item-name {
+        color: $color_blue !important;
+        font-weight: 500 !important;
+      }
+    }
+  }
 }

@@ -1,0 +1,209 @@
+@use "mixin" as m;
+
+// ===== BACKDROP GENERAL DE DIÁLOGOS =====
+.alert-dialog-backdrop {
+  @include m.dialog-backdrop;
+}
+
+// ===== DIÁLOGO BASE =====
+.alert-dialog {
+  @include m.dialog-base;
+  
+  h1 {
+    color: m.$color_blue;
+    font-size: 24px;
+    margin-bottom: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  p {
+    color: m.$color_gray;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+}
+
+// ===== FILA DE EMAIL DEL JUZGADO =====
+.juzgado-email-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: m.$color_light_gray;
+  padding: 12px 16px;
+  border-radius: m.$border-radius;
+  margin: 16px 0;
+  
+  span {
+    color: m.$color_blue;
+    font-weight: 500;
+  }
+}
+
+// ===== ACCIONES DE DIÁLOGOS =====
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.dialog-actions-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+// ===== BOTONES DE DIÁLOGOS =====
+.edit-button {
+  @include m.button-primary;
+  padding: 12px 24px;
+  
+  &:hover {
+    background-color: darken(m.$color_blue, 10%);
+  }
+}
+
+.close-button {
+  @include m.button-base;
+  background-color: m.$color_light_gray;
+  color: m.$color_gray;
+  padding: 12px 24px;
+  
+  &:hover {
+    background-color: darken(m.$color_light_gray, 10%);
+  }
+}
+
+.edit-button-full {
+  @include m.button-full-width;
+  @include m.button-primary;
+  margin-bottom: 8px;
+  
+  &:hover,
+  &:active {
+    background-color: darken(m.$color_blue, 10%);
+  }
+}
+
+.close-button-full {
+  @include m.button-full-width;
+  background-color: m.$color_light_gray;
+  color: m.$color_gray;
+  
+  &:hover,
+  &:active {
+    background-color: darken(m.$color_light_gray, 10%);
+  }
+}
+
+// ===== BOTÓN DE COPIAR =====
+.copy-button {
+  @include m.button-base;
+  background-color: m.$color_green;
+  color: m.$color_blue;
+  padding: 8px 16px;
+  font-size: 14px;
+  
+  &:hover,
+  &:active {
+    background-color: darken(m.$color_green, 10%);
+    transform: translateY(-1px);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ===== DIÁLOGO DE COPIA EXITOSA =====
+.custom-copy {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background-color: m.$color_white;
+  border-radius: m.$border-radius-large;
+  box-shadow: m.$box-shadow-hover;
+  padding: 32px;
+  z-index: 1001;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 400px;
+  width: 90vw;
+
+  img {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 16px auto;
+    display: block;
+  }
+
+  &.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .copy-content {
+    text-align: center;
+
+    .main-message {
+      color: m.$color_blue;
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .juzgado-details {
+      background-color: m.$color_light_gray;
+      border-radius: m.$border-radius;
+      padding: 16px;
+      margin-top: 16px;
+
+      div {
+        margin-bottom: 8px;
+        color: m.$color_gray;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      strong {
+        color: m.$color_blue;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// ===== RESPONSIVE PARA DIÁLOGOS =====
+@include m.mobile {
+  .alert-dialog {
+    padding: 20px;
+    margin: 20px;
+    
+    h1 {
+      font-size: 20px;
+    }
+  }
+  
+  .dialog-actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .custom-copy {
+    padding: 24px;
+    
+    .copy-content .main-message {
+      font-size: 18px;
+    }
+  }
+}
