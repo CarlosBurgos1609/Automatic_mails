@@ -37,8 +37,8 @@ import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 import EditJuzgadoDialog from "../alertsDialogs/juzgados/edit_juzgado";
 import DeleteJuzgadoDialog from "../alertsDialogs/juzgados/delete_juzgado";
 import GeneralJuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados";
-import FestivDialog from "../alertsDialogs/calendar/festiv_dialog"; // ✅ DIÁLOGO EMERGENTE
-import GeneralFestivsDialog from "../alertsDialogs/festivs/general_festivs"; // ✅ AGREGAR ESTE IMPORT
+// ✅ QUITAR IMPORT DE FestivDialog
+import GeneralFestivsDialog from "../alertsDialogs/festivs/general_festivs";
 
 // Styles
 import "../styles/styles.scss";
@@ -80,10 +80,10 @@ const Home = () => {
   const [showChangeDialog, setShowChangeDialog] = useState(false);
   const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
   
-  // ✅ AGREGAR ESTADOS PARA EL DIÁLOGO DE FESTIVOS
-  const [showFestivDialog, setShowFestivDialog] = useState(false);
-  const [selectedFestivo, setSelectedFestivo] = useState(null);
-  const [festivDialogPosition, setFestivDialogPosition] = useState({ x: 0, y: 0 });
+  // ✅ QUITAR ESTADOS DEL DIÁLOGO DE FESTIVOS HOVER
+  // const [showFestivDialog, setShowFestivDialog] = useState(false);
+  // const [selectedFestivo, setSelectedFestivo] = useState(null);
+  // const [festivDialogPosition, setFestivDialogPosition] = useState({ x: 0, y: 0 });
   
   // Juzgado management states
   const [showGeneralJuzgadosDialog, setShowGeneralJuzgadosDialog] = useState(false);
@@ -313,7 +313,7 @@ const Home = () => {
     }, 2000);
   };
 
-  // ✅ FUNCIÓN ACTUALIZADA PARA INCLUIR DÍAS FESTIVOS
+  // ✅ FUNCIÓN ACTUALIZADA PARA INCLUIR DÍAS FESTIVOS (MANTENER SOLO LOS ESTILOS)
   const dayPropGetter = (date) => {
     const isToday = dayjs(date).isSame(dayjs(), "day");
     const dateStr = dayjs(date).format('YYYY-MM-DD');
@@ -374,25 +374,14 @@ const Home = () => {
 
   // ===== EVENT HANDLERS =====
   
+  // ✅ FUNCIÓN SIMPLIFICADA - QUITAR LÓGICA DE FESTIVOS HOVER
   const handleSelectSlot = ({ start }) => {
     const hasEvent = events.some((ev) =>
       dayjs(ev.start).isSame(dayjs(start), "day")
     );
     
-    // ✅ VERIFICAR SI ES UN DÍA FESTIVO
-    const dateStr = dayjs(start).format('YYYY-MM-DD');
-    const festivo = festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr);
-    
-    if (festivo) {
-      // ✅ MOSTRAR DIÁLOGO DE FESTIVO
-      setSelectedFestivo(festivo);
-      setFestivDialogPosition({ 
-        x: window.innerWidth / 2, 
-        y: window.innerHeight / 2 
-      });
-      setShowFestivDialog(true);
-    } else if (!hasEvent) {
-      // ✅ MOSTRAR DIÁLOGO PARA AGREGAR TURNO
+    // ✅ SOLO ABRIR DIÁLOGO PARA AGREGAR TURNO SI NO HAY EVENTO
+    if (!hasEvent) {
       setSelectedSlotDate(start);
       setShowAddDialog(true);
     }
@@ -912,13 +901,7 @@ const Home = () => {
         operationType={festivOperationType}
       />
 
-      {/* ✅ DIÁLOGO DE FESTIVO EMERGENTE (TOOLTIP) - SOLO UNO */}
-      <FestivDialog
-        open={showFestivDialog}
-        onClose={() => setShowFestivDialog(false)}
-        festivo={selectedFestivo}
-        position={festivDialogPosition}
-      />
+      {/* ✅ QUITAR COMPLETAMENTE EL DIÁLOGO DE FESTIVO HOVER */}
 
   </div>
 );
