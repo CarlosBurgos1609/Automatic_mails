@@ -2,76 +2,101 @@
 
 // ===== NOTIFICACIONES TOAST/ALERTS =====
 
-// Base para todas las notificaciones
+// Base para todas las notificaciones - POSICIÓN FIJA EN ESQUINA SUPERIOR DERECHA
 .custom-copy {
-  position: fixed;
-  top: 30px;
-  right: 30px;
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  padding: 14px 24px 14px 14px;
+  padding: 12px 16px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   opacity: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 10001 !important;
   transition: opacity 0.3s ease, transform 0.3s ease;
-  transform: translateY(-20px);
   border: 1px solid rgba(0, 63, 117, 0.1);
-  max-width: 400px;
-  min-width: 300px;
+  max-width: 380px;
+  min-width: 280px;
+  background: m.$color_white;
+  color: m.$color_blue;
+  border-left: 4px solid m.$color_success;
 
   img {
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
   }
 
   &.show {
-    opacity: 1;
+    opacity: 1 !important;
     pointer-events: auto;
-    transform: translateY(0);
+    transform: translateX(0) !important;
   }
 
   .copy-content {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     width: 100%;
+    flex-grow: 1;
   }
 
   .main-message {
     font-weight: bold;
-    font-size: 15px;
+    font-size: 14px;
+    color: m.$color_blue;
+    margin: 0;
+    line-height: 1.3;
   }
 }
 
-// ===== NOTIFICACIÓN DE COPIA EXITOSA =====
+// ===== ANULAR CUALQUIER ESTILO CONFLICTIVO =====
+// Esto anula los estilos antiguos que pudieran estar interfiriendo
+.custom-copy {
+  // Forzar posición
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: auto !important;
+  
+  // Forzar transformación
+  transform: translateX(100%) !important;
+  
+  &.show {
+    transform: translateX(0) !important;
+  }
+  
+  // Anular cualquier centrado
+  margin: 0 !important;
+  align-self: auto !important;
+  justify-self: auto !important;
+}
+
+// ===== NOTIFICACIÓN DE COPIA EXITOSA BÁSICA =====
 .custom-copy-basic {
-  background: m.$color_white;
-  color: m.$color_blue;
-  border-left: 4px solid m.$color_success;
-
   .copy-content {
-    .main-message {
-      color: m.$color_blue;
-    }
-
     .copy-details {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      font-size: 13px;
-      margin-top: 6px;
-      padding: 6px 8px;
+      gap: 2px;
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 4px 6px;
       background: rgba(0, 63, 117, 0.05);
       border-radius: 4px;
 
       div {
         color: m.$color_blue;
+        margin: 0;
+        line-height: 1.2;
 
         strong {
           color: m.$color_success;
@@ -85,33 +110,32 @@
 
 // Éxito para juzgados
 .custom-copy-juzgado {
-  background: m.$color_white;
-  color: m.$color_blue;
-  border-left: 4px solid m.$color_success;
-  z-index: 10001 !important;
-  max-width: 350px;
-  padding: 12px 20px 12px 12px;
-
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
+  
+  &.show {
+    transform: translateX(0) !important;
+  }
+  
   .copy-content {
-    .main-message {
-      color: m.$color_blue;
-      margin-bottom: 4px;
-    }
-
     .juzgado-details {
       display: flex;
       flex-direction: column;
       gap: 2px;
-      font-size: 12px;
+      font-size: 11px;
       margin-top: 4px;
-      padding: 6px 8px;
+      padding: 4px 6px;
       background: rgba(40, 167, 69, 0.1);
       border-radius: 4px;
       border-left: 3px solid m.$color_success;
 
       div {
         color: m.$color_blue;
-        line-height: 1.3;
+        line-height: 1.2;
+        margin: 0;
 
         strong {
           color: m.$color_success;
@@ -124,27 +148,31 @@
 
 // Éxito para festivos
 .custom-copy-festiv {
-  background: m.$color_white;
-  color: m.$color_blue;
-  border-left: 4px solid m.$color_success;
-
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
+  
+  &.show {
+    transform: translateX(0) !important;
+  }
+  
   .copy-content {
-    .main-message {
-      color: m.$color_blue;
-    }
-
     .festiv-details {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      font-size: 13px;
-      margin-top: 8px;
-      padding: 8px 10px;
+      gap: 2px;
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 4px 6px;
       background: rgba(40, 167, 69, 0.1);
-      border-radius: 6px;
+      border-radius: 4px;
 
       div {
         color: m.$color_blue;
+        margin: 0;
+        line-height: 1.2;
         
         strong {
           color: m.$color_success;
@@ -156,27 +184,31 @@
 
 // Éxito para turnos
 .custom-copy-turno {
-  background: m.$color_white;
-  color: m.$color_blue;
-  border-left: 4px solid m.$color_success;
-
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
+  
+  &.show {
+    transform: translateX(0) !important;
+  }
+  
   .copy-content {
-    .main-message {
-      color: m.$color_blue;
-    }
-
     .turno-details {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      font-size: 13px;
-      margin-top: 8px;
-      padding: 8px 10px;
+      gap: 2px;
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 4px 6px;
       background: rgba(40, 167, 69, 0.1);
-      border-radius: 6px;
+      border-radius: 4px;
 
       div {
         color: m.$color_blue;
+        margin: 0;
+        line-height: 1.2;
         
         strong {
           color: m.$color_success;
@@ -188,10 +220,19 @@
 
 // ===== NOTIFICACIONES DE ERROR =====
 .custom-copy-error {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
   background: #fff5f5;
   color: m.$color_red;
   border-left: 4px solid m.$color_red;
   border: 1px solid #ffcdd2;
+  
+  &.show {
+    transform: translateX(0) !important;
+  }
 
   .copy-content {
     .main-message {
@@ -199,24 +240,34 @@
     }
 
     .error-details {
-      font-size: 13px;
-      margin-top: 8px;
-      padding: 8px 10px;
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 4px 6px;
       background: rgba(229, 57, 53, 0.1);
-      border-radius: 6px;
+      border-radius: 4px;
       color: darken(m.$color_red, 10%);
       font-weight: 500;
       word-wrap: break-word;
+      line-height: 1.2;
     }
   }
 }
 
 // ===== NOTIFICACIONES DE ADVERTENCIA =====
 .custom-copy-warning {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
   background: #fffbf0;
   color: #bf8f00;
   border-left: 4px solid m.$color_warning;
   border: 1px solid #ffecb3;
+  
+  &.show {
+    transform: translateX(0) !important;
+  }
 
   .copy-content {
     .main-message {
@@ -224,23 +275,33 @@
     }
 
     .warning-details {
-      font-size: 13px;
-      margin-top: 8px;
-      padding: 8px 10px;
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 4px 6px;
       background: rgba(255, 193, 7, 0.1);
-      border-radius: 6px;
+      border-radius: 4px;
       color: #b8860b;
       font-weight: 500;
+      line-height: 1.2;
     }
   }
 }
 
 // ===== NOTIFICACIONES DE INFORMACIÓN =====
 .custom-copy-info {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
   background: #f0f8ff;
   color: m.$color_info;
   border-left: 4px solid m.$color_info;
   border: 1px solid #b3d9ff;
+  
+  &.show {
+    transform: translateX(0) !important;
+  }
 
   .copy-content {
     .main-message {
@@ -248,22 +309,32 @@
     }
 
     .info-details {
-      font-size: 13px;
-      margin-top: 8px;
-      padding: 8px 10px;
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 4px 6px;
       background: rgba(23, 162, 184, 0.1);
-      border-radius: 6px;
+      border-radius: 4px;
       color: darken(m.$color_info, 10%);
       font-weight: 500;
+      line-height: 1.2;
     }
   }
 }
 
 // ===== NOTIFICACIONES DE CARGA =====
 .custom-copy-loading {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
   background: m.$color_light_blue;
   color: m.$color_blue;
   border-left: 4px solid m.$color_blue;
+  
+  &.show {
+    transform: translateX(0) !important;
+  }
 
   .copy-content {
     .main-message {
@@ -274,8 +345,8 @@
 
       &::after {
         content: "";
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         border: 2px solid m.$color_blue;
         border-top: 2px solid transparent;
         border-radius: 50%;
@@ -284,13 +355,14 @@
     }
 
     .loading-details {
-      font-size: 13px;
-      margin-top: 8px;
-      padding: 8px 10px;
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 4px 6px;
       background: rgba(0, 63, 117, 0.05);
-      border-radius: 6px;
+      border-radius: 4px;
       color: m.$color_blue;
       font-style: italic;
+      line-height: 1.2;
     }
   }
 }
@@ -300,20 +372,23 @@
   100% { transform: rotate(360deg); }
 }
 
-// ===== TOAST STACK =====
+// ===== TOAST STACK PARA MÚLTIPLES NOTIFICACIONES =====
 .toast-stack {
-  position: fixed;
-  top: 30px;
-  right: 30px;
-  z-index: 9999;
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  z-index: 10001;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  max-width: 400px;
-  width: 100%;
+  gap: 8px;
+  max-width: 380px;
+  width: auto;
+  pointer-events: none;
 
   .toast-item {
     animation: slideInRight 0.3s ease-out;
+    pointer-events: auto;
     
     &.removing {
       animation: slideOutRight 0.3s ease-in;
@@ -343,140 +418,32 @@
   }
 }
 
-// ===== NOTIFICACIONES EN LÍNEA =====
-.inline-notification {
-  padding: 12px 16px;
-  border-radius: m.$border-radius;
-  margin: 12px 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  font-weight: 500;
-
-  .notification-icon {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-  }
-
-  .notification-content {
-    flex-grow: 1;
-
-    .notification-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .notification-message {
-      opacity: 0.9;
-      font-size: 13px;
-    }
-  }
-
-  .notification-close {
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    opacity: 0.7;
-    padding: 4px;
-    border-radius: 4px;
-    transition: opacity 0.2s;
-
-    &:hover {
-      opacity: 1;
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
-
-  // Variantes
-  &.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-
-  &.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-
-  &.warning {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeaa7;
-  }
-
-  &.info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-  }
-}
-
 // ===== RESPONSIVE DESIGN =====
 @include m.mobile {
   .custom-copy,
+  .custom-copy-juzgado,
+  .custom-copy-festiv,
+  .custom-copy-turno,
+  .custom-copy-error,
+  .custom-copy-warning,
+  .custom-copy-info,
+  .custom-copy-loading,
   .toast-stack {
-    right: 15px;
-    left: 15px;
-    top: 20px;
-    max-width: calc(100vw - 30px);
-    min-width: auto;
-  }
-
-  .custom-copy {
-    padding: 12px 16px 12px 12px;
-
-    .copy-content {
-      gap: 4px;
-
-      .main-message {
-        font-size: 14px;
-      }
-
-      .juzgado-details,
-      .festiv-details,
-      .turno-details,
-      .error-details,
-      .warning-details,
-      .info-details,
-      .loading-details {
-        font-size: 12px;
-        padding: 6px 8px;
-      }
+    right: 10px !important;
+    left: 10px !important;
+    top: 15px !important;
+    max-width: calc(100vw - 20px) !important;
+    min-width: auto !important;
+    transform: translateY(-100%) !important;
+    
+    &.show {
+      transform: translateY(0) !important;
     }
   }
 
-  .inline-notification {
+  .custom-copy {
     padding: 10px 12px;
     font-size: 13px;
-
-    .notification-icon {
-      width: 18px;
-      height: 18px;
-    }
-
-    .notification-content {
-      .notification-title {
-        font-size: 13px;
-      }
-
-      .notification-message {
-        font-size: 12px;
-      }
-    }
-  }
-}
-
-@include m.tiny-mobile {
-  .custom-copy {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    padding: 10px 12px 10px 10px;
 
     img {
       width: 20px;
@@ -484,6 +451,8 @@
     }
 
     .copy-content {
+      gap: 3px;
+
       .main-message {
         font-size: 13px;
       }
@@ -494,34 +463,67 @@
       .error-details,
       .warning-details,
       .info-details,
-      .loading-details {
+      .loading-details,
+      .copy-details {
         font-size: 11px;
-        padding: 5px 6px;
+        padding: 3px 5px;
+        margin-top: 3px;
       }
     }
   }
 
   .toast-stack {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-  }
-
-  .inline-notification {
-    padding: 8px 10px;
-    font-size: 12px;
-    flex-direction: column;
-    text-align: center;
-    gap: 8px;
-
-    .notification-close {
-      align-self: flex-end;
-      margin-top: -4px;
-    }
+    gap: 6px;
   }
 }
 
-// ===== ANIMACIONES ESPECIALES =====
+@include m.tiny-mobile {
+  .custom-copy,
+  .custom-copy-juzgado,
+  .custom-copy-festiv,
+  .custom-copy-turno,
+  .custom-copy-error,
+  .custom-copy-warning,
+  .custom-copy-info,
+  .custom-copy-loading {
+    top: 10px !important;
+    right: 5px !important;
+    left: 5px !important;
+    padding: 8px 10px;
+    max-width: calc(100vw - 10px) !important;
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .copy-content {
+      .main-message {
+        font-size: 12px;
+      }
+
+      .juzgado-details,
+      .festiv-details,
+      .turno-details,
+      .error-details,
+      .warning-details,
+      .info-details,
+      .loading-details,
+      .copy-details {
+        font-size: 10px;
+        padding: 2px 4px;
+      }
+    }
+  }
+
+  .toast-stack {
+    top: 10px !important;
+    right: 5px !important;
+    left: 5px !important;
+  }
+}
+
+// ===== RESTO DE ESTILOS (mantener como estaban) =====
 .notification-bounce {
   animation: bounce 0.6s ease-out;
 }
@@ -531,10 +533,10 @@
     transform: translateY(0);
   }
   40% {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
   80% {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
   }
 }
 
@@ -547,14 +549,13 @@
     transform: translateX(0);
   }
   10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-5px);
+    transform: translateX(-3px);
   }
   20%, 40%, 60%, 80% {
-    transform: translateX(5px);
+    transform: translateX(3px);
   }
 }
 
-// ===== NOTIFICACIONES CON PROGRESO =====
 .notification-with-progress {
   position: relative;
   overflow: hidden;
@@ -564,7 +565,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 3px;
+    height: 2px;
     background-color: rgba(255, 255, 255, 0.3);
     animation: progress 3s linear forwards;
   }
@@ -592,5 +593,80 @@
   }
   to {
     width: 0%;
+  }
+}
+
+.inline-notification {
+  padding: 10px 12px;
+  border-radius: m.$border-radius;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+
+  .notification-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .notification-content {
+    flex-grow: 1;
+
+    .notification-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+
+    .notification-message {
+      opacity: 0.9;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+  }
+
+  .notification-close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0.7;
+    padding: 2px;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+
+    &:hover {
+      opacity: 1;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  &.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  &.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+  }
+
+  &.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
   }
 }

@@ -1,0 +1,59 @@
+@use "mixin" as m;
+
+// ===== RESETEO DE NOTIFICACIONES =====
+// Este archivo anula cualquier estilo conflictivo de notificaciones
+
+// Anular estilos antiguos que interfieren
+.custom-copy,
+.custom-copy-juzgado,
+.custom-copy-festiv,
+.custom-copy-turno,
+.custom-copy-error,
+.custom-copy-warning,
+.custom-copy-info,
+.custom-copy-loading {
+  // Forzar posicionamiento correcto
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: auto !important;
+  
+  // Forzar z-index
+  z-index: 10001 !important;
+  
+  // Anular cualquier transformación inicial
+  transform: translateX(100%) !important;
+  
+  // Anular centrado
+  margin: 0 !important;
+  align-self: auto !important;
+  justify-self: auto !important;
+  
+  // Mostrar cuando tiene clase .show
+  &.show {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+  }
+}
+
+// En móvil, deslizar desde arriba
+@include m.mobile {
+  .custom-copy,
+  .custom-copy-juzgado,
+  .custom-copy-festiv,
+  .custom-copy-turno,
+  .custom-copy-error,
+  .custom-copy-warning,
+  .custom-copy-info,
+  .custom-copy-loading {
+    right: 10px !important;
+    left: 10px !important;
+    top: 15px !important;
+    transform: translateY(-100%) !important;
+    
+    &.show {
+      transform: translateY(0) !important;
+    }
+  }
+}

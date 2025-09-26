@@ -46,6 +46,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 3px;
+    cursor: pointer !important;
   }
 
   .rbc-selected {
@@ -61,6 +62,7 @@
     font-size: 15px;
     font-weight: bold;
     text-transform: uppercase;
+    cursor: pointer !important;
   }
 
   .rbc-button-link {
@@ -73,7 +75,7 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    cursor: pointer;
+    cursor: pointer !important;
     pointer-events: auto !important;
     z-index: 3;
     font-size: 14px;
@@ -85,8 +87,103 @@
   .rbc-day-bg:hover,
   .rbc-button-link:hover {
     background-color: m.$color_light_green !important;
-    padding: auto;
-    margin: auto;
+  }
+
+  // ===== HEADERS DE SEMANA Y DÍA =====
+  .rbc-time-header {
+    background-color: m.$color_blue;
+    color: m.$color_white !important;
+    border: 1px solid m.$color_white;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .rbc-time-header-cell,
+  .rbc-header {
+    border-radius: 6px;
+    background-color: m.$color_blue;
+    color: m.$color_white !important;
+    font-size: 14px;
+    text-align: center;
+    padding: 8px;
+    border: 1px solid m.$color_white;
+    text-transform: capitalize;
+    min-height: 10px;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    overflow: visible;
+    visibility: visible !important;
+    z-index: 3;
+    flex-wrap: wrap;
+  }
+
+  .rbc-time-header-cell .rbc-header {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: capitalize;
+    color: m.$color_white !important;
+    visibility: visible !important;
+  }
+
+  // ===== SLOTS DE TIEMPO =====
+  .rbc-time-slot {
+    border: 1px solid m.$color_light_blue;
+    background-color: m.$color_white;
+    color: m.$color_blue;
+    font-size: 12px;
+    text-align: center;
+    min-height: 30px;
+  }
+
+  .rbc-time-content {
+    background-color: m.$color_white;
+    border: 1px solid m.$color_blue;
+    z-index: 2;
+  }
+
+  // ===== EVENTOS =====
+  .rbc-event {
+    background-color: m.$color_green;
+    color: m.$color_blue;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 12px;
+    border: 1px solid m.$color_blue;
+    z-index: 4;
+    pointer-events: auto !important;
+  }
+
+  .rbc-event,
+  .rbc-event-content {
+    background: none !important;
+    color: m.$color_blue !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 4px !important;
+    font-size: 13px !important;
+    font-weight: bold;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    box-shadow: none !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  // ===== HOY =====
+  .rbc-today {
+    background-color: m.$color_green !important;
+    border: 2px solid m.$color_white !important;
   }
 
   // ===== TOOLBAR =====
@@ -123,6 +220,12 @@
         color: m.$color_blue;
         transform: scale(0.95);
       }
+
+      &:focus,
+      &:active {
+        outline: 2px solid m.$color_green;
+        outline-offset: 2px;
+      }
     }
 
     .rbc-active {
@@ -157,10 +260,36 @@
     font-weight: bold !important;
   }
 
+  // Header del domingo - mantener blanco
+  .rbc-header:first-child {
+    color: m.$color_white !important;
+    font-weight: bold !important;
+    background-color: m.$color_blue !important;
+  }
+
+  .rbc-time-header-cell:first-child {
+    color: m.$color_white !important;
+    font-weight: bold !important;
+    background-color: m.$color_blue !important;
+  }
+
+  // Slots de tiempo para fines de semana
+  .rbc-time-slot:nth-child(7n+1):not(.rbc-off-range):not(.rbc-off-range-bg),
+  .rbc-time-slot:nth-child(7n):not(.rbc-off-range):not(.rbc-off-range-bg) {
+    background-color: rgba(255, 255, 0, 0.05) !important;
+  }
+
   // ===== DÍAS FUERA DEL MES =====
   .rbc-off-range,
-  .rbc-off-range-bg {
+  .rbc-off-range-bg,
+  .rbc-off-range.rbc-day-bg,
+  .rbc-month-view .rbc-day-bg.rbc-off-range,
+  .rbc-month-view .rbc-off-range,
+  .rbc-month-view .rbc-off-range-bg,
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n+1),
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):not(.rbc-off-range):not(.rbc-off-range-bg) {
     background-color: #e0e0e0 !important;
+    background: #e0e0e0 !important;
     border: 1px solid #d0d0d0 !important;
     pointer-events: none !important;
     cursor: default !important;
@@ -174,10 +303,560 @@
     }
 
     .rbc-event,
-    .rbc-event-content {
+    .rbc-event-content,
+    .rbc-show-more {
       display: none !important;
       visibility: hidden !important;
       opacity: 0 !important;
+    }
+
+    &::after {
+      display: none !important;
+    }
+
+    * {
+      color: #999 !important;
+      pointer-events: none !important;
+      cursor: default !important;
+    }
+
+    &:nth-child(7n + 1),
+    &:nth-child(7n),
+    &.rbc-festive-day {
+      background-color: #e0e0e0 !important;
+      background: #e0e0e0 !important;
+    }
+  }
+
+  // Anular hover para días fuera del mes
+  .rbc-off-range:hover,
+  .rbc-off-range-bg:hover,
+  .rbc-off-range .rbc-button-link:hover,
+  .rbc-off-range-bg .rbc-button-link:hover,
+  .rbc-month-view .rbc-day-bg.rbc-off-range:hover,
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n + 1):hover,
+  .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):hover,
+  .rbc-month-view .rbc-off-range-bg:nth-child(7n + 1):hover,
+  .rbc-month-view .rbc-off-range-bg:nth-child(7n):hover,
+  .rbc-calendar .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n + 1):hover,
+  .rbc-calendar .rbc-month-view .rbc-day-bg.rbc-off-range:nth-child(7n):hover {
+    background-color: #e0e0e0 !important;
+    background: #e0e0e0 !important;
+    transform: none !important;
+    color: #999 !important;
+
+    .rbc-button-link {
+      color: #999 !important;
+      background-color: transparent !important;
+    }
+  }
+
+  .rbc-off-range,
+  .rbc-off-range-bg {
+    .rbc-event-container,
+    .rbc-event-content,
+    .rbc-addons-dnd-resize-anchor {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+  }
+}
+
+// ===== DIÁLOGOS ESPECÍFICOS DEL CALENDARIO =====
+
+// Diálogo para cambiar turno
+.change-juzgado-dialog {
+  .turno-info {
+    margin-bottom: 20px;
+    padding: 16px;
+    background-color: m.$color_light_blue;
+    border-radius: m.$border-radius;
+    border: 1px solid m.$color_blue;
+
+    .fecha-info {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: m.$color_blue;
+    }
+
+    .juzgado-actual {
+      color: m.$color_gray;
+    }
+  }
+
+  .juzgados-list {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: m.$border-radius;
+    padding: 8px;
+    margin-bottom: 16px;
+
+    .loading-state {
+      @include m.loading-state;
+    }
+
+    .empty-state {
+      @include m.empty-state;
+    }
+
+    .juzgado-item {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: m.$border-radius;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: m.$transition-base;
+
+      &:hover {
+        background-color: m.$color_light_blue;
+      }
+
+      &.selected {
+        background-color: m.$color_green;
+        border-color: m.$color_blue;
+      }
+    }
+  }
+
+  .juzgado-seleccionado {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #d4edda;
+    border-radius: m.$border-radius;
+    border: 1px solid m.$color_success;
+
+    .selection-title {
+      font-weight: bold;
+      color: m.$color_success;
+    }
+
+    .selection-details {
+      color: m.$color_blue;
+      margin-top: 4px;
+    }
+  }
+
+  .confirm-button {
+    background-color: m.$color_success;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:not(:disabled):hover {
+      background-color: darken(m.$color_success, 10%);
+    }
+  }
+}
+
+// Diálogo para agregar juzgado al calendario
+.add-juzgado-calendar-dialog {
+  max-height: 95vh;
+  max-width: 95vw;
+  min-height: 80vh;
+  min-width: 80vw;
+  width: 90vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  
+  h1 {
+    flex-shrink: 0;
+    margin-bottom: 12px;
+  }
+
+  .fecha-seleccionada {
+    flex-shrink: 0;
+    margin-bottom: 12px;
+    padding: 12px;
+    background-color: m.$color_light_blue;
+    border-radius: m.$border-radius;
+    color: m.$color_blue;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .input-busqueda {
+    flex-shrink: 0;
+    margin-bottom: 12px;
+    
+    input {
+      @include m.input-base;
+      text-transform: uppercase;
+    }
+  }
+
+  .juzgados-list {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 300px;
+    max-height: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: m.$border-radius;
+    padding: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+
+    .loading-state,
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+    }
+
+    .juzgado-item {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: m.$border-radius;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: m.$transition-base;
+
+      &:hover {
+        background-color: m.$color_light_blue;
+        border-color: m.$color_blue;
+      }
+
+      &.selected {
+        background-color: m.$color_green;
+        border-color: m.$color_blue;
+      }
+
+      .juzgado-name {
+        font-weight: bold;
+        color: m.$color_blue;
+      }
+
+      .juzgado-email {
+        color: m.$color_gray;
+        font-size: 14px;
+        margin-top: 4px;
+      }
+    }
+  }
+
+  .juzgado-preview {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #f0f7ff;
+    border-radius: m.$border-radius;
+    border: 1px solid m.$color_blue;
+
+    .preview-title {
+      font-weight: bold;
+      color: m.$color_blue;
+    }
+
+    .preview-details {
+      color: m.$color_gray;
+      margin-top: 4px;
+    }
+
+    .copy-email-btn {
+      @include m.button-base;
+      background-color: m.$color_green;
+      color: m.$color_blue;
+      font-size: 12px;
+      padding: 4px 8px;
+      margin-top: 8px;
+    }
+  }
+
+  .error-message {
+    flex-shrink: 0;
+    color: m.$color_red;
+    font-size: 15px;
+    margin-bottom: 12px;
+    text-align: center;
+    padding: 10px;
+    background-color: #fff0f0;
+    border-radius: 6px;
+    border: 1px solid m.$color_red;
+    word-wrap: break-word;
+  }
+
+  .dialog-actions {
+    flex-shrink: 0;
+    margin-top: auto;
+    padding-top: 12px;
+    width: 100%;
+
+    .edit-button-full,
+    .close-button-full {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .save-button {
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Responsive para diálogos de calendario
+@media (max-width: 320px) {
+  .add-juzgado-calendar-dialog {
+    max-width: 100vw;
+    min-width: 98vw;
+    margin: 2px;
+    padding: 10px 6px;
+    
+    .juzgados-list {
+      min-height: 200px;
+    }
+  }
+}
+
+// ===== GESTIÓN DE FESTIVOS =====
+.calendar-election {
+  margin: 16px 0;
+  border: 1px solid #ccc;
+  border-radius: m.$border-radius;
+  padding: 8px;
+  
+  .MuiPickersStaticWrapper-root {
+    background-color: transparent;
+  }
+  
+  .MuiDateCalendar-root {
+    max-width: 100%;
+  }
+  
+  .MuiPickersDay-root {
+    &:hover {
+      background-color: m.$color_light_blue;
+    }
+    
+    &.Mui-selected {
+      background-color: m.$color_blue;
+      color: m.$color_white;
+    }
+  }
+}
+
+.festive-date-item {
+  .juzgado-name {
+    color: m.$color_red !important;
+    font-weight: bold;
+  }
+  
+  &:hover {
+    background-color: #fff0f0 !important;
+    border-color: m.$color_red !important;
+  }
+  
+  &.selected {
+    background-color: #ffebee !important;
+    border-color: m.$color_red !important;
+  }
+}
+
+// ===== DIÁLOGO DE GESTIÓN (JUZGADOS Y FESTIVOS) =====
+.juzgado-management-dialog {
+  max-width: 600px;
+  width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+
+  h1 {
+    color: m.$color_blue;
+    font-size: 24px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .step-indicator {
+    padding: 12px;
+    border-radius: m.$border-radius;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+
+    &.list-step {
+      background-color: m.$color_light_blue;
+      color: m.$color_blue;
+    }
+
+    &.edit-step {
+      background-color: m.$color_light_green;
+      color: m.$color_blue;
+    }
+  }
+
+  .search-input {
+    margin-bottom: 16px;
+    width: 100%;
+
+    input {
+      @include m.input-base;
+    }
+  }
+
+  .juzgados-list {
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: m.$border-radius;
+    padding: 8px;
+    margin-bottom: 16px;
+    background-color: #fafafa;
+    width: 100%;
+
+    .loading-state,
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+      color: m.$color_gray;
+    }
+
+    .juzgado-item {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: m.$border-radius;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: m.$transition-base;
+      background-color: m.$color_white;
+
+      &:hover {
+        background-color: m.$color_light_blue;
+        border-color: m.$color_blue;
+      }
+
+      &.selected {
+        background-color: m.$color_green;
+        border-color: m.$color_blue;
+      }
+
+      .juzgado-name {
+        font-weight: bold;
+        color: m.$color_blue;
+      }
+
+      .juzgado-email {
+        color: m.$color_gray;
+        font-size: 14px;
+        margin-top: 4px;
+      }
+    }
+  }
+
+  .form-section {
+    width: 100%;
+    margin-bottom: 20px;
+
+    .form-group {
+      margin-bottom: 16px;
+
+      label {
+        display: block;
+        margin-bottom: 4px;
+        color: m.$color_blue;
+        font-weight: 500;
+      }
+
+      input, select {
+        @include m.input-base;
+      }
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 20px;
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: m.$border-radius;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: m.$transition-base;
+    }
+  }
+
+  .error-message {
+    color: m.$color_red;
+    font-size: 14px;
+    text-align: center;
+    margin: 8px 0;
+    padding: 8px 12px;
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+}
+
+// Responsive para gestión
+@include m.mobile {
+  .juzgado-management-dialog {
+    width: 95vw;
+    max-width: 95vw;
+    padding: 20px 16px;
+
+    h1 {
+      font-size: 20px;
+    }
+
+    .step-indicator {
+      font-size: 13px;
+      padding: 10px;
+    }
+
+    .search-input input {
+      font-size: 16px;
+    }
+
+    .juzgados-list {
+      max-height: 250px;
+    }
+
+    .form-section .form-group {
+      margin-bottom: 12px;
+
+      input, select {
+        font-size: 16px;
+      }
+    }
+
+    .action-buttons button {
+      font-size: 15px;
+      padding: 10px;
+    }
+  }
+}
+
+@include m.small-mobile {
+  .juzgado-management-dialog {
+    width: 98vw;
+    max-width: 98vw;
+    padding: 16px 12px;
+    margin: 10px;
+
+    h1 {
+      font-size: 18px;
+    }
+
+    .juzgados-list {
+      max-height: 200px;
     }
   }
 }

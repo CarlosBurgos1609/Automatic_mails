@@ -9,7 +9,7 @@
   width: 100%;
 
   .title {
-    margin-top: m.$header-height;
+    margin-top: 90px;
     padding: 20px 0;
     font-size: 20px;
     @include m.center;
@@ -17,7 +17,7 @@
     text-align: center;
   }
 
-  @include m.mobile {
+  @media (max-width: 758px) {
     .title {
       margin-top: 400px;
       width: 100%;
@@ -25,6 +25,7 @@
   }
 }
 
+// ===== WRAPPER DE CONTENIDO =====
 .content-wrapper {
   @include m.center;
   padding: 20px 0;
@@ -51,7 +52,7 @@
   @include m.center;
 }
 
-// ===== INFORMACIÓN DE FECHA Y HORA =====
+// ===== SECCIÓN DE FECHA Y HORA =====
 .date-time {
   border-radius: 20px;
   padding: 20px;
@@ -75,7 +76,7 @@
   }
 }
 
-// ===== INFORMACIÓN DEL JUZGADO =====
+// ===== INFORMACIÓN DE JUZGADO =====
 .juzgado {
   border-radius: 20px;
   padding: 20px;
@@ -106,7 +107,7 @@
     font-size: 20px;
     color: m.$color_blue;
   }
-  
+
   .juzgado-email-container {
     margin: 10px 0;
 
@@ -115,7 +116,7 @@
       color: m.$color_blue;
     }
   }
-  
+
   .juzgado-email {
     margin: 10px 0;
 
@@ -123,7 +124,7 @@
       font-size: 16px;
       color: m.$color_blue;
     }
-    
+
     button {
       background-color: m.$color_blue;
       color: m.$color_white;
@@ -141,8 +142,16 @@
   }
 }
 
-// ===== RESPONSIVE =====
-@include m.mobile {
+// ===== ESTADO DE CARGA DEL CALENDARIO =====
+.calendar-loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: m.$color_blue;
+  margin: 1rem 0;
+}
+
+// ===== RESPONSIVE DESIGN =====
+@media (max-width: 768px) {
   .flex-row {
     flex-direction: column;
     gap: 20px;
