@@ -25,6 +25,9 @@ import PieChartSimple from "../grafics/pie";
 import RadialChartSimple from "../grafics/radial";
 import RadarChartComponent from "../grafics/radar1";
 
+// ✅ AGREGAR IMPORT DE ESTADÍSTICAS
+import StatsCards from "../components/StatsCards";
+
 // Dialogs
 import JuzgadoDialog from "../alertsDialogs/date_section/open_juzgado_dialog";
 import ViewJuzgadoDialog from "../alertsDialogs/calendar/view_juzgado";
@@ -701,6 +704,10 @@ const Home = () => {
         <div className="title">
           <h1>Gráficas</h1>
         </div>
+        
+        {/* ✅ AGREGAR ESTADÍSTICAS ANTES DE LAS GRÁFICAS */}
+        <StatsCards />
+        
         <div className="area-chart-full">
           <AreaChartInteractive />
         </div>

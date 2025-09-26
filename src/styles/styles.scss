@@ -3050,3 +3050,89 @@ button:hover {
     }
   }
 }
+
+// ...existing code...
+
+// ===== ESTILOS PARA GRÁFICA RADAR =====
+.radar-chart-container {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  min-width: 300px;
+  flex: 1;
+  
+  h3 {
+    color: $color_blue;
+    font-size: 18px;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  p {
+    margin: 0 0 16px 0;
+  }
+  
+  .recharts-wrapper {
+    margin: 0 auto;
+  }
+  
+  .recharts-polar-angle-axis-tick text {
+    font-size: 11px;
+    fill: #666;
+  }
+  
+  .recharts-polar-radius-axis-tick text {
+    font-size: 10px;
+    fill: #666;
+  }
+  
+  .recharts-tooltip-wrapper {
+    .recharts-default-tooltip {
+      background-color: white !important;
+      border: 1px solid #ccc !important;
+      border-radius: 8px !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  // Estados de error y carga
+  div[style*="color: #e53935"] {
+    background-color: #fff5f5;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  div[style*="color: #003f75"] {
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  div[style*="color: #666"] {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .radar-chart-container {
+    min-width: 280px;
+    padding: 16px;
+    
+    h3 {
+      font-size: 16px;
+    }
+    
+    .recharts-wrapper {
+      height: 250px !important;
+    }
+  }
+}
+
+// ...existing code...

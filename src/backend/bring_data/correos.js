@@ -68,47 +68,5 @@ module.exports = (poolPromise) => {
     }
   });
 
-  // GET /api/correos/:id - Obtener un correo por ID
-  router.get('/correos/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const pool = await poolPromise;
-      
-      if (!pool) {
-        throw new Error('No hay conexión a la base de datos');
-      }
-
-      const result = await pool.request()
-        .input('id', sql.Int, id)
-        .query(`
-          SELECT 
-            id,
-            from_email,
-            to_email,
-            subject,
-            body,
-            received_date,
-            processed,
-            juzgado_id,
-            created_at
-          FROM [automatic_emails].[dbo].[correos]
-          WHERE id = @id
-        `);
-
-      if (result.recordset.length === 0) {
-        return res.status(404).json({ error: 'Correo no encontrado' });
-      }
-
-      console.log('✅ Correo obtenido correctamente');
-      res.json(result.recordset[0]);
-    } catch (err) {
-      console.error('❌ Error al obtener correo:', err);
-      res.status(500).json({ 
-        error: 'Error al obtener el correo',
-        details: err.message 
-      });
-    }
-  });
-
   return router;
 };
