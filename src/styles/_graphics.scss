@@ -219,6 +219,98 @@
   }
 }
 
+// ===== FILTROS GLOBALES DE GRÁFICAS =====
+.global-chart-filters {
+  width: 95%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background: m.$color_white;
+  border-radius: m.$border-radius-large;
+  box-shadow: m.$box-shadow;
+  text-align: center;
+
+  .filter-info {
+    margin-bottom: 20px;
+
+    h3 {
+      color: m.$color_blue;
+      font-size: 20px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    p {
+      color: m.$color_gray;
+      font-size: 16px;
+      margin: 0;
+
+      strong {
+        color: m.$color_blue;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .filter-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .filter-btn {
+      @include m.button-base;
+      background-color: m.$color_light_blue;
+      color: m.$color_blue;
+      border: 2px solid transparent;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 16px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: m.$color_blue;
+        color: m.$color_white;
+        transform: translateY(-2px);
+        box-shadow: m.$box-shadow-hover;
+      }
+
+      &.active {
+        background-color: m.$color_blue;
+        color: m.$color_white;
+        border-color: m.$color_green;
+        box-shadow: 0 0 0 3px rgba(186, 250, 186, 0.3);
+        transform: translateY(-1px);
+
+        &:hover {
+          background-color: m.$color_green;
+          color: m.$color_blue;
+        }
+      }
+    }
+  }
+}
+
+// ===== INDICADORES DE FILTRO EN GRÁFICAS =====
+.chart-filter-info {
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-left: 4px solid m.$color_blue;
+  border-radius: 4px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: m.$color_gray;
+
+    strong {
+      color: m.$color_blue;
+      font-weight: 600;
+    }
+  }
+}
+
 // ===== RESPONSIVE DESIGN =====
 @include m.tablet {
   .other-charts-row {
@@ -256,6 +348,33 @@
     
     h3 {
       font-size: 16px;
+    }
+  }
+
+  .global-chart-filters {
+    padding: 16px;
+    margin: 16px auto;
+
+    .filter-info {
+      margin-bottom: 16px;
+
+      h3 {
+        font-size: 18px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+    }
+
+    .filter-buttons {
+      gap: 8px;
+
+      .filter-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+        min-width: 120px;
+      }
     }
   }
 }
@@ -321,6 +440,20 @@
     
     .stat-detail {
       font-size: 13px;
+    }
+  }
+
+  .global-chart-filters {
+    padding: 12px;
+
+    .filter-buttons {
+      flex-direction: column;
+      align-items: center;
+
+      .filter-btn {
+        width: 90%;
+        max-width: 250px;
+      }
     }
   }
 }

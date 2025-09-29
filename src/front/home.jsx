@@ -27,6 +27,8 @@ import RadarChartComponent from "../grafics/radar1";
 
 // ✅ AGREGAR IMPORT DE ESTADÍSTICAS
 import StatsCards from "../components/StatsCards";
+import { ChartsProvider } from "../contexts/ChartsContext"; 
+import GlobalChartFilters from "../components/grafics/GlobalChartFilters";
 
 // Dialogs
 import JuzgadoDialog from "../alertsDialogs/date_section/open_juzgado_dialog";
@@ -619,286 +621,292 @@ const Home = () => {
   // ===== RENDER =====
   
   return (
-    <div className="home-container">
-      <Header />
-      
-      <div className="title">
-        <h1>Automatización de Correos Electrónicos</h1>
-      </div>
-      
-      <div className="flex-row content-wrapper">
-        <div className="flex-row content-003">
-          <div className="flex-column date-section">
-            <div className="date-time">
-              <h1>Fecha y Hora Actual</h1>
+    // {/* ✅ ENVOLVER TODO EN EL PROVIDER */}
+    <ChartsProvider>
+      <div className="home-container">
+        <Header />
+        
+        <div className="title">
+          <h1>Automatización de Correos Electrónicos</h1>
+        </div>
+        
+        <div className="flex-row content-wrapper">
+          <div className="flex-row content-003">
+            <div className="flex-column date-section">
+              <div className="date-time">
+                <h1>Fecha y Hora Actual</h1>
+              </div>
+              <div className="date-time">
+                <p>{formatDateTime(currentDateTime)}</p>
+              </div>
             </div>
-            <div className="date-time">
-              <p>{formatDateTime(currentDateTime)}</p>
-            </div>
-          </div>
-          
-          <div className="flex-column juzgado-section">
-            <div className="juzgado ">
-              <h1>Juzgado Abierto</h1>
-            </div>
-            <div className="name-juzgado flex-column">
-              <h1
-                style={{ cursor: "pointer" }}
-                onClick={() => setShowDialog(true)}
-              >
-                {juzgadoHoy ? juzgadoHoy.name : "No hay juzgado de turno hoy"}
-              </h1>
-              <div className="juzgado-email flex-row">
-                <h2
+            
+            <div className="flex-column juzgado-section">
+              <div className="juzgado ">
+                <h1>Juzgado Abierto</h1>
+              </div>
+              <div className="name-juzgado flex-column">
+                <h1
                   style={{ cursor: "pointer" }}
                   onClick={() => setShowDialog(true)}
                 >
-                  {juzgadoHoy ? juzgadoHoy.email : ""}
-                </h2>
-                {juzgadoHoy && (
-                  <button className="copy-button" onClick={handleCopyEmail}>
-                    Copiar
-                  </button>
-                )}
+                  {juzgadoHoy ? juzgadoHoy.name : "No hay juzgado de turno hoy"}
+                </h1>
+                <div className="juzgado-email flex-row">
+                  <h2
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setShowDialog(true)}
+                  >
+                    {juzgadoHoy ? juzgadoHoy.email : ""}
+                  </h2>
+                  {juzgadoHoy && (
+                    <button className="copy-button" onClick={handleCopyEmail}>
+                      Copiar
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      <div className="linear-divide flex-column">
-        <hr />
-      </div>
-      
-      <div className="calendar-container">
-        <LoadingDialog
-          open={loadingTurnos}
-          message="Cargando turnos del mes..."
+        
+        <div className="linear-divide flex-column">
+          <hr />
+        </div>
+        
+        <div className="calendar-container">
+          <LoadingDialog
+            open={loadingTurnos}
+            message="Cargando turnos del mes..."
+          />
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: "600px" }}
+            views={["month", "week", "day"]}
+            view={view}
+            date={date}
+            onView={setView}
+            onNavigate={setDate}
+            selectable={true}
+            onSelectSlot={handleSelectSlot}
+            onSelectEvent={handleSelectEvent}
+            onRangeChange={handleRangeChange}
+            dayPropGetter={dayPropGetter}
+            eventPropGetter={eventPropGetter}
+            culture="es"
+            messages={{
+              month: "Mes",
+              week: "Semana",
+              day: "Día",
+              today: "Hoy",
+              previous: "Anterior",
+              next: "Siguiente",
+              agenda: "Agenda",
+            }}
+          />
+        </div>
+        
+        <div className="download-container">
+          <Buttons 
+            onJuzgadosClick={() => setShowGeneralJuzgadosDialog(true)}
+            onFestivsClick={() => setShowGeneralFestivsDialog(true)}
+          />
+        </div>
+        
+        <div className="linear-divide flex-column">
+          <hr />
+        </div>
+        
+        <div className="grafic-content flex-column">
+          <div className="title">
+            <h1>Gráficas</h1>
+          </div>
+          
+          {/* ✅ AGREGAR FILTROS GLOBALES */}
+          <GlobalChartFilters />
+          
+          {/* ✅ AGREGAR ESTADÍSTICAS ANTES DE LAS GRÁFICAS */}
+          <StatsCards />
+          
+          <div className="area-chart-full">
+            <AreaChartInteractive />
+          </div>
+          <div className="other-charts-row flex-row">
+            <PieChartSimple />
+            <RadialChartSimple />
+            <RadarChartComponent />
+          </div>
+        </div>
+        
+        <div className="linear-divide flex-column">
+          <hr />
+        </div>
+        
+
+        {/* Toast notifications */}
+        <div className="toast-container">
+          {toastMsgs.map((msg, idx) => (
+            <Toast key={idx} show={true} message={msg} />
+          ))}
+        </div>
+
+        {/* Main dialogs */}
+        <JuzgadoDialog
+          open={showDialog}
+          onClose={() => setShowDialog(false)}
+          juzgadoHoy={juzgadoHoy}
+          showToastMsg={showToastMsg}
         />
-        <Calendar
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: "600px" }}
-          views={["month", "week", "day"]}
-          view={view}
-          date={date}
-          onView={setView}
-          onNavigate={setDate}
-          selectable={true}
-          onSelectSlot={handleSelectSlot}
-          onSelectEvent={handleSelectEvent}
-          onRangeChange={handleRangeChange}
-          dayPropGetter={dayPropGetter}
-          eventPropGetter={eventPropGetter}
-          culture="es"
-          messages={{
-            month: "Mes",
-            week: "Semana",
-            day: "Día",
-            today: "Hoy",
-            previous: "Anterior",
-            next: "Siguiente",
-            agenda: "Agenda",
+        
+        <ViewJuzgadoDialog
+          open={showViewDialog}
+          onClose={() => {
+            setShowViewDialog(false);
+            setSelectedJuzgado(null);
+          }}
+          juzgado={selectedJuzgado}
+          showToastMsg={showToastMsg}
+          onTurnoEliminado={cargarTurnos}
+          onChangeTurn={(juzgado) => {
+            setChangeTurnData(juzgado);
+            setShowViewDialog(false);
+            setShowChangeDialog(true);
+          }}
+          // ✅ PASAR FESTIVO SI EXISTE
+          festivo={selectedJuzgado ? getFestivoByDate(selectedJuzgado.turn_date) : null}
+        />
+        
+        <AddJuzgadoCalendarDialog
+          open={showAddDialog}
+          onClose={() => setShowAddDialog(false)}
+          onSave={handleSaveJuzgado}
+          slotDate={selectedSlotDate}
+          showToastMsg={showToastMsg}
+        />
+        
+        <ChangeJuzgadoTurnDialog
+          open={showChangeDialog}
+          onClose={() => setShowChangeDialog(false)}
+          onChange={async (nuevoJuzgado, slotDate) => {
+            try {
+              await axios.put(
+                `http://localhost:5000/api/turnos/${changeTurnData.turno_id}`,
+                {
+                  nuevo_juzgado_id: nuevoJuzgado.id,
+                  turn_date: changeTurnData.turn_date,
+                }
+              );
+              showToastMsg("Turno cambiado correctamente");
+              setShowChangeDialog(false);
+              await recargarDatos();
+            } catch (err) {
+              showToastMsg("Error al cambiar el turno");
+            }
+          }}
+          slotDate={changeTurnData?.turn_date}
+          currentJuzgado={
+            changeTurnData && {
+              name: changeTurnData.nombre,
+              email: changeTurnData.email,
+              id: changeTurnData.juzgado_id,
+            }
+          }
+          showToastMsg={showToastMsg}
+        />
+
+        {/* Juzgado management dialogs */}
+        <GeneralJuzgadosDialog
+          open={showGeneralJuzgadosDialog}
+          onClose={() => setShowGeneralJuzgadosDialog(false)}
+          onAddJuzgado={() => {
+            setShowGeneralJuzgadosDialog(false);
+            setShowAddNewJuzgadoDialog(true);
+          }}
+          onEditJuzgado={() => {
+            setShowGeneralJuzgadosDialog(false);
+            setShowEditJuzgadoDialog(true);
+          }}
+          onDeleteJuzgado={() => {
+            setShowGeneralJuzgadosDialog(false);
+            setShowDeleteJuzgadoDialog(true);
           }}
         />
-      </div>
-      
-      <div className="download-container">
-        <Buttons 
-          onJuzgadosClick={() => setShowGeneralJuzgadosDialog(true)}
-          onFestivsClick={() => setShowGeneralFestivsDialog(true)}
+
+        <AddJuzgadoDialog
+          open={showAddNewJuzgadoDialog}
+          onClose={() => setShowAddNewJuzgadoDialog(false)}
+          onSave={handleSaveNuevoJuzgado}
         />
-      </div>
-      
-      <div className="linear-divide flex-column">
-        <hr />
-      </div>
-      
-      <div className="grafic-content flex-column">
-        <div className="title">
-          <h1>Gráficas</h1>
-        </div>
+
+        <EditJuzgadoDialog
+          open={showEditJuzgadoDialog}
+          onClose={() => setShowEditJuzgadoDialog(false)}
+          onSave={handleSaveEditJuzgado}
+        />
+
+        <DeleteJuzgadoDialog
+          open={showDeleteJuzgadoDialog}
+          onClose={() => setShowDeleteJuzgadoDialog(false)}
+          onDelete={handleDeleteJuzgado}
+        />
+
+        {/* Festivos management dialogs - CORREGIDO */}
+        <GeneralFestivsDialog
+          open={showGeneralFestivsDialog}
+          onClose={() => setShowGeneralFestivsDialog(false)}
+          onAddFestiv={handleSaveNuevoFestivo}
+          onEditFestiv={handleSaveEditFestivo}
+          onDeleteFestivo={handleDeleteFestivo}
+          onError={handleFestivError}
+        />
+
+        {/* ===== SUCCESS DIALOGS ===== */}
         
-        {/* ✅ AGREGAR ESTADÍSTICAS ANTES DE LAS GRÁFICAS */}
-        <StatsCards />
+        {/* Juzgado success dialog */}
+        <SaveJuzgadoDialog
+          show={showJuzgadoSuccessDialog}
+          onClose={handleJuzgadoSuccessDialogClose}
+          juzgadoData={savedJuzgadoData}
+          municipioName={savedJuzgadoData?.municipio_name || ""}
+          isEdit={isEditMode}
+          isDelete={isDeleteMode}
+        />
+
+        {/* ✅ Festiv success dialog */}
+        <SaveFestivDialog
+          show={showFestivSuccessDialog}
+          onClose={handleFestivSuccessDialogClose}
+          festivData={savedFestivData}
+          isEdit={isEditMode}
+          isDelete={isDeleteMode}
+        />
+
+        {/* ===== ERROR DIALOGS ===== */}
         
-        <div className="area-chart-full">
-          <AreaChartInteractive />
-        </div>
-        <div className="other-charts-row flex-row">
-          <PieChartSimple />
-          <RadialChartSimple />
-          <RadarChartComponent />
-        </div>
+        {/* Juzgado error dialog */}
+        <ErrorJuzgadoDialog
+          show={showJuzgadoErrorDialog}
+          onClose={handleJuzgadoErrorDialogClose}
+          errorMessage={juzgadoErrorMessage}
+          operationType={juzgadoOperationType}
+        />
+
+        {/* ✅ Festiv error dialog */}
+        <ErrorFestivDialog
+          show={showFestivErrorDialog}
+          onClose={handleFestivErrorDialogClose}
+          errorMessage={festivErrorMessage}
+          operationType={festivOperationType}
+        />
+
+        {/* ✅ QUITAR COMPLETAMENTE EL DIÁLOGO DE FESTIVO HOVER */}
+
       </div>
-      
-      <div className="linear-divide flex-column">
-        <hr />
-      </div>
-      
-
-      {/* Toast notifications */}
-      <div className="toast-container">
-        {toastMsgs.map((msg, idx) => (
-          <Toast key={idx} show={true} message={msg} />
-        ))}
-      </div>
-
-      {/* Main dialogs */}
-      <JuzgadoDialog
-        open={showDialog}
-        onClose={() => setShowDialog(false)}
-        juzgadoHoy={juzgadoHoy}
-        showToastMsg={showToastMsg}
-      />
-      
-      <ViewJuzgadoDialog
-        open={showViewDialog}
-        onClose={() => {
-          setShowViewDialog(false);
-          setSelectedJuzgado(null);
-        }}
-        juzgado={selectedJuzgado}
-        showToastMsg={showToastMsg}
-        onTurnoEliminado={cargarTurnos}
-        onChangeTurn={(juzgado) => {
-          setChangeTurnData(juzgado);
-          setShowViewDialog(false);
-          setShowChangeDialog(true);
-        }}
-        // ✅ PASAR FESTIVO SI EXISTE
-        festivo={selectedJuzgado ? getFestivoByDate(selectedJuzgado.turn_date) : null}
-      />
-      
-      <AddJuzgadoCalendarDialog
-        open={showAddDialog}
-        onClose={() => setShowAddDialog(false)}
-        onSave={handleSaveJuzgado}
-        slotDate={selectedSlotDate}
-        showToastMsg={showToastMsg}
-      />
-      
-      <ChangeJuzgadoTurnDialog
-        open={showChangeDialog}
-        onClose={() => setShowChangeDialog(false)}
-        onChange={async (nuevoJuzgado, slotDate) => {
-          try {
-            await axios.put(
-              `http://localhost:5000/api/turnos/${changeTurnData.turno_id}`,
-              {
-                nuevo_juzgado_id: nuevoJuzgado.id,
-                turn_date: changeTurnData.turn_date,
-              }
-            );
-            showToastMsg("Turno cambiado correctamente");
-            setShowChangeDialog(false);
-            await recargarDatos();
-          } catch (err) {
-            showToastMsg("Error al cambiar el turno");
-          }
-        }}
-        slotDate={changeTurnData?.turn_date}
-        currentJuzgado={
-          changeTurnData && {
-            name: changeTurnData.nombre,
-            email: changeTurnData.email,
-            id: changeTurnData.juzgado_id,
-          }
-        }
-        showToastMsg={showToastMsg}
-      />
-
-      {/* Juzgado management dialogs */}
-      <GeneralJuzgadosDialog
-        open={showGeneralJuzgadosDialog}
-        onClose={() => setShowGeneralJuzgadosDialog(false)}
-        onAddJuzgado={() => {
-          setShowGeneralJuzgadosDialog(false);
-          setShowAddNewJuzgadoDialog(true);
-        }}
-        onEditJuzgado={() => {
-          setShowGeneralJuzgadosDialog(false);
-          setShowEditJuzgadoDialog(true);
-        }}
-        onDeleteJuzgado={() => {
-          setShowGeneralJuzgadosDialog(false);
-          setShowDeleteJuzgadoDialog(true);
-        }}
-      />
-
-      <AddJuzgadoDialog
-        open={showAddNewJuzgadoDialog}
-        onClose={() => setShowAddNewJuzgadoDialog(false)}
-        onSave={handleSaveNuevoJuzgado}
-      />
-
-      <EditJuzgadoDialog
-        open={showEditJuzgadoDialog}
-        onClose={() => setShowEditJuzgadoDialog(false)}
-        onSave={handleSaveEditJuzgado}
-      />
-
-      <DeleteJuzgadoDialog
-        open={showDeleteJuzgadoDialog}
-        onClose={() => setShowDeleteJuzgadoDialog(false)}
-        onDelete={handleDeleteJuzgado}
-      />
-
-      {/* Festivos management dialogs - CORREGIDO */}
-      <GeneralFestivsDialog
-        open={showGeneralFestivsDialog}
-        onClose={() => setShowGeneralFestivsDialog(false)}
-        onAddFestiv={handleSaveNuevoFestivo}
-        onEditFestiv={handleSaveEditFestivo}
-        onDeleteFestivo={handleDeleteFestivo}
-        onError={handleFestivError}
-      />
-
-      {/* ===== SUCCESS DIALOGS ===== */}
-      
-      {/* Juzgado success dialog */}
-      <SaveJuzgadoDialog
-        show={showJuzgadoSuccessDialog}
-        onClose={handleJuzgadoSuccessDialogClose}
-        juzgadoData={savedJuzgadoData}
-        municipioName={savedJuzgadoData?.municipio_name || ""}
-        isEdit={isEditMode}
-        isDelete={isDeleteMode}
-      />
-
-      {/* ✅ Festiv success dialog */}
-      <SaveFestivDialog
-        show={showFestivSuccessDialog}
-        onClose={handleFestivSuccessDialogClose}
-        festivData={savedFestivData}
-        isEdit={isEditMode}
-        isDelete={isDeleteMode}
-      />
-
-      {/* ===== ERROR DIALOGS ===== */}
-      
-      {/* Juzgado error dialog */}
-      <ErrorJuzgadoDialog
-        show={showJuzgadoErrorDialog}
-        onClose={handleJuzgadoErrorDialogClose}
-        errorMessage={juzgadoErrorMessage}
-        operationType={juzgadoOperationType}
-      />
-
-      {/* ✅ Festiv error dialog */}
-      <ErrorFestivDialog
-        show={showFestivErrorDialog}
-        onClose={handleFestivErrorDialogClose}
-        errorMessage={festivErrorMessage}
-        operationType={festivOperationType}
-      />
-
-      {/* ✅ QUITAR COMPLETAMENTE EL DIÁLOGO DE FESTIVO HOVER */}
-
-  </div>
-);
+    </ChartsProvider>
+  );
 };
 
 export default Home;
