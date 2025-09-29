@@ -3,6 +3,14 @@ import axios from "axios";
 import Copy from "../../components/Copy";
 import deleteIcon from "../../assets/icons/delete.png";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import "dayjs/locale/es"; // ✅ AGREGAR LOCALE ESPAÑOL
+
+// ✅ CONFIGURAR DAYJS PARA COLOMBIA
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale("es"); // ✅ CONFIGURAR LOCALE
 
 export default function ViewJuzgadoDialog({ 
   open, 
@@ -48,17 +56,34 @@ export default function ViewJuzgadoDialog({
     }
   };
 
-  // Formatea la fecha seleccionada (corrige desfase de zona horaria)
+  // ✅ PARA MOSTRAR: Agregar un día para compensar el desfase de zona horaria
   const fechaSeleccionada = juzgado?.turn_date
-    ? dayjs(juzgado.turn_date).add(1, 'day').format("dddd, DD [de] MMMM [de] YYYY")
+    ? dayjs.utc(juzgado.turn_date).add(1, 'day').tz("America/Bogota").format("dddd, DD [de] MMMM [de] YYYY")
     : "";
+
+  // ✅ CORREGIR: Usar la fecha original del juzgado para generar la fecha del festivo
+  const fechaFestivoMostrar = juzgado?.turn_date
+    ? dayjs.utc(juzgado.turn_date).add(1, 'day').tz("America/Bogota").format('DD [de] MMMM [de] YYYY')
+    : "";
+
+  // ✅ OBTENER EL NOMBRE CORRECTO DEL JUZGADO
+  const nombreJuzgado = juzgado?.nombre || juzgado?.name || "Nombre del Juzgado";
+
+  console.log('🔍 Debug ViewJuzgado:', {
+    turn_date: juzgado?.turn_date,
+    fechaSeleccionada,
+    festivo: festivo?.date,
+    fechaFestivoMostrar,
+    nombreJuzgado
+  });
 
   if (!open) return null;
 
   return (
     <div className="alert-dialog-backdrop">
       <div className="alert-dialog">
-        <h1>{juzgado?.nombre || "Nombre del Juzgado"}</h1>
+        {/* ✅ USAR LA VARIABLE CON EL NOMBRE CORRECTO */}
+        <h1>{nombreJuzgado}</h1>
         
         {fechaSeleccionada && (
           <div style={{ marginBottom: "1rem", fontWeight: "bold", color: "#003f75" }}>
@@ -103,7 +128,8 @@ export default function ViewJuzgadoDialog({
               marginTop: "4px",
               fontStyle: "italic"
             }}>
-              {dayjs(festivo.date).format('DD [de] MMMM [de] YYYY')}
+              {/* ✅ USAR LA FECHA CORREGIDA DESDE EL JUZGADO */}
+              {fechaFestivoMostrar}
             </div>
           </div>
         )}

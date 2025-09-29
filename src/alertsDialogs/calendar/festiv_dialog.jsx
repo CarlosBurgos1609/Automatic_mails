@@ -116,6 +116,7 @@ export default function FestivDialog({
               {festivo.name}
             </div>
             <div className="festiv-date">
+              {/* ✅ NO agregar día extra, mostrar fecha exacta */}
               {dayjs(festivo.date).format('dddd, DD [de] MMMM [de] YYYY')}
             </div>
           </div>

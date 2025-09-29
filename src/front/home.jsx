@@ -162,6 +162,7 @@ const Home = () => {
     const dates = new Set();
     festivs.forEach(festiv => {
       if (festiv.date) {
+        // ✅ No agregar días adicionales, usar fecha exacta
         const dateStr = dayjs(festiv.date).format('YYYY-MM-DD');
         dates.add(dateStr);
       }
@@ -316,18 +317,29 @@ const Home = () => {
     }
   };
 
-  // ✅ FUNCIÓN PARA OBTENER FESTIVO POR FECHA (REQUERIDA)
-  const getFestivoByDate = (date) => {
-    if (!date || !Array.isArray(festivs)) return null;
-    const dateStr = dayjs(date).format('YYYY-MM-DD');
-    return festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr) || null;
+  // ✅ FUNCIÓN HELPER PARA OBTENER FESTIVO POR FECHA (SIN MODIFICAR LA FECHA)
+  const getFestivoByDate = (dateString) => {
+    if (!dateString) return null;
+    
+    // Usar la fecha original SIN agregar día para buscar el festivo
+    const fechaBusqueda = dayjs.utc(dateString).format('YYYY-MM-DD');
+    
+    return festivs.find(festivo => {
+      const fechaFestivo = dayjs.utc(festivo.date).format('YYYY-MM-DD');
+      return fechaFestivo === fechaBusqueda;
+    });
   };
 
-  // ✅ FUNCIÓN PARA PROPIEDADES DE DÍAS (INCLUYE FESTIVOS)
+  // ✅ FUNCIÓN PARA PROPIEDADES DE DÍAS (CORREGIDA)
   const dayPropGetter = (date) => {
     const isToday = dayjs(date).isSame(dayjs(), "day");
     const dateStr = dayjs(date).format('YYYY-MM-DD');
-    const isFestive = festiveDates.has(dateStr);
+    
+    // ✅ Verificar festivos sin desfase
+    const isFestive = festivs.some(f => {
+      const festivoDateStr = dayjs(f.date).format('YYYY-MM-DD');
+      return festivoDateStr === dateStr;
+    });
     
     let className = "";
     let style = {};
@@ -344,7 +356,11 @@ const Home = () => {
     if (isFestive) {
       className += " rbc-festive-day";
       
-      const festivoInfo = festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr);
+      const festivoInfo = festivs.find(f => {
+        const festivoDateStr = dayjs(f.date).format('YYYY-MM-DD');
+        return festivoDateStr === dateStr;
+      });
+      
       if (festivoInfo) {
         dataProps['data-festivo-name'] = `🎉 ${festivoInfo.name}`;
         dataProps['data-festivo-date'] = dayjs(festivoInfo.date).format('DD/MM/YYYY');
@@ -359,7 +375,7 @@ const Home = () => {
     };
   };
 
-  // ✅ FUNCIÓN PARA MANEJAR CLICKS EN SLOTS (INCLUYE FESTIVOS)
+  // ✅ FUNCIÓN PARA MANEJAR CLICKS EN SLOTS (CORREGIDA)
   const handleSelectSlot = ({ start }) => {
     console.log('📅 Slot seleccionado:', start);
     
@@ -367,12 +383,14 @@ const Home = () => {
       dayjs(ev.start).isSame(dayjs(start), "day")
     );
     
-    // Verificar si es un día festivo
+    // ✅ Verificar si es un día festivo sin desfase
     const dateStr = dayjs(start).format('YYYY-MM-DD');
-    const isFestive = festiveDates.has(dateStr);
-    const festivoInfo = festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr);
+    const festivoInfo = festivs.find(f => {
+      const festivoDateStr = dayjs(f.date).format('YYYY-MM-DD');
+      return festivoDateStr === dateStr;
+    });
 
-    if (isFestive && festivoInfo && !hasEvent) {
+    if (festivoInfo && !hasEvent) {
       // Mostrar diálogo de festivo si no hay evento
       setFestivDialogPosition({
         x: window.innerWidth / 2,
