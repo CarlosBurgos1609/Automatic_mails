@@ -1610,7 +1610,7 @@
   background: m.$color_white;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  border: 2px solid m.$color_red;
+  border: 2px solid m.$color_green;
   z-index: 10000;
   max-width: 320px;
   min-width: 280px;
@@ -1624,7 +1624,7 @@
   }
 
   .festiv-dialog-header {
-    background: linear-gradient(135deg, m.$color_red, darken(m.$color_red, 10%));
+    background: linear-gradient(135deg, m.$color_green, darken(m.$color_green, 10%));
     color: m.$color_white;
     padding: 16px 20px;
     display: flex;
@@ -1717,7 +1717,7 @@
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 8px solid m.$color_red;
+    border-top: 8px solid m.$color_green;
     z-index: 10001;
   }
 

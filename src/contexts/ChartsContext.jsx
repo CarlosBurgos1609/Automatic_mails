@@ -15,6 +15,7 @@ export const ChartsProvider = ({ children }) => {
   const [filterType, setFilterType] = useState('days'); // 'days', 'weeks', 'months'
 
   const filterOptions = [
+    { value: 1, label: 'Hoy', type: 'days' },
     { value: 3, label: 'Últimos 3 días', type: 'days' },
     { value: 7, label: 'Últimos 7 días', type: 'days' },
     { value: 30, label: 'Últimos 30 días', type: 'days' },

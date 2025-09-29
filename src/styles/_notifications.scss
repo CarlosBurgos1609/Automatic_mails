@@ -836,19 +836,19 @@
 
 // ✅ ESTILOS ESPECÍFICOS PARA FESTIVOS
 .custom-copy-festiv {
-  background: #fff0f8;
+  background: #ffffff;
   color: m.$color_red;
-  border-left: 4px solid m.$color_red;
+  border-left: 4px solid m.$color_green;
 
   .main-message {
-    color: m.$color_red;
+    color: m.$color_blue;
   }
 
   .notification-close-btn {
     color: m.$color_red;
 
     &:hover {
-      background-color: rgba(229, 57, 53, 0.1);
+      background-color:#bafaba;
     }
   }
 }
