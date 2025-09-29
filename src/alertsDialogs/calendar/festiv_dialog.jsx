@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 
@@ -10,33 +10,72 @@ export default function FestivDialog({
   festivo,
   position = { x: 0, y: 0 } // Posición donde aparecerá el diálogo
 }) {
+  const dialogRef = useRef(null);
+
+  // ✅ CERRAR AL HACER CLICK FUERA
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (open && dialogRef.current && !dialogRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    if (open) {
+      const timer = setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [open, onClose]);
+
+  // ✅ CERRAR CON ESC
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && open) {
+        onClose();
+      }
+    };
+
+    if (open) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [open, onClose]);
+
   if (!open || !festivo) return null;
 
-  // Calcular la posición del diálogo (hacia abajo)
+  // ✅ CALCULAR POSICIÓN MEJORADA
   const dialogStyle = {
     position: 'fixed',
-    top: position.y + 10, // 10px debajo del cursor
-    left: position.x - 150, // Centrado horizontalmente
+    top: position.y + 10,
+    left: position.x - 150,
     zIndex: 10000,
-    maxWidth: '300px',
-    minWidth: '250px',
-    transform: position.x < 150 ? 'translateX(0)' : 'translateX(-50%)', // Ajustar si está muy a la izquierda
+    maxWidth: '320px',
+    minWidth: '280px',
+    transform: 'translateX(-50%)',
   };
 
-  // Si el diálogo se saldría de la pantalla por abajo, mostrarlo hacia arriba
+  // Ajustar si se sale de la pantalla
   if (position.y > window.innerHeight - 200) {
-    dialogStyle.top = position.y - 150; // Mostrar hacia arriba
+    dialogStyle.top = position.y - 180;
   }
-
-  // Si se sale por la derecha, ajustar hacia la izquierda
-  if (position.x > window.innerWidth - 150) {
-    dialogStyle.left = position.x - 300;
+  if (position.x < 160) {
+    dialogStyle.left = 10;
+    dialogStyle.transform = 'translateX(0)';
+  }
+  if (position.x > window.innerWidth - 160) {
+    dialogStyle.right = 10;
+    dialogStyle.left = 'auto';
     dialogStyle.transform = 'translateX(0)';
   }
 
   return (
     <>
-      {/* Backdrop para cerrar al hacer clic fuera */}
+      {/* Backdrop transparente */}
       <div 
         className="festiv-dialog-backdrop"
         onClick={onClose}
@@ -51,13 +90,14 @@ export default function FestivDialog({
         }}
       />
       
-      {/* Diálogo de festivo */}
+      {/* ✅ DIÁLOGO MEJORADO */}
       <div 
+        ref={dialogRef}
         className="festiv-dialog"
         style={dialogStyle}
       >
         <div className="festiv-dialog-content">
-          {/* Header del diálogo */}
+          {/* Header */}
           <div className="festiv-dialog-header">
             <div className="festiv-icon">🎉</div>
             <h3 className="festiv-title">Día Festivo</h3>
@@ -70,7 +110,7 @@ export default function FestivDialog({
             </button>
           </div>
           
-          {/* Contenido del festivo */}
+          {/* Contenido */}
           <div className="festiv-dialog-body">
             <div className="festiv-name">
               {festivo.name}
@@ -80,7 +120,7 @@ export default function FestivDialog({
             </div>
           </div>
           
-          {/* Footer opcional */}
+          {/* Footer */}
           <div className="festiv-dialog-footer">
             <div className="festiv-info">
               <span className="festiv-info-icon">ℹ️</span>
@@ -89,7 +129,7 @@ export default function FestivDialog({
           </div>
         </div>
         
-        {/* Flecha indicadora */}
+        {/* ✅ FLECHA INDICADORA MEJORADA */}
         <div className="festiv-dialog-arrow" />
       </div>
     </>

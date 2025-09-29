@@ -39,8 +39,8 @@ import AddJuzgadoDialog from "../alertsDialogs/juzgados/add_juzgado";
 import EditJuzgadoDialog from "../alertsDialogs/juzgados/edit_juzgado";
 import DeleteJuzgadoDialog from "../alertsDialogs/juzgados/delete_juzgado";
 import GeneralJuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados";
-// ✅ QUITAR IMPORT DE FestivDialog
 import GeneralFestivsDialog from "../alertsDialogs/festivs/general_festivs";
+import FestivDialog from "../alertsDialogs/calendar/festiv_dialog";
 
 // Styles
 import "../styles/styles.scss";
@@ -59,14 +59,13 @@ dayjs.locale("es", {
 const localizer = dayjsLocalizer(dayjs);
 
 const Home = () => {
-  // ===== STATE MANAGEMENT =====
+  // ===== TODOS LOS ESTADOS EXISTENTES =====
   
   // General states
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [juzgados, setJuzgados] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [todayTurnos, setTodayTurnos] = useState([]);
-  // AGREGAR ESTADO PARA FESTIVOS
   const [festivs, setFestivs] = useState([]);
   const [loadingTurnos, setLoadingTurnos] = useState(false);
   
@@ -82,10 +81,10 @@ const Home = () => {
   const [showChangeDialog, setShowChangeDialog] = useState(false);
   const [showAddJuzgadoDialog, setShowAddJuzgadoDialog] = useState(false);
   
-  // ✅ QUITAR ESTADOS DEL DIÁLOGO DE FESTIVOS HOVER
-  // const [showFestivDialog, setShowFestivDialog] = useState(false);
-  // const [selectedFestivo, setSelectedFestivo] = useState(null);
-  // const [festivDialogPosition, setFestivDialogPosition] = useState({ x: 0, y: 0 });
+  // ✅ RESTAURAR ESTADOS DEL DIÁLOGO DE FESTIVOS
+  const [showFestivDialog, setShowFestivDialog] = useState(false);
+  const [selectedFestivo, setSelectedFestivo] = useState(null);
+  const [festivDialogPosition, setFestivDialogPosition] = useState({ x: 0, y: 0 });
   
   // Juzgado management states
   const [showGeneralJuzgadosDialog, setShowGeneralJuzgadosDialog] = useState(false);
@@ -196,7 +195,6 @@ const Home = () => {
     }
   };
 
-  // ✅ FUNCIÓN PARA CARGAR FESTIVOS
   const cargarFestivs = async () => {
     try {
       console.log('🔍 Cargando festivos...');
@@ -229,10 +227,172 @@ const Home = () => {
     await Promise.all([cargarJuzgados(), cargarTurnos(), cargarFestivs()]);
   };
 
+  // ===== UTILITY FUNCTIONS =====
+  
+  const formatDateTime = (date) => {
+    const options = {
+      timeZone: "America/Bogota",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    };
+    return date.toLocaleString("es-CO", options);
+  };
+
+  const showToastMsg = (msg) => {
+    setToastMsgs((prev) => [...prev, msg]);
+    setTimeout(() => {
+      setToastMsgs((prev) => prev.slice(1));
+    }, 2000);
+  };
+
+  // ✅ FUNCIÓN PARA MANEJAR SELECCIÓN DE EVENTOS (REQUERIDA)
+  const handleSelectEvent = (event) => {
+    console.log('📅 Evento seleccionado:', event);
+    const juzgado = juzgados.find((j) => j.id === event.juzgado_id);
+    if (juzgado) {
+      setSelectedJuzgado({
+        ...juzgado,
+        turno_id: event.turno_id,
+        turn_date: event.turn_date,
+      });
+      setShowViewDialog(true);
+    }
+  };
+
+  // ✅ FUNCIÓN PARA MANEJAR CAMBIO DE RANGO DE FECHAS (REQUERIDA)
+  const handleRangeChange = (range) => {
+    console.log('📅 Rango de fechas cambiado:', range);
+    if (Array.isArray(range)) {
+      const start = dayjs(range[0]).format("YYYY-MM-DD");
+      const end = dayjs(range[range.length - 1]).format("YYYY-MM-DD");
+      setRange({ start, end });
+    } else if (range.start && range.end) {
+      const start = dayjs(range.start).format("YYYY-MM-DD");
+      const end = dayjs(range.end).format("YYYY-MM-DD");
+      setRange({ start, end });
+    }
+  };
+
+  // ✅ FUNCIÓN PARA PROPIEDADES DE EVENTOS (REQUERIDA)
+  const eventPropGetter = (event) => {
+    return {
+      style: {
+        backgroundColor: "#bafaba",
+        color: "#003f75",
+        border: "1px solid #003f75",
+        borderRadius: "4px",
+        fontSize: "12px",
+        fontWeight: "bold",
+      },
+    };
+  };
+
+  // ✅ FUNCIÓN PARA COPIAR EMAIL (REQUERIDA)
+  const handleCopyEmail = () => {
+    if (juzgadoHoy && juzgadoHoy.email) {
+      navigator.clipboard.writeText(juzgadoHoy.email)
+        .then(() => showToastMsg("Email copiado al portapapeles"))
+        .catch(() => showToastMsg("Error al copiar el email"));
+    }
+  };
+
+  // ✅ FUNCIÓN PARA GUARDAR JUZGADO EN CALENDARIO (REQUERIDA)
+  const handleSaveJuzgado = async (juzgadoData) => {
+    try {
+      await axios.post("http://localhost:5000/api/turnos", {
+        juzgado_id: juzgadoData.id,
+        turn_date: dayjs(selectedSlotDate).format("YYYY-MM-DD"),
+      });
+      showToastMsg("Turno agregado correctamente");
+      setShowAddDialog(false);
+      await recargarDatos();
+    } catch (error) {
+      showToastMsg("Error al agregar el turno");
+      console.error("Error al guardar turno:", error);
+    }
+  };
+
+  // ✅ FUNCIÓN PARA OBTENER FESTIVO POR FECHA (REQUERIDA)
+  const getFestivoByDate = (date) => {
+    if (!date || !Array.isArray(festivs)) return null;
+    const dateStr = dayjs(date).format('YYYY-MM-DD');
+    return festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr) || null;
+  };
+
+  // ✅ FUNCIÓN PARA PROPIEDADES DE DÍAS (INCLUYE FESTIVOS)
+  const dayPropGetter = (date) => {
+    const isToday = dayjs(date).isSame(dayjs(), "day");
+    const dateStr = dayjs(date).format('YYYY-MM-DD');
+    const isFestive = festiveDates.has(dateStr);
+    
+    let className = "";
+    let style = {};
+    let dataProps = {};
+    
+    if (isToday) {
+      className = "rbc-today";
+      style = { 
+        backgroundColor: "#bafaba", 
+        border: "2px solid #003f75" 
+      };
+    }
+    
+    if (isFestive) {
+      className += " rbc-festive-day";
+      
+      const festivoInfo = festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr);
+      if (festivoInfo) {
+        dataProps['data-festivo-name'] = `🎉 ${festivoInfo.name}`;
+        dataProps['data-festivo-date'] = dayjs(festivoInfo.date).format('DD/MM/YYYY');
+        dataProps['data-festivo-id'] = festivoInfo.id;
+      }
+    }
+    
+    return { 
+      className, 
+      style,
+      ...dataProps
+    };
+  };
+
+  // ✅ FUNCIÓN PARA MANEJAR CLICKS EN SLOTS (INCLUYE FESTIVOS)
+  const handleSelectSlot = ({ start }) => {
+    console.log('📅 Slot seleccionado:', start);
+    
+    const hasEvent = events.some((ev) =>
+      dayjs(ev.start).isSame(dayjs(start), "day")
+    );
+    
+    // Verificar si es un día festivo
+    const dateStr = dayjs(start).format('YYYY-MM-DD');
+    const isFestive = festiveDates.has(dateStr);
+    const festivoInfo = festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr);
+
+    if (isFestive && festivoInfo && !hasEvent) {
+      // Mostrar diálogo de festivo si no hay evento
+      setFestivDialogPosition({
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2
+      });
+      setSelectedFestivo(festivoInfo);
+      setShowFestivDialog(true);
+      return; // No abrir diálogo de agregar turno
+    }
+    
+    // Abrir diálogo para agregar turno si no hay evento y no es festivo
+    if (!hasEvent) {
+      setSelectedSlotDate(start);
+      setShowAddDialog(true);
+    }
+  };
+
   // ===== EFFECTS =====
   
   useEffect(() => {
-    // ✅ CARGAR JUZGADOS Y FESTIVOS AL INICIO
     cargarJuzgados();
     cargarFestivs();
   }, []);
@@ -293,158 +453,38 @@ const Home = () => {
     setRange({ start: startOfMonth, end: endOfMonth });
   }, []);
 
-  // ===== UTILITY FUNCTIONS =====
-  
-  const formatDateTime = (date) => {
-    const options = {
-      timeZone: "America/Bogota",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
+  // ✅ AGREGAR LISTENER PARA CLICKS EN DÍAS FESTIVOS
+  useEffect(() => {
+    const handleCalendarClick = (event) => {
+      const festiveDay = event.target.closest('.rbc-festive-day');
+      if (festiveDay && !event.target.closest('.rbc-event')) {
+        const festivoId = festiveDay.getAttribute('data-festivo-id');
+        
+        if (festivoId) {
+          const festivoInfo = festivs.find(f => f.id == festivoId);
+          if (festivoInfo) {
+            const rect = festiveDay.getBoundingClientRect();
+            setFestivDialogPosition({
+              x: rect.left + rect.width / 2,
+              y: rect.top
+            });
+            setSelectedFestivo(festivoInfo);
+            setShowFestivDialog(true);
+          }
+        }
+      }
     };
-    return date.toLocaleString("es-CO", options);
-  };
 
-  const showToastMsg = (msg) => {
-    setToastMsgs((prev) => [...prev, msg]);
-    setTimeout(() => {
-      setToastMsgs((prev) => prev.slice(1));
-    }, 2000);
-  };
-
-  // ✅ FUNCIÓN ACTUALIZADA PARA INCLUIR DÍAS FESTIVOS (MANTENER SOLO LOS ESTILOS)
-  const dayPropGetter = (date) => {
-    const isToday = dayjs(date).isSame(dayjs(), "day");
-    const dateStr = dayjs(date).format('YYYY-MM-DD');
-    const isFestive = festiveDates.has(dateStr);
-    
-    let className = "";
-    let style = {};
-    let dataProps = {};
-    
-    if (isToday) {
-      className = "rbc-today";
-      style = { 
-        backgroundColor: "#bafaba", 
-        border: "2px solid #003f75" 
+    // Agregar listener después de que el calendario se renderice
+    const calendarContainer = document.querySelector('.calendar-container');
+    if (calendarContainer) {
+      calendarContainer.addEventListener('click', handleCalendarClick);
+      
+      return () => {
+        calendarContainer.removeEventListener('click', handleCalendarClick);
       };
     }
-    
-    if (isFestive) {
-      className += " rbc-festive-day";
-      
-      const festivoInfo = festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr);
-      if (festivoInfo) {
-        style = {
-          ...style,
-          position: 'relative'
-        };
-        
-        dataProps['data-festivo-name'] = `🎉 ${festivoInfo.name}`;
-        dataProps['data-festivo-date'] = dayjs(festivoInfo.date).format('DD/MM/YYYY');
-      }
-    }
-    
-    return { 
-      className, 
-      style,
-      ...dataProps
-    };
-  };
-
-  // ✅ FUNCIÓN PARA OBTENER FESTIVO DE UNA FECHA
-  const getFestivoByDate = (date) => {
-    if (!date || !Array.isArray(festivs)) return null;
-    
-    const dateStr = dayjs(date).format('YYYY-MM-DD');
-    return festivs.find(f => dayjs(f.date).format('YYYY-MM-DD') === dateStr);
-  };
-
-  const eventPropGetter = (event) => {
-    return {
-      style: {
-        backgroundColor: "#bdf3bd",
-        color: "#003f75",
-        borderRadius: "4px",
-        border: "1px solid #003f75",
-      },
-    };
-  };
-
-  // ===== EVENT HANDLERS =====
-  
-  // ✅ FUNCIÓN SIMPLIFICADA - QUITAR LÓGICA DE FESTIVOS HOVER
-  const handleSelectSlot = ({ start }) => {
-    const hasEvent = events.some((ev) =>
-      dayjs(ev.start).isSame(dayjs(start), "day")
-    );
-    
-    // ✅ SOLO ABRIR DIÁLOGO PARA AGREGAR TURNO SI NO HAY EVENTO
-    if (!hasEvent) {
-      setSelectedSlotDate(start);
-      setShowAddDialog(true);
-    }
-  };
-
-  const handleSelectEvent = (event) => {
-    setSelectedJuzgado({
-      nombre: event.title,
-      email: event.email,
-      turno_id: event.turno_id,
-      turn_date: event.turn_date,
-      juzgado_id: event.juzgado_id,
-    });
-    setShowViewDialog(true);
-  };
-
-  const handleCopyEmail = () => {
-    if (juzgadoHoy && juzgadoHoy.email) {
-      navigator.clipboard.writeText(juzgadoHoy.email).then(() => {
-        showToastMsg("¡Se copió con éxito!");
-      });
-    }
-  };
-
-  const handleSaveJuzgado = async (juzgado, date) => {
-    try {
-      if (!juzgado?.id || !date) {
-        console.error("Datos incompletos:", { juzgado, date });
-        showToastMsg("Error: Faltan datos del juzgado o fecha");
-        return;
-      }
-
-      const turn_date = dayjs(date).format("YYYY-MM-DD");
-      const response = await axios.post("http://localhost:5000/api/turnos", {
-        juzgado_id: juzgado.id,
-        turn_date,
-        estado_id: 1,
-      });
-
-      await recargarDatos();
-      showToastMsg("Turno guardado correctamente");
-    } catch (err) {
-      console.error("Error al guardar el turno:", err);
-      showToastMsg(`Error al guardar el turno: ${err.response?.data?.error || err.message}`);
-    }
-  };
-
-  const handleRangeChange = (range) => {
-    let start, end;
-    if (Array.isArray(range)) {
-      start = dayjs(range[0]).format("YYYY-MM-DD");
-      end = dayjs(range[range.length - 1]).format("YYYY-MM-DD");
-    } else if (range.start && range.end) {
-      start = dayjs(range.start).format("YYYY-MM-DD");
-      end = dayjs(range.end).format("YYYY-MM-DD");
-    } else {
-      start = dayjs().startOf("day").format("YYYY-MM-DD");
-      end = dayjs().endOf("day").format("YYYY-MM-DD");
-    }
-    setRange({ start, end });
-  };
+  }, [festivs, festiveDates]);
 
   // ===== JUZGADO MANAGEMENT HANDLERS =====
   
@@ -509,24 +549,17 @@ const Home = () => {
     setJuzgadoOperationType("guardar");
   };
 
-  // ===== FESTIVOS HANDLERS - CORREGIDOS =====
+  // ===== FESTIVOS HANDLERS =====
   
   const handleSaveNuevoFestivo = async (festivoData) => {
     try {
       console.log('✅ Home - Recibido nuevo festivo:', festivoData);
       
-      // ✅ CERRAR EL DIÁLOGO GENERAL
       setShowGeneralFestivsDialog(false);
-      
-      // ✅ ESTABLECER DATOS DEL FESTIVO GUARDADO
       setSavedFestivData(festivoData);
       setIsEditMode(false);
       setIsDeleteMode(false);
-      
-      // ✅ MOSTRAR DIÁLOGO DE ÉXITO
       setShowFestivSuccessDialog(true);
-      
-      // ✅ RECARGAR FESTIVOS PARA ACTUALIZAR EL CALENDARIO
       await cargarFestivs();
       
       console.log('✅ Home - Mostrando diálogo de éxito para nuevo festivo');
@@ -542,18 +575,11 @@ const Home = () => {
     try {
       console.log('✅ Home - Recibido festivo editado:', festivoData);
       
-      // ✅ CERRAR EL DIÁLOGO GENERAL
       setShowGeneralFestivsDialog(false);
-      
-      // ✅ ESTABLECER DATOS DEL FESTIVO EDITADO
       setSavedFestivData(festivoData);
       setIsEditMode(true);
       setIsDeleteMode(false);
-      
-      // ✅ MOSTRAR DIÁLOGO DE ÉXITO
       setShowFestivSuccessDialog(true);
-      
-      // ✅ RECARGAR FESTIVOS PARA ACTUALIZAR EL CALENDARIO
       await cargarFestivs();
       
       console.log('✅ Home - Mostrando diálogo de éxito para festivo editado');
@@ -569,18 +595,11 @@ const Home = () => {
     try {
       console.log('✅ Home - Recibido festivo eliminado:', festivoData);
       
-      // ✅ CERRAR EL DIÁLOGO GENERAL
       setShowGeneralFestivsDialog(false);
-      
-      // ✅ ESTABLECER DATOS DEL FESTIVO ELIMINADO
       setSavedFestivData(festivoData);
       setIsEditMode(false);
       setIsDeleteMode(true);
-      
-      // ✅ MOSTRAR DIÁLOGO DE ÉXITO
       setShowFestivSuccessDialog(true);
-      
-      // ✅ RECARGAR FESTIVOS PARA ACTUALIZAR EL CALENDARIO
       await cargarFestivs();
       
       console.log('✅ Home - Mostrando diálogo de éxito para festivo eliminado');
@@ -592,14 +611,10 @@ const Home = () => {
     }
   };
 
-  // ✅ HANDLERS DE ERROR PARA FESTIVOS
   const handleFestivError = (errorMessage, operationType) => {
     console.error('❌ Home - Error en festivo:', { errorMessage, operationType });
     
-    // ✅ CERRAR DIÁLOGO GENERAL SI ESTÁ ABIERTO
     setShowGeneralFestivsDialog(false);
-    
-    // ✅ MOSTRAR ERROR
     setFestivErrorMessage(errorMessage);
     setFestivOperationType(operationType);
     setShowFestivErrorDialog(true);
@@ -621,7 +636,6 @@ const Home = () => {
   // ===== RENDER =====
   
   return (
-    // {/* ✅ ENVOLVER TODO EN EL PROVIDER */}
     <ChartsProvider>
       <div className="home-container">
         <Header />
@@ -679,6 +693,7 @@ const Home = () => {
             open={loadingTurnos}
             message="Cargando turnos del mes..."
           />
+          {/* ✅ CALENDARIO CON TODAS LAS FUNCIONES DEFINIDAS */}
           <Calendar
             localizer={localizer}
             events={events}
@@ -725,10 +740,7 @@ const Home = () => {
             <h1>Gráficas</h1>
           </div>
           
-          {/* ✅ AGREGAR FILTROS GLOBALES */}
           <GlobalChartFilters />
-          
-          {/* ✅ AGREGAR ESTADÍSTICAS ANTES DE LAS GRÁFICAS */}
           <StatsCards />
           
           <div className="area-chart-full">
@@ -744,7 +756,6 @@ const Home = () => {
         <div className="linear-divide flex-column">
           <hr />
         </div>
-        
 
         {/* Toast notifications */}
         <div className="toast-container">
@@ -775,7 +786,6 @@ const Home = () => {
             setShowViewDialog(false);
             setShowChangeDialog(true);
           }}
-          // ✅ PASAR FESTIVO SI EXISTE
           festivo={selectedJuzgado ? getFestivoByDate(selectedJuzgado.turn_date) : null}
         />
         
@@ -853,7 +863,7 @@ const Home = () => {
           onDelete={handleDeleteJuzgado}
         />
 
-        {/* Festivos management dialogs - CORREGIDO */}
+        {/* Festivos management dialogs */}
         <GeneralFestivsDialog
           open={showGeneralFestivsDialog}
           onClose={() => setShowGeneralFestivsDialog(false)}
@@ -863,9 +873,7 @@ const Home = () => {
           onError={handleFestivError}
         />
 
-        {/* ===== SUCCESS DIALOGS ===== */}
-        
-        {/* Juzgado success dialog */}
+        {/* Success dialogs */}
         <SaveJuzgadoDialog
           show={showJuzgadoSuccessDialog}
           onClose={handleJuzgadoSuccessDialogClose}
@@ -875,7 +883,6 @@ const Home = () => {
           isDelete={isDeleteMode}
         />
 
-        {/* ✅ Festiv success dialog */}
         <SaveFestivDialog
           show={showFestivSuccessDialog}
           onClose={handleFestivSuccessDialogClose}
@@ -884,9 +891,7 @@ const Home = () => {
           isDelete={isDeleteMode}
         />
 
-        {/* ===== ERROR DIALOGS ===== */}
-        
-        {/* Juzgado error dialog */}
+        {/* Error dialogs */}
         <ErrorJuzgadoDialog
           show={showJuzgadoErrorDialog}
           onClose={handleJuzgadoErrorDialogClose}
@@ -894,7 +899,6 @@ const Home = () => {
           operationType={juzgadoOperationType}
         />
 
-        {/* ✅ Festiv error dialog */}
         <ErrorFestivDialog
           show={showFestivErrorDialog}
           onClose={handleFestivErrorDialogClose}
@@ -902,7 +906,13 @@ const Home = () => {
           operationType={festivOperationType}
         />
 
-        {/* ✅ QUITAR COMPLETAMENTE EL DIÁLOGO DE FESTIVO HOVER */}
+        {/* ✅ DIÁLOGO DE FESTIVO */}
+        <FestivDialog
+          open={showFestivDialog}
+          onClose={() => setShowFestivDialog(false)}
+          festivo={selectedFestivo}
+          position={festivDialogPosition}
+        />
 
       </div>
     </ChartsProvider>

@@ -1603,3 +1603,205 @@
     }
   }
 }
+
+// ===== DIÁLOGO DE FESTIVO (TOOLTIP EMERGENTE) =====
+.festiv-dialog {
+  position: fixed;
+  background: m.$color_white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 2px solid m.$color_red;
+  z-index: 10000;
+  max-width: 320px;
+  min-width: 280px;
+  animation: festiv-dialog-appear 0.3s ease;
+  overflow: hidden;
+
+  .festiv-dialog-content {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .festiv-dialog-header {
+    background: linear-gradient(135deg, m.$color_red, darken(m.$color_red, 10%));
+    color: m.$color_white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+
+    .festiv-icon {
+      font-size: 24px;
+      animation: festiv-icon-bounce 2s ease-in-out infinite;
+    }
+
+    .festiv-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0;
+      flex-grow: 1;
+    }
+
+    .festiv-close-btn {
+      background: none;
+      border: none;
+      color: m.$color_white;
+      font-size: 20px;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+
+  .festiv-dialog-body {
+    padding: 20px;
+    background: m.$color_white;
+
+    .festiv-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: m.$color_red;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .festiv-date {
+      font-size: 14px;
+      color: m.$color_gray;
+      text-align: center;
+      text-transform: capitalize;
+    }
+  }
+
+  .festiv-dialog-footer {
+    background: #fff0f0;
+    padding: 12px 20px;
+    border-top: 1px solid #ffcdd2;
+
+    .festiv-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+
+      .festiv-info-icon {
+        font-size: 16px;
+      }
+
+      .festiv-info-text {
+        font-size: 13px;
+        color: m.$color_gray;
+        font-style: italic;
+      }
+    }
+  }
+
+  // ✅ FLECHA INDICADORA
+  .festiv-dialog-arrow {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid m.$color_red;
+    z-index: 10001;
+  }
+
+  // Si el diálogo está arriba del cursor, flecha hacia arriba
+  &.arrow-up .festiv-dialog-arrow {
+    bottom: auto;
+    top: -8px;
+    border-top: none;
+    border-bottom: 8px solid m.$color_red;
+  }
+}
+
+// ✅ ANIMACIONES
+@keyframes festiv-dialog-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes festiv-icon-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+// ✅ RESPONSIVE PARA DIÁLOGO DE FESTIVOS
+@include m.mobile {
+  .festiv-dialog {
+    max-width: 280px;
+    min-width: 250px;
+    margin: 0 10px;
+
+    .festiv-dialog-header {
+      padding: 12px 16px;
+
+      .festiv-icon {
+        font-size: 20px;
+      }
+
+      .festiv-title {
+        font-size: 16px;
+      }
+
+      .festiv-close-btn {
+        font-size: 18px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .festiv-dialog-body {
+      padding: 16px;
+
+      .festiv-name {
+        font-size: 15px;
+      }
+
+      .festiv-date {
+        font-size: 13px;
+      }
+    }
+
+    .festiv-dialog-footer {
+      padding: 10px 16px;
+
+      .festiv-info .festiv-info-text {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+@include m.small-mobile {
+  .festiv-dialog {
+    max-width: 250px;
+    min-width: 220px;
+    margin: 0 5px;
+  }
+}

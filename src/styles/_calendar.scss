@@ -86,84 +86,125 @@
     position: relative;
   }
 
-  // ===== DÍAS FESTIVOS =====
+  // ===== DÍAS FESTIVOS - MEJORADOS =====
   .rbc-festive-day {
     position: relative;
+    // ✅ MANTENER EL FONDO NORMAL DE LA CELDA
+    background-color: m.$color_white !important;
     
+    // ✅ CAMBIAR SOLO EL COLOR DEL NÚMERO
     .rbc-button-link {
       color: m.$color_red !important;
       font-weight: bold !important;
       position: relative;
+      // ✅ AGREGAR EFECTO DE ÉNFASIS AL NÚMERO
+      font-size: 16px !important;
+      text-shadow: 0 0 2px rgba(229, 57, 53, 0.3) !important;
     }
     
     .rbc-date-cell {
       color: m.$color_red !important;
       font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 2px rgba(229, 57, 53, 0.3) !important;
     }
 
-    // Indicador visual de día festivo
+    // ✅ EMOJI FESTIVO MÁS VISIBLE
     &::before {
       content: "🎉";
       position: absolute;
-      top: 2px;
-      right: 2px;
-      font-size: 12px;
+      top: 4px;
+      right: 4px;
+      font-size: 14px;
       z-index: 5;
       pointer-events: none;
+      filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
     }
 
-    // Tooltip para días festivos (solo desktop)
+    // ✅ HOVER SUTIL SIN CAMBIAR EL FONDO
+    &:hover {
+      background-color: rgba(229, 57, 53, 0.05) !important;
+      
+      .rbc-button-link {
+        color: m.$color_red !important;
+        font-weight: bold !important;
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
+      }
+      
+      &::before {
+        animation: bounce 0.5s ease;
+      }
+    }
+
+    // ✅ INDICADOR VISUAL EN LA PARTE INFERIOR
     &::after {
-      content: attr(data-festivo-name) "\A" attr(data-festivo-date);
-      position: absolute;
-      bottom: 110%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: normal;
-      white-space: pre-line;
-      text-align: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s, visibility 0.3s;
-      z-index: 1000;
-      min-width: 120px;
-      line-height: 1.3;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      pointer-events: none;
-    }
-
-    &:hover::after {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    // Flecha del tooltip
-    &:hover::before {
       content: "";
       position: absolute;
-      bottom: 105%;
+      bottom: 2px;
       left: 50%;
       transform: translateX(-50%);
-      border: 5px solid transparent;
-      border-top-color: rgba(0, 0, 0, 0.9);
-      z-index: 1001;
+      width: 20px;
+      height: 3px;
+      background-color: m.$color_red;
+      border-radius: 2px;
+      z-index: 4;
+      pointer-events: none;
     }
   }
 
-  // ===== EFECTOS HOVER =====
+  // ✅ ANIMACIÓN PARA EL EMOJI
+  @keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  // ===== EFECTOS HOVER NORMALES =====
   .rbc-day-bg:hover,
   .rbc-button-link:hover {
     background-color: m.$color_light_green !important;
   }
 
-  // Hover especial para días festivos
-  .rbc-festive-day:hover {
-    background-color: rgba(229, 57, 53, 0.1) !important;
+  // ===== HOY =====
+  .rbc-today {
+    background-color: m.$color_green !important;
+    border: 2px solid m.$color_blue !important;
+  }
+
+  // ✅ HOY + FESTIVO - PRIORIZAR INDICACIÓN FESTIVA
+  .rbc-today.rbc-festive-day {
+    background-color: m.$color_green !important; // Mantener el fondo de "hoy"
+    border: 2px solid m.$color_red !important; // Borde rojo para festivo
+    
+    .rbc-button-link {
+      color: m.$color_red !important;
+      font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 3px rgba(229, 57, 53, 0.5) !important;
+    }
+    
+    .rbc-date-cell {
+      color: m.$color_red !important;
+      font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 3px rgba(229, 57, 53, 0.5) !important;
+    }
+
+    // Emoji más prominente para días festivos que son "hoy"
+    &::before {
+      font-size: 16px;
+      top: 2px;
+      right: 2px;
+      animation: bounce 1s ease infinite;
+    }
+
+    // Indicador inferior más visible
+    &::after {
+      height: 4px;
+      width: 25px;
+      background-color: m.$color_red;
+      box-shadow: 0 0 4px rgba(229, 57, 53, 0.5);
+    }
   }
 
   // ===== HEADERS DE SEMANA Y DÍA =====
@@ -257,23 +298,6 @@
     width: 100% !important;
   }
 
-  // ===== HOY =====
-  .rbc-today {
-    background-color: m.$color_green !important;
-    border: 2px solid m.$color_white !important;
-  }
-
-  // HOY + FESTIVO
-  .rbc-today.rbc-festive-day {
-    background-color: rgba(229, 57, 53, 0.2) !important;
-    border: 2px solid m.$color_red !important;
-    
-    .rbc-button-link {
-      color: m.$color_red !important;
-      font-weight: bold !important;
-    }
-  }
-
   // ===== TOOLBAR =====
   .rbc-toolbar {
     padding: 10px;
@@ -348,14 +372,48 @@
     font-weight: bold !important;
   }
 
-  // FESTIVOS EN FIN DE SEMANA - PRIORIDAD AL FESTIVO
+  // ✅ FESTIVOS EN FIN DE SEMANA - MANTENER NÚMEROS ROJOS
   .rbc-month-view .rbc-day-bg.rbc-festive-day:nth-child(7n+1):not(.rbc-off-range),
   .rbc-month-view .rbc-day-bg.rbc-festive-day:nth-child(7n):not(.rbc-off-range) {
-    background-color: rgba(229, 57, 53, 0.15) !important;
+    background-color: rgba(255, 255, 0, 0.1) !important; // Mantener fondo de fin de semana
     
     .rbc-button-link {
       color: m.$color_red !important;
       font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 2px rgba(229, 57, 53, 0.3) !important;
+    }
+    
+    .rbc-date-cell {
+      color: m.$color_red !important;
+      font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 2px rgba(229, 57, 53, 0.3) !important;
+    }
+
+    // Emoji y indicador para festivos en fin de semana
+    &::before {
+      content: "🎉";
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 14px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      background-color: m.$color_red;
+      border-radius: 2px;
+      z-index: 4;
+      pointer-events: none;
     }
   }
 
@@ -409,10 +467,7 @@
       opacity: 0 !important;
     }
 
-    &::after {
-      display: none !important;
-    }
-
+    &::after,
     &::before {
       display: none !important;
     }
@@ -466,22 +521,41 @@
   }
 }
 
-// ===== RESPONSIVE - OCULTAR TOOLTIPS EN MÓVIL =====
+// ===== RESPONSIVE - AJUSTES PARA MÓVIL =====
 @include m.mobile {
   .calendar-container {
     .rbc-festive-day {
+      // En móvil, hacer el emoji un poco más pequeño
+      &::before {
+        font-size: 12px;
+        top: 2px;
+        right: 2px;
+      }
+
+      // Indicador inferior más pequeño en móvil
       &::after {
-        display: none !important;
+        width: 15px;
+        height: 2px;
+      }
+
+      .rbc-button-link {
+        font-size: 14px !important;
       }
       
-      &:hover::before {
-        content: "🎉" !important;
-        position: absolute !important;
-        top: 2px !important;
-        right: 2px !important;
-        font-size: 12px !important;
-        z-index: 5 !important;
-        border: none !important;
+      .rbc-date-cell {
+        font-size: 14px !important;
+      }
+    }
+
+    // HOY + FESTIVO en móvil
+    .rbc-today.rbc-festive-day {
+      &::before {
+        font-size: 14px;
+      }
+
+      &::after {
+        width: 18px;
+        height: 3px;
       }
     }
   }
