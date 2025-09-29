@@ -30,12 +30,11 @@ export default function ErrorJuzgadoDialog({
     }
   }, [show, onClose]);
 
-  // ✅ AUTO-CERRAR DESPUÉS DE 5 SEGUNDOS PARA ERRORES
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 4000);
       
       return () => clearTimeout(timer);
     }

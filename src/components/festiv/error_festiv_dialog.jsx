@@ -34,7 +34,7 @@ export default function ErrorFestivDialog({
     if (show) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 4000);
       
       return () => clearTimeout(timer);
     }
