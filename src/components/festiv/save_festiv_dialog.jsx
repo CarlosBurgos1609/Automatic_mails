@@ -35,7 +35,7 @@ export default function SaveFestivDialog({
     if (show) {
       const timer = setTimeout(() => {
         onClose();
-      }, 4000);
+      }, 2000);
       
       return () => clearTimeout(timer);
     }
