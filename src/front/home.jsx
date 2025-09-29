@@ -738,12 +738,6 @@ const Home = () => {
         <hr />
       </div>
       
-      <div className="table-container flex-column">
-        <div className="title">
-          <h1>Lista de Juzgados</h1>
-        </div>
-        <div className="table-content"></div>
-      </div>
 
       {/* Toast notifications */}
       <div className="toast-container">
