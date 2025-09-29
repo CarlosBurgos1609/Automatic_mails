@@ -598,7 +598,7 @@ const Home = () => {
         <Header />
         
         <div className="title">
-          <h1>Automatización de Correos Electrónicos</h1>
+          <h1>Correos Electrónicos Habeas Corpus</h1>
         </div>
         
         <div className="flex-row content-wrapper">
