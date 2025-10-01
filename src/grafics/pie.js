@@ -8,19 +8,19 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import useChartsData from "../hooks/useChartsData";
-import { processPieChartData } from "../utils/chartDataProcessors";
+import { processPieChartDataNew } from "../utils/chartDataProcessors";
 import { useChartsContext } from "../contexts/ChartsContext";
 
-const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
+const COLORS = ["#003f75", "#bafaba"];
 
 export default function PieChartSimple() {
   const { timeFilter, filterType, currentFilterLabel } = useChartsContext();
-  const { correos, reenvios, habeasCorpus, loading, error } = useChartsData();
+  const { habeasCorpus, reenvios, loading, error } = useChartsData();
 
   if (loading) {
     return (
       <div className="chart-card">
-        <h3>Distribución de Datos</h3>
+        <h3>Habeas Corpus vs Reenvíos</h3>
         <div style={{ textAlign: "center", padding: "50px", color: "#003f75" }}>
           Cargando...
         </div>
@@ -31,7 +31,7 @@ export default function PieChartSimple() {
   if (error) {
     return (
       <div className="chart-card">
-        <h3>Distribución de Datos</h3>
+        <h3>Habeas Corpus vs Reenvíos</h3>
         <div style={{ textAlign: "center", padding: "50px", color: "#e53935", fontSize: "14px" }}>
           Error: {error}
         </div>
@@ -39,8 +39,8 @@ export default function PieChartSimple() {
     );
   }
 
-  // ✅ FILTRAR DATOS SEGÚN EL CONTEXTO GLOBAL
-  const filterData = (dataArray) => {
+  // ✅ FILTRAR DATOS SEGÚN EL CONTEXTO GLOBAL CON CORRECCIÓN DE FECHA
+  const filterData = (dataArray, dateField = 'created_at') => {
     if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
     
     const now = new Date();
@@ -55,22 +55,24 @@ export default function PieChartSimple() {
     }
     
     return dataArray.filter(item => {
-      const itemDate = new Date(item.created_at || item.fecha || item.date);
+      const itemDate = new Date(item[dateField] || item.created_at || item.forward_date || item.fecha || item.date);
+      // ✅ CORREGIR DESFASE: Agregar un día para comparar correctamente
+      itemDate.setDate(itemDate.getDate() + 1);
       return itemDate >= cutoffDate;
     });
   };
 
-  const filteredCorreos = filterData(correos);
-  const filteredReenvios = filterData(reenvios);
-  const filteredHabeasCorpus = filterData(habeasCorpus);
+  const filteredHabeasCorpus = filterData(habeasCorpus, 'created_at');
+  const filteredReenvios = filterData(reenvios, 'forward_date');
 
-  const data = processPieChartData(filteredCorreos, filteredReenvios, filteredHabeasCorpus);
+  // ✅ USAR LA NUEVA FUNCIÓN PARA PIE CHART
+  const data = processPieChartDataNew(filteredHabeasCorpus, filteredReenvios);
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   if (total === 0) {
     return (
       <div className="chart-card">
-        <h3>Distribución de Datos</h3>
+        <h3>Habeas Corpus vs Reenvíos</h3>
         <div style={{ 
           textAlign: "center", 
           padding: "20px", 
@@ -86,9 +88,8 @@ export default function PieChartSimple() {
 
   return (
     <div className="chart-card">
-      <h3>Distribución General</h3>
+      <h3>Habeas Corpus vs Reenvíos</h3>
       
-      {/* ✅ INDICADOR DE FILTRO */}
       <div style={{ 
         textAlign: 'center', 
         marginBottom: '12px', 
@@ -125,7 +126,6 @@ export default function PieChartSimple() {
         </PieChart>
       </ResponsiveContainer>
       
-      {/* ✅ PIE ACTUALIZADO CON DATOS FILTRADOS */}
       <div style={{ textAlign: "center", marginTop: 12, color: "#888", fontSize: "14px" }}>
         <span style={{ fontWeight: 500 }}>Total registros: {total.toLocaleString()}</span>
         <div style={{ fontSize: '12px', marginTop: '4px' }}>

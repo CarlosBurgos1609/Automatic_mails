@@ -10,17 +10,17 @@ import {
   Legend 
 } from "recharts";
 import useChartsData from "../hooks/useChartsData";
-import { processRadarChartData } from "../utils/chartDataProcessors";
+import { processRadarChartDataNew } from "../utils/chartDataProcessors";
 import { useChartsContext } from "../contexts/ChartsContext";
 
 export default function RadarChartComponent() {
   const { timeFilter, filterType, currentFilterLabel } = useChartsContext();
-  const { habeasCorpus, loading, error } = useChartsData();
+  const { reenvios, loading, error } = useChartsData();
 
   if (loading) {
     return (
       <div className="radar-chart-container">
-        <h3>Habeas Corpus por Juzgado</h3>
+        <h3>Reenvíos por Mes</h3>
         <div style={{ textAlign: 'center', padding: '50px', color: '#003f75' }}>
           Cargando datos...
         </div>
@@ -31,7 +31,7 @@ export default function RadarChartComponent() {
   if (error) {
     return (
       <div className="radar-chart-container">
-        <h3>Habeas Corpus por Juzgado</h3>
+        <h3>Reenvíos por Mes</h3>
         <div style={{ textAlign: 'center', padding: '50px', color: '#e53935', fontSize: '14px' }}>
           Error: {error}
         </div>
@@ -39,9 +39,9 @@ export default function RadarChartComponent() {
     );
   }
 
-  // ✅ FILTRAR HABEAS CORPUS SEGÚN EL CONTEXTO GLOBAL
-  const filterHabeasCorpus = (habeasArray) => {
-    if (!Array.isArray(habeasArray) || habeasArray.length === 0) return [];
+  // ✅ FILTRAR REENVÍOS SEGÚN EL CONTEXTO GLOBAL
+  const filterReenvios = (reenviosArray) => {
+    if (!Array.isArray(reenviosArray) || reenviosArray.length === 0) return [];
     
     const now = new Date();
     let cutoffDate;
@@ -54,26 +54,28 @@ export default function RadarChartComponent() {
       cutoffDate = new Date(now.getFullYear() - timeFilter, now.getMonth(), now.getDate());
     }
     
-    return habeasArray.filter(habeas => {
-      const habeasDate = new Date(habeas.created_at || habeas.fecha);
-      return habeasDate >= cutoffDate;
+    return reenviosArray.filter(reenvio => {
+      const reenvioDate = new Date(reenvio.forward_date || reenvio.created_at);
+      return reenvioDate >= cutoffDate;
     });
   };
 
-  const filteredHabeasCorpus = filterHabeasCorpus(habeasCorpus);
-  const data = processRadarChartData(filteredHabeasCorpus);
+  const filteredReenvios = filterReenvios(reenvios);
+  
+  // ✅ USAR LA NUEVA FUNCIÓN PARA RADAR CHART (REENVÍOS POR MES)
+  const data = processRadarChartDataNew(filteredReenvios);
 
-  if (data.length === 0) {
+  if (data.length === 0 || data.every(item => item.A === 0)) {
     return (
       <div className="radar-chart-container">
-        <h3>Habeas Corpus por Juzgado</h3>
+        <h3>Reenvíos por Mes</h3>
         <div style={{ 
           textAlign: 'center', 
           padding: '30px', 
           color: '#666',
           fontSize: '14px' 
         }}>
-          <div style={{ marginBottom: '8px' }}>No hay datos disponibles en:</div>
+          <div style={{ marginBottom: '8px' }}>No hay reenvíos en:</div>
           <div style={{ fontWeight: 'bold', color: '#003f75' }}>{currentFilterLabel}</div>
         </div>
       </div>
@@ -83,13 +85,12 @@ export default function RadarChartComponent() {
   // Calcular el dominio máximo para el radar
   const maxValue = Math.max(...data.map(item => item.A), 0);
   const domain = maxValue > 0 ? [0, Math.ceil(maxValue * 1.2)] : [0, 10];
-  const totalCasos = data.reduce((sum, item) => sum + item.A, 0);
+  const totalReenvios = data.reduce((sum, item) => sum + item.A, 0);
 
   return (
     <div className="radar-chart-container">
-      <h3>Habeas Corpus por Juzgado</h3>
+      <h3>Reenvíos por Mes</h3>
       
-      {/* ✅ INDICADOR DE FILTRO */}
       <div style={{ 
         textAlign: 'center', 
         marginBottom: '8px', 
@@ -101,7 +102,7 @@ export default function RadarChartComponent() {
       </div>
       
       <p style={{ textAlign: "center", color: "#666", marginBottom: 8, fontSize: "14px" }}>
-        Top {data.length} juzgados con más casos
+        Últimos {data.length} meses con reenvíos
       </p>
       
       <ResponsiveContainer width="100%" height={300}>
@@ -118,16 +119,16 @@ export default function RadarChartComponent() {
             tickCount={6}
           />
           <Radar 
-            name="Casos de Habeas Corpus" 
+            name="Reenvíos realizados" 
             dataKey="A" 
-            stroke="#8884d8" 
-            fill="#8884d8" 
+            stroke="#bafaba" 
+            fill="#bafaba" 
             fillOpacity={0.3}
             strokeWidth={2}
           />
           <Tooltip 
-            formatter={(value, name) => [`${value} casos`, name]}
-            labelFormatter={(label) => `Juzgado: ${label}`}
+            formatter={(value, name) => [`${value} reenvíos`, name]}
+            labelFormatter={(label) => `Mes: ${label}`}
             contentStyle={{
               backgroundColor: '#fff',
               border: '1px solid #ccc',
@@ -141,10 +142,9 @@ export default function RadarChartComponent() {
         </RadarChart>
       </ResponsiveContainer>
       
-      {/* ✅ PIE ACTUALIZADO */}
       <div style={{ textAlign: "center", marginTop: 12, color: "#888", fontSize: "14px" }}>
         <span style={{ fontWeight: 500 }}>
-          Total casos: {totalCasos.toLocaleString()}
+          Total reenvíos: {totalReenvios.toLocaleString()}
         </span>
         <div style={{ fontSize: '12px', marginTop: '4px' }}>
           Período: {currentFilterLabel}

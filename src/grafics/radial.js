@@ -7,17 +7,17 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import useChartsData from "../hooks/useChartsData";
-import { processRadialChartData } from "../utils/chartDataProcessors";
+import { processRadialChartDataNew } from "../utils/chartDataProcessors";
 import { useChartsContext } from "../contexts/ChartsContext";
 
 export default function RadialChartSimple() {
   const { timeFilter, filterType, currentFilterLabel } = useChartsContext();
-  const { correos, loading, error } = useChartsData();
+  const { habeasCorpus, reenvios, loading, error } = useChartsData();
 
   if (loading) {
     return (
       <div className="chart-card">
-        <h3>Estado de Correos</h3>
+        <h3>Estado de Habeas Corpus y Reenvíos</h3>
         <div style={{ textAlign: 'center', padding: '50px', color: '#003f75' }}>
           Cargando...
         </div>
@@ -28,7 +28,7 @@ export default function RadialChartSimple() {
   if (error) {
     return (
       <div className="chart-card">
-        <h3>Estado de Correos</h3>
+        <h3>Estado de Habeas Corpus y Reenvíos</h3>
         <div style={{ textAlign: 'center', padding: '50px', color: '#e53935', fontSize: '14px' }}>
           Error: {error}
         </div>
@@ -36,9 +36,9 @@ export default function RadialChartSimple() {
     );
   }
 
-  // ✅ FILTRAR CORREOS SEGÚN EL CONTEXTO GLOBAL
-  const filterCorreos = (correosArray) => {
-    if (!Array.isArray(correosArray) || correosArray.length === 0) return [];
+  // ✅ FILTRAR DATOS SEGÚN EL CONTEXTO GLOBAL
+  const filterData = (dataArray) => {
+    if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
     
     const now = new Date();
     let cutoffDate;
@@ -51,39 +51,41 @@ export default function RadialChartSimple() {
       cutoffDate = new Date(now.getFullYear() - timeFilter, now.getMonth(), now.getDate());
     }
     
-    return correosArray.filter(correo => {
-      const correoDate = new Date(correo.created_at || correo.fecha);
-      return correoDate >= cutoffDate;
+    return dataArray.filter(item => {
+      const itemDate = new Date(item.created_at || item.fecha || item.forward_date);
+      return itemDate >= cutoffDate;
     });
   };
 
-  const filteredCorreos = filterCorreos(correos);
-  const data = processRadialChartData(filteredCorreos);
+  const filteredHabeasCorpus = filterData(habeasCorpus);
+  const filteredReenvios = filterData(reenvios);
+
+  // ✅ USAR LA NUEVA FUNCIÓN PARA RADIAL CHART
+  const data = processRadialChartDataNew(filteredHabeasCorpus, filteredReenvios);
 
   if (data.every(item => item.value === 0)) {
     return (
       <div className="chart-card">
-        <h3>Estado de Correos</h3>
+        <h3>Estado de Habeas Corpus y Reenvíos</h3>
         <div style={{ 
           textAlign: 'center', 
           padding: '30px', 
           color: '#666',
           fontSize: '14px' 
         }}>
-          <div style={{ marginBottom: '8px' }}>No hay correos registrados en:</div>
+          <div style={{ marginBottom: '8px' }}>No hay datos registrados en:</div>
           <div style={{ fontWeight: 'bold', color: '#003f75' }}>{currentFilterLabel}</div>
         </div>
       </div>
     );
   }
 
-  const totalCorreos = data.reduce((sum, item) => sum + item.value, 0);
+  const totalItems = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
     <div className="chart-card">
-      <h3>Estado de Procesamiento</h3>
+      <h3>Estado de Habeas Corpus y Reenvíos</h3>
       
-      {/* ✅ INDICADOR DE FILTRO */}
       <div style={{ 
         textAlign: 'center', 
         marginBottom: '12px', 
@@ -118,17 +120,16 @@ export default function RadialChartSimple() {
           />
           <Tooltip 
             formatter={(value, name, props) => [
-              `${value} correos (${props.payload.percentage}%)`, 
+              `${value} registros (${props.payload.percentage}%)`, 
               name
             ]}
           />
         </RadialBarChart>
       </ResponsiveContainer>
       
-      {/* ✅ PIE ACTUALIZADO */}
       <div style={{ textAlign: "center", marginTop: 12, color: "#888", fontSize: "14px" }}>
         <span style={{ fontWeight: 500 }}>
-          Total: {totalCorreos.toLocaleString()} correos
+          Total: {totalItems.toLocaleString()} registros
         </span>
         <div style={{ fontSize: '12px', marginTop: '4px' }}>
           Período: {currentFilterLabel}

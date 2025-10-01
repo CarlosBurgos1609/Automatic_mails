@@ -3,17 +3,17 @@
 import React from "react";
 import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import useChartsData from "../hooks/useChartsData";
-import { processAreaChartData } from "../utils/chartDataProcessors";
+import { processAreaChartDataNew } from "../utils/chartDataProcessors";
 import { useChartsContext } from "../contexts/ChartsContext";
 
 export default function AreaChartInteractive() {
   const { timeFilter, filterType, currentFilterLabel } = useChartsContext();
-  const { correos, habeasCorpus, loading, error } = useChartsData();
+  const { habeasCorpus, reenvios, loading, error } = useChartsData();
 
   if (loading) {
     return (
       <div className="area-chart-interactive">
-        <h1>Correos Recibidos vs Habeas Corpus</h1>
+        <h1>Habeas Corpus Recibidos vs Reenvíos</h1>
         <div style={{ textAlign: 'center', padding: '50px', color: '#003f75' }}>
           Cargando datos...
         </div>
@@ -24,7 +24,7 @@ export default function AreaChartInteractive() {
   if (error) {
     return (
       <div className="area-chart-interactive">
-        <h1>Correos Recibidos vs Habeas Corpus</h1>
+        <h1>Habeas Corpus Recibidos vs Reenvíos</h1>
         <div style={{ textAlign: 'center', padding: '50px', color: '#e53935' }}>
           Error: {error}
         </div>
@@ -32,34 +32,44 @@ export default function AreaChartInteractive() {
     );
   }
 
-  // ✅ PROCESAR DATOS CON FILTRO GLOBAL
-  const chartData = processAreaChartData(correos, habeasCorpus);
-  
-  // ✅ APLICAR FILTRO SEGÚN EL TIPO SELECCIONADO
-  let filteredData = [];
-  
-  if (filterType === 'days') {
-    filteredData = chartData.slice(-timeFilter);
-  } else if (filterType === 'months') {
-    // Filtrar por meses (aproximadamente 30 días por mes)
-    const daysToShow = timeFilter * 30;
-    filteredData = chartData.slice(-daysToShow);
-  } else if (filterType === 'years') {
-    // Filtrar por años (aproximadamente 365 días por año)
-    const daysToShow = timeFilter * 365;
-    filteredData = chartData.slice(-daysToShow);
-  }
+  // ✅ FILTRAR DATOS ANTES DE PROCESAR CON CORRECCIÓN DE FECHA
+  const filterData = (dataArray, dateField = 'created_at') => {
+    if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
+    
+    const now = new Date();
+    let cutoffDate;
+    
+    if (filterType === 'days') {
+      cutoffDate = new Date(now.getTime() - (timeFilter * 24 * 60 * 60 * 1000));
+    } else if (filterType === 'months') {
+      cutoffDate = new Date(now.getFullYear(), now.getMonth() - timeFilter, now.getDate());
+    } else if (filterType === 'years') {
+      cutoffDate = new Date(now.getFullYear() - timeFilter, now.getMonth(), now.getDate());
+    }
+    
+    return dataArray.filter(item => {
+      const itemDate = new Date(item[dateField] || item.created_at || item.forward_date);
+      // ✅ CORREGIR DESFASE: Agregar un día para comparar correctamente
+      itemDate.setDate(itemDate.getDate() + 1);
+      return itemDate >= cutoffDate;
+    });
+  };
 
-  // ✅ CALCULAR ESTADÍSTICAS PARA EL PERÍODO FILTRADO
-  const totalCorreos = filteredData.reduce((sum, d) => sum + (d.correosgenerales || 0), 0);
-  const totalHabeas = filteredData.reduce((sum, d) => sum + (d.habeasCorpus || 0), 0);
-  const promedioCorreos = filteredData.length > 0 ? Math.round(totalCorreos / filteredData.length) : 0;
+  const filteredHabeasCorpus = filterData(habeasCorpus, 'created_at');
+  const filteredReenvios = filterData(reenvios, 'forward_date');
 
-  // ✅ MANEJAR CASO SIN DATOS
-  if (filteredData.length === 0) {
+  // ✅ USAR LA NUEVA FUNCIÓN QUE COMPARA HABEAS CORPUS VS REENVÍOS CON DATOS FILTRADOS
+  const chartData = processAreaChartDataNew(filteredHabeasCorpus, filteredReenvios);
+  
+  // Calcular estadísticas para el período filtrado
+  const totalHabeas = chartData.reduce((sum, d) => sum + (d.habeasCorpus || 0), 0);
+  const totalReenvios = chartData.reduce((sum, d) => sum + (d.reenvios || 0), 0);
+  const promedioHabeas = chartData.length > 0 ? Math.round(totalHabeas / chartData.length) : 0;
+
+  if (chartData.length === 0) {
     return (
       <div className="area-chart-interactive">
-        <h1>Correos Recibidos vs Habeas Corpus</h1>
+        <h1>Habeas Corpus Recibidos vs Reenvíos</h1>
         
         <div className="chart-filter-info">
           <p style={{ 
@@ -96,9 +106,8 @@ export default function AreaChartInteractive() {
 
   return (
     <div className="area-chart-interactive">
-      <h1>Correos Recibidos vs Habeas Corpus</h1>
+      <h1>Habeas Corpus Recibidos vs Reenvíos</h1>
       
-      {/* ✅ MOSTRAR FILTRO ACTIVO */}
       <div className="chart-filter-info">
         <p style={{ 
           textAlign: 'center', 
@@ -113,13 +122,13 @@ export default function AreaChartInteractive() {
       
       <div className="area-chart-graph">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={filteredData}>
+          <AreaChart data={chartData}>
             <defs>
-              <linearGradient id="colorDesktop" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="colorHabeas" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#003f75" stopOpacity={0.8}/>
                 <stop offset="95%" stopColor="#003f75" stopOpacity={0.1}/>
               </linearGradient>
-              <linearGradient id="colorMobile" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="colorReenvios" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#bafaba" stopOpacity={0.8}/>
                 <stop offset="95%" stopColor="#bafaba" stopOpacity={0.1}/>
               </linearGradient>
@@ -128,6 +137,7 @@ export default function AreaChartInteractive() {
             <XAxis 
               dataKey="date" 
               tickFormatter={v => {
+                // ✅ LA FECHA YA ESTÁ CORREGIDA EN EL PROCESADOR
                 const date = new Date(v);
                 if (filterType === 'months' || filterType === 'years') {
                   return date.toLocaleDateString("es-CO", { month: "short", year: "2-digit" });
@@ -140,12 +150,16 @@ export default function AreaChartInteractive() {
               tick={{ fontSize: 12, fill: '#666' }}
             />
             <Tooltip 
-              labelFormatter={v => new Date(v).toLocaleDateString("es-CO", { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}
+              labelFormatter={v => {
+                // ✅ LA FECHA YA ESTÁ CORREGIDA EN EL PROCESADOR
+                const date = new Date(v);
+                return date.toLocaleDateString("es-CO", { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                });
+              }}
               contentStyle={{
                 backgroundColor: '#fff',
                 border: '1px solid #ccc',
@@ -158,25 +172,24 @@ export default function AreaChartInteractive() {
             />
             <Area 
               type="monotone" 
-              dataKey="correosgenerales" 
+              dataKey="habeasCorpus" 
               stroke="#003f75" 
-              fill="url(#colorDesktop)" 
-              name="Todos los correos"
+              fill="url(#colorHabeas)" 
+              name="Habeas Corpus Recibidos"
               strokeWidth={2}
             />
             <Area 
               type="monotone" 
-              dataKey="habeasCorpus" 
+              dataKey="reenvios" 
               stroke="#bafaba" 
-              fill="url(#colorMobile)" 
-              name="Habeas Corpus"
+              fill="url(#colorReenvios)" 
+              name="Reenvíos Realizados"
               strokeWidth={2}
             />
           </AreaChart>
         </ResponsiveContainer>
       </div>
       
-      {/* ✅ PIE DE GRÁFICA CON ESTADÍSTICAS ACTUALIZADAS */}
       <div style={{ 
         textAlign: 'center', 
         marginTop: 16, 
@@ -197,13 +210,13 @@ export default function AreaChartInteractive() {
           flexWrap: 'wrap'
         }}>
           <span>
-            📅 <strong>{filteredData.length}</strong> días
-          </span>
-          <span>
-            📧 <strong>{totalCorreos.toLocaleString()}</strong> correos totales
+            📅 <strong>{chartData.length}</strong> días
           </span>
           <span>
             ⚖️ <strong>{totalHabeas.toLocaleString()}</strong> habeas corpus
+          </span>
+          <span>
+            📤 <strong>{totalReenvios.toLocaleString()}</strong> reenvíos
           </span>
         </div>
         <div style={{ 
@@ -215,7 +228,7 @@ export default function AreaChartInteractive() {
           flexWrap: 'wrap'
         }}>
           <span>
-            Promedio diario: <strong>{promedioCorreos}</strong> correos
+            Promedio diario: <strong>{promedioHabeas}</strong> habeas corpus
           </span>
           <span>
             Período: <strong>{currentFilterLabel}</strong>
