@@ -10,6 +10,7 @@ export const useChartsContext = () => {
   return context;
 };
 
+
 export const ChartsProvider = ({ children }) => {
   const [timeFilter, setTimeFilter] = useState(30); // Por defecto 30 días
   const [filterType, setFilterType] = useState('days'); // 'days', 'weeks', 'months'
