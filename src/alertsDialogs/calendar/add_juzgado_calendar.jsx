@@ -5,15 +5,18 @@ import dayjs from "dayjs";
 export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate, showToastMsg }) {
   const [busqueda, setBusqueda] = useState("");
   const [juzgadosData, setJuzgadosData] = useState([]);
+  const [turnosData, setTurnosData] = useState([]);
   const [juzgadoSeleccionado, setJuzgadoSeleccionado] = useState(null);
   const [error, setError] = useState("");
   const [showCopy, setShowCopy] = useState(false);
   const [loadingJuzgados, setLoadingJuzgados] = useState(false);
+  const [filtroActivo, setFiltroActivo] = useState("todos"); // "todos", "disponibles", "ocupados"
 
   // Cargar juzgados desde el backend
   useEffect(() => {
     if (open) {
       cargarJuzgados();
+      cargarTurnos();
     }
   }, [open]);
 
@@ -33,13 +36,62 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     }
   };
 
-  // Filtrado de juzgados por nombre, código o email
-  const juzgadosFiltrados = juzgadosData.filter(
-    (j) =>
-      j.name.toLowerCase().includes(busqueda.toLowerCase()) ||
-      j.code.toLowerCase().includes(busqueda.toLowerCase()) ||
-      (j.email && j.email.toLowerCase().includes(busqueda.toLowerCase()))
+  const cargarTurnos = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/turnos");
+      const data = await response.json();
+      setTurnosData(data);
+    } catch (error) {
+      console.error("Error al cargar turnos:", error);
+      setTurnosData([]);
+    }
+  };
+
+  // Función para obtener estadísticas de turnos por juzgado
+  const getJuzgadoStats = (juzgadoId) => {
+    const turnosJuzgado = turnosData.filter(turno => turno.juzgado_id === juzgadoId);
+    return {
+      totalTurnos: turnosJuzgado.length,
+      tieneActivo: turnosJuzgado.length > 0
+    };
+  };
+
+  // Función para determinar el estado de un juzgado
+  const getJuzgadoStatus = (juzgado) => {
+    const stats = getJuzgadoStats(juzgado.id);
+    return {
+      ...juzgado,
+      ...stats,
+      status: stats.tieneActivo ? "ocupado" : "disponible"
+    };
+  };
+
+  // Aplicar estadísticas a todos los juzgados
+  const juzgadosConEstado = juzgadosData.map(juzgado => getJuzgadoStatus(juzgado));
+
+  // Filtrado de juzgados por nombre, código o email y por estado
+  const juzgadosFiltrados = juzgadosConEstado.filter(
+    (j) => {
+      const coincideBusqueda = 
+        j.name.toLowerCase().includes(busqueda.toLowerCase()) ||
+        j.code.toLowerCase().includes(busqueda.toLowerCase()) ||
+        (j.email && j.email.toLowerCase().includes(busqueda.toLowerCase()));
+      
+      const coincideFiltro = 
+        filtroActivo === "todos" || 
+        (filtroActivo === "disponibles" && j.status === "disponible") ||
+        (filtroActivo === "ocupados" && j.status === "ocupado");
+      
+      return coincideBusqueda && coincideFiltro;
+    }
   );
+
+  // Estadísticas generales
+  const estadisticas = {
+    total: juzgadosConEstado.length,
+    disponibles: juzgadosConEstado.filter(j => j.status === "disponible").length,
+    ocupados: juzgadosConEstado.filter(j => j.status === "ocupado").length
+  };
 
   const handleSeleccionarJuzgado = (juzgado) => {
     setJuzgadoSeleccionado(juzgado);
@@ -73,6 +125,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     setJuzgadoSeleccionado(null);
     setError("");
     setLoadingJuzgados(false);
+    setFiltroActivo("todos");
     onClose();
   };
 
@@ -106,6 +159,33 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
               />
             </div>
 
+            {/* Filtros de estado */}
+            <div className="filtros-estado">
+              <div className="filtros-botones">
+                <button
+                  className={`filtro-btn ${filtroActivo === "todos" ? "active" : ""}`}
+                  onClick={() => setFiltroActivo("todos")}
+                >
+                  <span className="filtro-icon">📋</span>
+                  Todos ({estadisticas.total})
+                </button>
+                <button
+                  className={`filtro-btn disponible ${filtroActivo === "disponibles" ? "active" : ""}`}
+                  onClick={() => setFiltroActivo("disponibles")}
+                >
+                  <span className="filtro-icon">✅</span>
+                  Disponibles ({estadisticas.disponibles})
+                </button>
+                <button
+                  className={`filtro-btn ocupado ${filtroActivo === "ocupados" ? "active" : ""}`}
+                  onClick={() => setFiltroActivo("ocupados")}
+                >
+                  <span className="filtro-icon">🔴</span>
+                  Con Turnos ({estadisticas.ocupados})
+                </button>
+              </div>
+            </div>
+
             {/* Lista de juzgados */}
             <div className="juzgados-list">
               {loadingJuzgados ? (
@@ -121,10 +201,20 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                   <div
                     key={juzgado.id}
                     onClick={() => handleSeleccionarJuzgado(juzgado)}
-                    className={`juzgado-item ${juzgadoSeleccionado?.id === juzgado.id ? 'selected' : ''}`}
+                    className={`juzgado-item ${juzgadoSeleccionado?.id === juzgado.id ? 'selected' : ''} ${juzgado.status}`}
                   >
                     <div className={`juzgado-header ${juzgadoSeleccionado?.id === juzgado.id ? 'selected' : ''}`}>
-                      {juzgado.code} - {juzgado.name}
+                      <div className="juzgado-info">
+                        <span className={`status-indicator ${juzgado.status}`}>
+                          {juzgado.status === "disponible" ? "🟢" : "🔴"}
+                        </span>
+                        {juzgado.code} - {juzgado.name}
+                        {juzgado.status === "ocupado" && (
+                          <span className="turnos-count">
+                            ({juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''})
+                          </span>
+                        )}
+                      </div>
                       {juzgadoSeleccionado?.id === juzgado.id && (
                         <span className="selected-indicator">
                           ✓

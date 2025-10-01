@@ -708,6 +708,65 @@
     }
   }
 
+  // ✅ NUEVOS ESTILOS PARA FILTROS
+  .filtros-estado {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+    
+    .filtros-botones {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      
+      .filtro-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 2px solid #ddd;
+        background: white;
+        color: #666;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        
+        .filtro-icon {
+          font-size: 14px;
+        }
+        
+        &:hover {
+          border-color: m.$color_blue;
+          background: #f0f8ff;
+          transform: translateY(-1px);
+        }
+        
+        &.active {
+          border-color: m.$color_blue;
+          background: m.$color_blue;
+          color: white;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(0, 63, 117, 0.3);
+        }
+        
+        &.disponible.active {
+          border-color: #28a745;
+          background: #28a745;
+          box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+        
+        &.ocupado.active {
+          border-color: #dc3545;
+          background: #dc3545;
+          box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+      }
+    }
+  }
+
   .juzgados-list {
     flex-grow: 1;
     flex-shrink: 1;
@@ -744,11 +803,42 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
 
+      // ✅ ESTADOS DE JUZGADOS
+      &.disponible {
+        border-left: 4px solid #28a745;
+        background-color: #f8fff9;
+        
+        &:hover:not(.selected) {
+          background-color: #e8f5e8;
+          border: 1px solid #28a745;
+          border-left: 4px solid #28a745;
+        }
+      }
+      
+      &.ocupado {
+        border-left: 4px solid #dc3545;
+        background-color: #fff8f8;
+        
+        &:hover:not(.selected) {
+          background-color: #ffe8e8;
+          border: 1px solid #dc3545;
+          border-left: 4px solid #dc3545;
+        }
+      }
+
       &.selected {
         border: 2px solid m.$color_blue;
         background-color: m.$color_light_blue;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 63, 117, 0.15);
+        
+        &.disponible {
+          border-left: 4px solid #28a745;
+        }
+        
+        &.ocupado {
+          border-left: 4px solid #dc3545;
+        }
       }
 
       &:hover:not(.selected) {
@@ -767,10 +857,35 @@
         word-wrap: break-word;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
+        gap: 8px;
 
         &.selected {
           color: m.$color_blue;
+        }
+        
+        .juzgado-info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex: 1;
+          min-width: 0;
+          flex-wrap: wrap;
+          
+          .status-indicator {
+            font-size: 16px;
+            flex-shrink: 0;
+          }
+          
+          .turnos-count {
+            font-size: 12px;
+            font-weight: normal;
+            color: #666;
+            background: rgba(220, 53, 69, 0.1);
+            padding: 2px 6px;
+            border-radius: 12px;
+            white-space: nowrap;
+          }
         }
 
         .selected-indicator {
@@ -785,7 +900,6 @@
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          margin-left: 8px;
         }
       }
 
@@ -1366,6 +1480,52 @@
     max-width: 95vw;
     max-height: 95vh;
     padding: 16px 12px;
+    
+    // ✅ AJUSTES PARA FILTROS EN MÓVIL
+    .filtros-estado {
+      margin-bottom: 12px;
+      
+      .filtros-botones {
+        gap: 6px;
+        
+        .filtro-btn {
+          padding: 6px 12px;
+          font-size: 12px;
+          border-radius: 16px;
+          
+          .filtro-icon {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+    
+    .juzgados-list {
+      .juzgado-item {
+        padding: 12px;
+        
+        .juzgado-header {
+          font-size: 14px;
+          
+          .juzgado-info {
+            .status-indicator {
+              font-size: 14px;
+            }
+            
+            .turnos-count {
+              font-size: 11px;
+              padding: 1px 4px;
+            }
+          }
+          
+          .selected-indicator {
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+          }
+        }
+      }
+    }
   }
 
   .juzgado-management-dialog {
@@ -1499,6 +1659,36 @@
       text-align: center;
       font-size: 16px;
       padding: 10px 8px;
+    }
+  }
+  
+  // ✅ AJUSTES PARA FILTROS EN TABLET
+  .add-juzgado-calendar-dialog {
+    .filtros-estado {
+      .filtros-botones {
+        gap: 6px;
+        
+        .filtro-btn {
+          padding: 7px 14px;
+          font-size: 13px;
+          
+          .filtro-icon {
+            font-size: 13px;
+          }
+        }
+      }
+    }
+    
+    .juzgados-list {
+      .juzgado-item {
+        .juzgado-header {
+          .juzgado-info {
+            .turnos-count {
+              font-size: 11px;
+            }
+          }
+        }
+      }
     }
   }
 }
