@@ -36,8 +36,8 @@ export default function RadialChartSimple() {
     );
   }
 
-  // ✅ FILTRAR DATOS SEGÚN EL CONTEXTO GLOBAL
-  const filterData = (dataArray) => {
+  // ✅ FILTRAR DATOS SEGÚN EL CONTEXTO GLOBAL CON CORRECCIÓN DE FECHA
+  const filterData = (dataArray, dateField = 'created_at') => {
     if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
     
     const now = new Date();
@@ -52,13 +52,15 @@ export default function RadialChartSimple() {
     }
     
     return dataArray.filter(item => {
-      const itemDate = new Date(item.created_at || item.fecha || item.forward_date);
+      const itemDate = new Date(item[dateField] || item.created_at || item.forward_date || item.fecha);
+      // ✅ CORREGIR DESFASE: Agregar un día para comparar correctamente
+      itemDate.setDate(itemDate.getDate() + 1);
       return itemDate >= cutoffDate;
     });
   };
 
-  const filteredHabeasCorpus = filterData(habeasCorpus);
-  const filteredReenvios = filterData(reenvios);
+  const filteredHabeasCorpus = filterData(habeasCorpus, 'created_at');
+  const filteredReenvios = filterData(reenvios, 'forward_date');
 
   // ✅ USAR LA NUEVA FUNCIÓN PARA RADIAL CHART
   const data = processRadialChartDataNew(filteredHabeasCorpus, filteredReenvios);
@@ -96,38 +98,61 @@ export default function RadialChartSimple() {
         📊 {currentFilterLabel}
       </div>
       
-      <ResponsiveContainer width="100%" height={300}>
-        <RadialBarChart
-          cx="50%"
-          cy="50%"
-          innerRadius="20%"
-          outerRadius="90%"
-          barSize={20}
-          data={data}
-        >
-          <RadialBar 
-            minAngle={15} 
-            background 
-            clockWise 
-            dataKey="value" 
-          />
-          <Legend
-            iconSize={10}
-            layout="vertical"
-            verticalAlign="middle"
-            align="right"
-            formatter={(value, entry) => `${entry.payload.name}: ${entry.payload.percentage}%`}
-          />
-          <Tooltip 
-            formatter={(value, name, props) => [
-              `${value} registros (${props.payload.percentage}%)`, 
-              name
-            ]}
-          />
-        </RadialBarChart>
-      </ResponsiveContainer>
+      {/* ✅ CONTENEDOR DEL GRÁFICO CON ALTURA AJUSTADA */}
+      <div className="radial-chart-container-inner">
+        <ResponsiveContainer width="100%" height={280}>
+          <RadialBarChart
+            cx="50%"
+            cy="50%"
+            innerRadius="20%"
+            outerRadius="85%"
+            barSize={18}
+            data={data}
+          >
+            <RadialBar 
+              minAngle={15} 
+              background 
+              clockWise 
+              dataKey="value" 
+            />
+            {/* ✅ LEYENDA MOVIDA ABAJO */}
+            <Legend
+              iconSize={8}
+              layout="horizontal"
+              verticalAlign="bottom"
+              align="center"
+              wrapperStyle={{ 
+                paddingTop: '20px',
+                fontSize: '12px'
+              }}
+              formatter={(value, entry) => (
+                <span style={{ 
+                  fontSize: '12px',
+                  color: '#666',
+                  marginRight: '12px'
+                }}>
+                  {entry.payload.name}: {entry.payload.percentage}%
+                </span>
+              )}
+            />
+            <Tooltip 
+              formatter={(value, name, props) => [
+                `${value} registros (${props.payload.percentage}%)`, 
+                name
+              ]}
+              contentStyle={{
+                backgroundColor: '#fff',
+                border: '1px solid #ccc',
+                borderRadius: '8px',
+                fontSize: '12px',
+                padding: '8px'
+              }}
+            />
+          </RadialBarChart>
+        </ResponsiveContainer>
+      </div>
       
-      <div style={{ textAlign: "center", marginTop: 12, color: "#888", fontSize: "14px" }}>
+      <div style={{ textAlign: "center", marginTop: 16, color: "#888", fontSize: "14px" }}>
         <span style={{ fontWeight: 500 }}>
           Total: {totalItems.toLocaleString()} registros
         </span>

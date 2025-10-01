@@ -457,3 +457,94 @@
     }
   }
 }
+
+// ===== CONTENEDOR ESPECÍFICO PARA GRÁFICO RADIAL =====
+.radial-chart-container-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+
+  // Ajustar la leyenda del gráfico radial
+  .recharts-legend-wrapper {
+    .recharts-default-legend {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 8px !important;
+      padding: 12px 0 !important;
+      margin-top: 8px !important;
+
+      .recharts-legend-item {
+        margin: 0 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        
+        .recharts-legend-item-text {
+          color: m.$color_gray !important;
+          font-size: 12px !important;
+          font-weight: 500 !important;
+          margin-left: 4px !important;
+        }
+
+        .recharts-surface {
+          margin-right: 4px !important;
+        }
+      }
+    }
+  }
+}
+
+// ===== AJUSTES RESPONSIVOS PARA GRÁFICO RADIAL =====
+@include m.tablet {
+  .radial-chart-container-inner {
+    .recharts-legend-wrapper {
+      .recharts-default-legend {
+        .recharts-legend-item {
+          margin: 2px 4px !important;
+          
+          .recharts-legend-item-text {
+            font-size: 11px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include m.mobile {
+  .radial-chart-container-inner {
+    .recharts-legend-wrapper {
+      .recharts-default-legend {
+        flex-direction: column !important;
+        gap: 6px !important;
+        
+        .recharts-legend-item {
+          margin: 2px 0 !important;
+          justify-content: center !important;
+          
+          .recharts-legend-item-text {
+            font-size: 11px !important;
+            text-align: center !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include m.small-mobile {
+  .radial-chart-container-inner {
+    .recharts-legend-wrapper {
+      .recharts-default-legend {
+        .recharts-legend-item {
+          .recharts-legend-item-text {
+            font-size: 10px !important;
+          }
+        }
+      }
+    }
+  }
+}
