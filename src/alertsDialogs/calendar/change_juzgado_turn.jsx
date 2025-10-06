@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from "react";
+import TimeRangeFilter from "../../components/TimeRangeFilter";
+import { 
+  getJuzgadoTemporalStatusInRange,
+  calculateTemporalStats,
+  getDefaultPeriod
+} from "../../utils/timeRangeUtils";
 import dayjs from "dayjs"; 
 
 export default function ChangeJuzgadoTurnDialog({
@@ -17,6 +23,7 @@ export default function ChangeJuzgadoTurnDialog({
   const [loading, setLoading] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
   const [filtroTemporal, setFiltroTemporal] = useState("todos"); // "todos", "ya-paso", "por-venir", "disponibles"
+  const [timeRange, setTimeRange] = useState(null); // Nuevo estado para filtro temporal
 
   // Cargar juzgados desde el backend
   useEffect(() => {
@@ -30,6 +37,10 @@ export default function ChangeJuzgadoTurnDialog({
           setJuzgadosData(juzgadosResponse);
           setTurnosData(turnosResponse);
           setError("");
+          // Establecer período por defecto si no hay uno seleccionado
+          if (!timeRange) {
+            setTimeRange(getDefaultPeriod());
+          }
         })
         .catch(() => {
           setJuzgadosData([]);
@@ -42,48 +53,9 @@ export default function ChangeJuzgadoTurnDialog({
     }
   }, [open]);
 
-  // Función para obtener el estado temporal de un juzgado
+  // Función para obtener el estado temporal de un juzgado en el rango seleccionado
   const getJuzgadoTemporalStatus = (juzgado) => {
-    const hoy = dayjs().startOf('day');
-    const turnosJuzgado = turnosData.filter(turno => turno.juzgado_id === juzgado.id);
-    
-    if (turnosJuzgado.length === 0) {
-      return {
-        ...juzgado,
-        status: "sin-turnos",
-        ultimoTurno: null,
-        proximoTurno: null,
-        totalTurnos: 0
-      };
-    }
-
-    // Obtener último turno (más reciente)
-    const turnosOrdenados = turnosJuzgado
-      .map(turno => ({
-        ...turno,
-        fecha: dayjs(turno.turn_date).startOf('day')
-      }))
-      .sort((a, b) => b.fecha.valueOf() - a.fecha.valueOf());
-
-    const ultimoTurno = turnosOrdenados[0];
-    const proximoTurno = turnosOrdenados.find(turno => turno.fecha.isAfter(hoy) || turno.fecha.isSame(hoy));
-
-    // Determinar estado temporal
-    let status = "sin-turnos";
-    if (ultimoTurno.fecha.isBefore(hoy)) {
-      status = "ya-paso";
-    } else if (ultimoTurno.fecha.isAfter(hoy) || ultimoTurno.fecha.isSame(hoy)) {
-      status = "por-venir";
-    }
-
-    return {
-      ...juzgado,
-      status,
-      ultimoTurno,
-      proximoTurno,
-      totalTurnos: turnosJuzgado.length,
-      ultimaFecha: ultimoTurno ? ultimoTurno.fecha.format('DD/MM/YYYY') : null
-    };
+    return getJuzgadoTemporalStatusInRange(juzgado, turnosData, timeRange);
   };
 
   // Aplicar estado temporal a todos los juzgados
@@ -107,13 +79,15 @@ export default function ChangeJuzgadoTurnDialog({
     }
   );
 
-  // Estadísticas temporales
-  const estadisticasTemporales = {
-    total: juzgadosConEstado.length,
-    yaPasaron: juzgadosConEstado.filter(j => j.status === "ya-paso").length,
-    porVenir: juzgadosConEstado.filter(j => j.status === "por-venir" || j.status === "sin-turnos").length,
-    disponibles: juzgadosConEstado.filter(j => j.status === "sin-turnos").length
-  };
+  // Estadísticas temporales basadas en el rango seleccionado
+  const estadisticasTemporales = timeRange ? 
+    calculateTemporalStats(juzgadosData, turnosData, timeRange) :
+    {
+      total: juzgadosConEstado.length,
+      yaPasaron: juzgadosConEstado.filter(j => j.status === "ya-paso").length,
+      porVenir: juzgadosConEstado.filter(j => j.status === "por-venir" || j.status === "sin-turnos").length,
+      disponibles: juzgadosConEstado.filter(j => j.status === "sin-turnos").length
+    };
 
   // Formatea la fecha seleccionada
   const fechaSeleccionada = slotDate
@@ -153,6 +127,7 @@ export default function ChangeJuzgadoTurnDialog({
     setIsChanging(false);
     setLoading(false);
     setFiltroTemporal("todos");
+    setTimeRange(null);
     onClose();
   };
 
@@ -186,6 +161,14 @@ export default function ChangeJuzgadoTurnDialog({
             disabled={loading || isChanging}
           />
         </div>
+
+        {/* Filtro temporal */}
+        <TimeRangeFilter
+          selectedRange={timeRange}
+          onRangeChange={setTimeRange}
+          showInDialog={true}
+          disabled={loading || isChanging}
+        />
 
         {/* Filtros temporales */}
         <div className="filtros-temporales">

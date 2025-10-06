@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Copy from "../../components/Copy";
+import TimeRangeFilter from "../../components/TimeRangeFilter";
+import { 
+  getJuzgadoStatsInTimeRange, 
+  calculateTemporalStats,
+  getDefaultPeriod
+} from "../../utils/timeRangeUtils";
 import dayjs from "dayjs";
 
 export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate, showToastMsg }) {
@@ -11,12 +17,17 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
   const [showCopy, setShowCopy] = useState(false);
   const [loadingJuzgados, setLoadingJuzgados] = useState(false);
   const [filtroActivo, setFiltroActivo] = useState("todos"); // "todos", "disponibles", "ocupados"
+  const [timeRange, setTimeRange] = useState(null); // Nuevo estado para filtro temporal
 
   // Cargar juzgados desde el backend
   useEffect(() => {
     if (open) {
       cargarJuzgados();
       cargarTurnos();
+      // Establecer período por defecto si no hay uno seleccionado
+      if (!timeRange) {
+        setTimeRange(getDefaultPeriod());
+      }
     }
   }, [open]);
 
@@ -47,16 +58,12 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     }
   };
 
-  // Función para obtener estadísticas de turnos por juzgado
+  // Función para obtener estadísticas de turnos por juzgado en el rango temporal
   const getJuzgadoStats = (juzgadoId) => {
-    const turnosJuzgado = turnosData.filter(turno => turno.juzgado_id === juzgadoId);
-    return {
-      totalTurnos: turnosJuzgado.length,
-      tieneActivo: turnosJuzgado.length > 0
-    };
+    return getJuzgadoStatsInTimeRange(juzgadoId, turnosData, timeRange);
   };
 
-  // Función para determinar el estado de un juzgado
+  // Función para determinar el estado de un juzgado basado en el rango temporal
   const getJuzgadoStatus = (juzgado) => {
     const stats = getJuzgadoStats(juzgado.id);
     return {
@@ -86,12 +93,14 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     }
   );
 
-  // Estadísticas generales
-  const estadisticas = {
-    total: juzgadosConEstado.length,
-    disponibles: juzgadosConEstado.filter(j => j.status === "disponible").length,
-    ocupados: juzgadosConEstado.filter(j => j.status === "ocupado").length
-  };
+  // Estadísticas generales basadas en el rango temporal
+  const estadisticas = timeRange ? 
+    calculateTemporalStats(juzgadosData, turnosData, timeRange) :
+    {
+      total: juzgadosConEstado.length,
+      disponibles: juzgadosConEstado.filter(j => j.status === "disponible").length,
+      ocupados: juzgadosConEstado.filter(j => j.status === "ocupado").length
+    };
 
   const handleSeleccionarJuzgado = (juzgado) => {
     setJuzgadoSeleccionado(juzgado);
@@ -126,6 +135,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     setError("");
     setLoadingJuzgados(false);
     setFiltroActivo("todos");
+    setTimeRange(null);
     onClose();
   };
 
@@ -158,6 +168,14 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                 onChange={(e) => setBusqueda(e.target.value)}
               />
             </div>
+
+            {/* Filtro temporal */}
+            <TimeRangeFilter
+              selectedRange={timeRange}
+              onRangeChange={setTimeRange}
+              showInDialog={true}
+              disabled={loadingJuzgados}
+            />
 
             {/* Filtros de estado */}
             <div className="filtros-estado">

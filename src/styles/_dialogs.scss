@@ -539,6 +539,185 @@
 
 // ===== DIÁLOGOS DE CALENDARIO =====
 
+// ✅ ESTILOS PARA FILTRO TEMPORAL (TimeRangeFilter)
+.time-range-filter-dialog {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+
+  .filter-label {
+    font-weight: 600;
+    color: m.$color_blue;
+    margin-bottom: 6px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dropdown-container {
+    position: relative;
+    width: 100%;
+
+    .dropdown-trigger {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      background-color: white;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      transition: all 0.2s ease;
+
+      &:hover:not(:disabled) {
+        border-color: m.$color_blue;
+        background-color: #f8f9fa;
+      }
+
+      &:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      &.open {
+        border-color: m.$color_blue;
+        background-color: #f0f8ff;
+      }
+
+      .selected-text {
+        flex: 1;
+        text-align: left;
+        color: #495057;
+      }
+
+      .dropdown-arrow {
+        color: #6c757d;
+        font-size: 10px;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ced4da;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+      .dropdown-section {
+        border-bottom: 1px solid #e9ecef;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .section-title {
+          padding: 6px 10px;
+          background-color: #f8f9fa;
+          font-weight: 600;
+          font-size: 11px;
+          color: #6c757d;
+          border-bottom: 1px solid #e9ecef;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .dropdown-option {
+          width: 100%;
+          padding: 6px 12px;
+          border: none;
+          background: none;
+          text-align: left;
+          cursor: pointer;
+          font-size: 12px;
+          color: #495057;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background-color: #f8f9fa;
+          }
+
+          &.selected {
+            background-color: m.$color_light_blue;
+            color: m.$color_blue;
+            font-weight: 500;
+          }
+        }
+      }
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 2px;
+
+        &:hover {
+          background: #a1a1a1;
+        }
+      }
+    }
+  }
+}
+
+.time-range-filter {
+  margin-bottom: 16px;
+
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 14px;
+    color: #495057;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: m.$color_blue;
+      box-shadow: 0 0 0 2px rgba(0, 63, 117, 0.1);
+    }
+
+    &:disabled {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    optgroup {
+      font-weight: 600;
+      color: #6c757d;
+    }
+
+    option {
+      padding: 8px;
+      font-weight: normal;
+      color: #495057;
+    }
+  }
+}
+
 // Diálogo para cambiar turno
 .change-juzgado-dialog {
   max-height: 95vh;
@@ -993,30 +1172,33 @@
   min-height: 80vh;
   min-width: 80vw;
   width: 90vw;
-  height: 90vh;
+  height: auto;
+  max-height: 95vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   
   h1 {
     flex-shrink: 0;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    font-size: 20px;
   }
 
   .fecha-seleccionada {
     flex-shrink: 0;
-    margin-bottom: 12px;
-    padding: 12px;
+    margin-bottom: 8px;
+    padding: 8px 12px;
     background-color: m.$color_light_blue;
-    border-radius: 8px;
+    border-radius: 6px;
     color: m.$color_blue;
-    font-weight: bold;
+    font-weight: 600;
     text-align: center;
+    font-size: 14px;
   }
 
   .input-busqueda {
     flex-shrink: 0;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     
     input {
       width: 100%;
@@ -1037,31 +1219,31 @@
   // ✅ NUEVOS ESTILOS PARA FILTROS
   .filtros-estado {
     flex-shrink: 0;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     
     .filtros-botones {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       justify-content: center;
       flex-wrap: wrap;
       
       .filtro-btn {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 8px 16px;
-        border-radius: 20px;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 16px;
         border: 2px solid #ddd;
         background: white;
         color: #666;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s ease;
         white-space: nowrap;
         
         .filtro-icon {
-          font-size: 14px;
+          font-size: 13px;
         }
         
         &:hover {
@@ -1096,15 +1278,15 @@
   .juzgados-list {
     flex-grow: 1;
     flex-shrink: 1;
-    min-height: 300px;
-    max-height: none;
+    min-height: 200px;
+    max-height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
     width: 100%;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 12px;
+    border-radius: 6px;
+    padding: 6px;
+    margin-bottom: 10px;
     box-sizing: border-box;
 
     .loading-state,
@@ -1112,16 +1294,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 200px;
+      height: 150px;
       color: #666;
       text-align: center;
-      font-size: 16px;
+      font-size: 14px;
     }
 
     .juzgado-item {
-      padding: 16px;
-      border-radius: 8px;
-      margin: 8px 0;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 6px 0;
       cursor: pointer;
       background-color: #f9f9f9;
       transition: all 0.2s;
@@ -1805,24 +1987,127 @@
     min-height: 95vh;
     max-width: 95vw;
     max-height: 95vh;
-    padding: 16px 12px;
+    padding: 12px 8px;
+    
+    h1 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+    
+    .fecha-seleccionada {
+      padding: 6px 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    
+    .input-busqueda {
+      margin-bottom: 6px;
+      
+      input {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+    }
+    
+    .time-range-filter-dialog {
+      padding: 6px 8px;
+      margin-bottom: 8px;
+      
+      .filter-label {
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+      
+      .dropdown-container {
+        .dropdown-trigger {
+          padding: 6px 8px;
+          font-size: 12px;
+        }
+        
+        .dropdown-menu {
+          max-height: 150px;
+          
+          .section-title {
+            padding: 4px 8px;
+            font-size: 10px;
+          }
+          
+          .dropdown-option {
+            padding: 4px 10px;
+            font-size: 11px;
+          }
+        }
+      }
+    }
     
     // ✅ AJUSTES PARA FILTROS EN MÓVIL
     .filtros-estado {
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       
       .filtros-botones {
-        gap: 6px;
+        gap: 4px;
         
         .filtro-btn {
-          padding: 6px 12px;
-          font-size: 12px;
-          border-radius: 16px;
+          padding: 4px 8px;
+          font-size: 11px;
+          border-radius: 12px;
           
           .filtro-icon {
-            font-size: 12px;
+            font-size: 11px;
           }
         }
+      }
+    }
+    
+    .juzgados-list {
+      min-height: 150px;
+      max-height: 200px;
+      margin-bottom: 8px;
+      
+      .juzgado-item {
+        padding: 8px;
+        margin: 4px 0;
+        
+        .juzgado-header {
+          font-size: 12px;
+          
+          .juzgado-info {
+            .status-indicator {
+              font-size: 12px;
+            }
+            
+            .turnos-count {
+              font-size: 10px;
+              padding: 1px 3px;
+            }
+          }
+          
+          .selected-indicator {
+            width: 20px;
+            height: 20px;
+            font-size: 14px;
+          }
+        }
+        
+        .juzgado-email-row {
+          font-size: 11px;
+          
+          .quick-copy-btn {
+            padding: 2px 6px;
+            font-size: 10px;
+          }
+        }
+      }
+    }
+    
+    .dialog-actions {
+      margin-top: 8px;
+      
+      .edit-button-full,
+      .close-button-full {
+        padding: 10px 16px;
+        font-size: 14px;
+        margin-bottom: 6px;
       }
     }
     
@@ -1864,12 +2149,41 @@
     max-height: 95vh;
     padding: 16px 12px;
     
-    h1 {
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-    
-    .turno-info {
+      h1 {
+        font-size: 18px;
+        margin-bottom: 8px;
+      }
+      
+      .time-range-filter-dialog {
+        padding: 8px;
+        margin-bottom: 12px;
+        
+        .filter-label {
+          font-size: 13px;
+          margin-bottom: 6px;
+        }
+        
+        .dropdown-container {
+          .dropdown-trigger {
+            padding: 8px 10px;
+            font-size: 13px;
+          }
+          
+          .dropdown-menu {
+            max-height: 200px;
+            
+            .section-title {
+              padding: 6px 10px;
+              font-size: 11px;
+            }
+            
+            .dropdown-option {
+              padding: 6px 12px;
+              font-size: 12px;
+            }
+          }
+        }
+      }    .turno-info {
       margin-bottom: 16px;
       padding: 12px;
       
