@@ -4,7 +4,8 @@ import dayjs from "dayjs";
 export const isTurnoInTimeRange = (turnoDate, timeRange) => {
   if (!timeRange || !turnoDate) return true;
   
-  const turno = dayjs(turnoDate).startOf('day');
+  // Agregar un día para compensar el desfase de zona horaria de la base de datos
+  const turno = dayjs(turnoDate).add(1, 'day').startOf('day');
   const start = dayjs(timeRange.startDate).startOf('day');
   const end = dayjs(timeRange.endDate).endOf('day');
   
@@ -49,11 +50,11 @@ export const getJuzgadoTemporalStatusInRange = (juzgado, turnos, timeRange, refe
     };
   }
 
-  // Ordenar turnos por fecha
+  // Ordenar turnos por fecha (agregar un día para compensar desfase)
   const turnosOrdenados = turnosEnRango
     .map(turno => ({
       ...turno,
-      fecha: dayjs(turno.turn_date)
+      fecha: dayjs(turno.turn_date).add(1, 'day').startOf('day')
     }))
     .sort((a, b) => b.fecha.valueOf() - a.fecha.valueOf());
 
@@ -107,7 +108,8 @@ export const calculateTemporalStats = (juzgados, turnos, timeRange, referenceDat
 // Función para verificar si una fecha está en el futuro dentro del rango
 export const isFutureInRange = (date, timeRange, referenceDate = null) => {
   const reference = referenceDate ? dayjs(referenceDate) : dayjs();
-  const checkDate = dayjs(date);
+  // Agregar un día para compensar el desfase de zona horaria de la base de datos
+  const checkDate = dayjs(date).add(1, 'day');
   
   if (!timeRange) return checkDate.isAfter(reference);
   
