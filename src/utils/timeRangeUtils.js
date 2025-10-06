@@ -4,11 +4,11 @@ import dayjs from "dayjs";
 export const isTurnoInTimeRange = (turnoDate, timeRange) => {
   if (!timeRange || !turnoDate) return true;
   
-  const turno = dayjs(turnoDate);
-  const start = dayjs(timeRange.startDate);
-  const end = dayjs(timeRange.endDate);
+  const turno = dayjs(turnoDate).startOf('day');
+  const start = dayjs(timeRange.startDate).startOf('day');
+  const end = dayjs(timeRange.endDate).endOf('day');
   
-  return turno.isAfter(start.subtract(1, 'day')) && turno.isBefore(end.add(1, 'day'));
+  return turno.isSameOrAfter(start) && turno.isSameOrBefore(end);
 };
 
 // Función para filtrar turnos por rango temporal

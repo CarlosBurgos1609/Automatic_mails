@@ -542,7 +542,7 @@
 // ✅ ESTILOS PARA FILTRO TEMPORAL (TimeRangeFilter)
 .time-range-filter-dialog {
   margin-bottom: 12px;
-  padding: 8px 12px;
+  padding: 10px 12px;
   background-color: #f8f9fa;
   border-radius: 6px;
   border: 1px solid #e9ecef;
@@ -550,130 +550,61 @@
   .filter-label {
     font-weight: 600;
     color: m.$color_blue;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     font-size: 13px;
     display: flex;
     align-items: center;
     gap: 4px;
   }
 
-  .dropdown-container {
-    position: relative;
-    width: 100%;
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 
-    .dropdown-trigger {
+  .filter-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    
+    &.full-width {
+      flex: 1;
+    }
+
+    .filter-sublabel {
+      font-size: 11px;
+      font-weight: 500;
+      color: #6c757d;
+      margin-bottom: 2px;
+    }
+
+    .filter-select {
       width: 100%;
-      padding: 8px 10px;
+      padding: 6px 8px;
       border: 1px solid #ced4da;
       border-radius: 4px;
       background-color: white;
+      font-size: 12px;
+      color: #495057;
       cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s ease;
 
-      &:hover:not(:disabled) {
+      &:focus {
+        outline: none;
         border-color: m.$color_blue;
-        background-color: #f8f9fa;
+        box-shadow: 0 0 0 1px rgba(0, 63, 117, 0.1);
       }
 
       &:disabled {
         background-color: #e9ecef;
         cursor: not-allowed;
         opacity: 0.6;
-      }
-
-      &.open {
-        border-color: m.$color_blue;
-        background-color: #f0f8ff;
-      }
-
-      .selected-text {
-        flex: 1;
-        text-align: left;
-        color: #495057;
-      }
-
-      .dropdown-arrow {
-        color: #6c757d;
-        font-size: 10px;
-        transition: transform 0.2s ease;
-      }
-    }
-
-    .dropdown-menu {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border: 1px solid #ced4da;
-      border-top: none;
-      border-radius: 0 0 4px 4px;
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-
-      .dropdown-section {
-        border-bottom: 1px solid #e9ecef;
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        .section-title {
-          padding: 6px 10px;
-          background-color: #f8f9fa;
-          font-weight: 600;
-          font-size: 11px;
-          color: #6c757d;
-          border-bottom: 1px solid #e9ecef;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-        }
-
-        .dropdown-option {
-          width: 100%;
-          padding: 6px 12px;
-          border: none;
-          background: none;
-          text-align: left;
-          cursor: pointer;
-          font-size: 12px;
-          color: #495057;
-          transition: background-color 0.2s ease;
-
-          &:hover {
-            background-color: #f8f9fa;
-          }
-
-          &.selected {
-            background-color: m.$color_light_blue;
-            color: m.$color_blue;
-            font-weight: 500;
-          }
-        }
-      }
-
-      &::-webkit-scrollbar {
-        width: 4px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 2px;
-
-        &:hover {
-          background: #a1a1a1;
-        }
       }
     }
   }
@@ -682,13 +613,20 @@
 .time-range-filter {
   margin-bottom: 16px;
 
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
   select {
-    width: 100%;
-    padding: 10px 12px;
+    flex: 1;
+    min-width: 120px;
+    padding: 8px 10px;
     border: 1px solid #ced4da;
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: white;
-    font-size: 14px;
+    font-size: 13px;
     color: #495057;
     cursor: pointer;
     transition: border-color 0.2s ease;
@@ -703,17 +641,6 @@
       background-color: #e9ecef;
       cursor: not-allowed;
       opacity: 0.6;
-    }
-
-    optgroup {
-      font-weight: 600;
-      color: #6c757d;
-    }
-
-    option {
-      padding: 8px;
-      font-weight: normal;
-      color: #495057;
     }
   }
 }
@@ -2015,27 +1942,27 @@
       
       .filter-label {
         font-size: 12px;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
       }
       
-      .dropdown-container {
-        .dropdown-trigger {
-          padding: 6px 8px;
-          font-size: 12px;
+      .filter-row {
+        gap: 4px;
+        margin-bottom: 4px;
+        flex-direction: column;
+        
+        @media (min-width: 480px) {
+          flex-direction: row;
+        }
+      }
+      
+      .filter-group {
+        .filter-sublabel {
+          font-size: 10px;
         }
         
-        .dropdown-menu {
-          max-height: 150px;
-          
-          .section-title {
-            padding: 4px 8px;
-            font-size: 10px;
-          }
-          
-          .dropdown-option {
-            padding: 4px 10px;
-            font-size: 11px;
-          }
+        .filter-select {
+          padding: 4px 6px;
+          font-size: 11px;
         }
       }
     }

@@ -7,308 +7,305 @@ export default function TimeRangeFilter({
   showInDialog = false,
   disabled = false 
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentPeriod, setCurrentPeriod] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(dayjs().year());
+  const [selectedType, setSelectedType] = useState("semestre");
+  const [selectedPeriod, setSelectedPeriod] = useState(null);
 
   // Calcular período actual al cargar
   useEffect(() => {
     const now = dayjs();
-    const period = getCurrentPeriod(now);
-    setCurrentPeriod(period);
+    const currentYear = now.year();
+    const currentMonth = now.month() + 1;
     
-    // Si no hay rango seleccionado, usar semestre por defecto
+    // Determinar semestre actual por defecto
+    const currentSemester = currentMonth <= 6 ? 1 : 2;
+    
+    setSelectedYear(currentYear);
+    setSelectedType("semestre");
+    setSelectedPeriod(currentSemester);
+    
+    // Si no hay rango seleccionado, usar semestre actual por defecto
     if (!selectedRange) {
+      const semestreStart = currentSemester === 1 
+        ? dayjs(`${currentYear}-01-01`).startOf('day')
+        : dayjs(`${currentYear}-07-01`).startOf('day');
+      const semestreEnd = currentSemester === 1 
+        ? dayjs(`${currentYear}-06-30`).endOf('day')
+        : dayjs(`${currentYear}-12-31`).endOf('day');
+      
       onRangeChange({
         type: "semestre",
-        label: `${period.semestre.label} ${now.year()}`,
-        startDate: period.semestre.start,
-        endDate: period.semestre.end,
-        year: now.year()
+        label: `${currentSemester === 1 ? 'Primer' : 'Segundo'} Semestre ${currentYear}`,
+        startDate: semestreStart,
+        endDate: semestreEnd,
+        year: currentYear,
+        semester: currentSemester
       });
     }
   }, []);
 
-  // Función para calcular el período actual
-  const getCurrentPeriod = (date) => {
-    const year = date.year();
-    const month = date.month() + 1; // dayjs months are 0-indexed
-    
-    // Determinar semestre
-    const semestre = month <= 6 ? 1 : 2;
-    const semestreStart = semestre === 1 ? dayjs(`${year}-01-01`) : dayjs(`${year}-07-01`);
-    const semestreEnd = semestre === 1 ? dayjs(`${year}-06-30`) : dayjs(`${year}-12-31`);
-    
-    // Determinar trimestre
-    let trimestre, trimestreStart, trimestreEnd;
-    if (month <= 3) {
-      trimestre = 1;
-      trimestreStart = dayjs(`${year}-01-01`);
-      trimestreEnd = dayjs(`${year}-03-31`);
-    } else if (month <= 6) {
-      trimestre = 2;
-      trimestreStart = dayjs(`${year}-04-01`);
-      trimestreEnd = dayjs(`${year}-06-30`);
-    } else if (month <= 9) {
-      trimestre = 3;
-      trimestreStart = dayjs(`${year}-07-01`);
-      trimestreEnd = dayjs(`${year}-09-30`);
-    } else {
-      trimestre = 4;
-      trimestreStart = dayjs(`${year}-10-01`);
-      trimestreEnd = dayjs(`${year}-12-31`);
+  // Actualizar el rango cuando cambian las selecciones
+  useEffect(() => {
+    if (selectedYear && selectedType && selectedPeriod !== null) {
+      updateTimeRange();
+    }
+  }, [selectedYear, selectedType, selectedPeriod]);
+
+  const updateTimeRange = () => {
+    let range = null;
+
+    switch (selectedType) {
+      case "año":
+        range = {
+          type: "año",
+          label: `Año ${selectedYear}`,
+          startDate: dayjs(`${selectedYear}-01-01`).startOf('day'),
+          endDate: dayjs(`${selectedYear}-12-31`).endOf('day'),
+          year: selectedYear
+        };
+        break;
+
+      case "semestre":
+        const semestreStart = selectedPeriod === 1 
+          ? dayjs(`${selectedYear}-01-01`).startOf('day')
+          : dayjs(`${selectedYear}-07-01`).startOf('day');
+        const semestreEnd = selectedPeriod === 1 
+          ? dayjs(`${selectedYear}-06-30`).endOf('day')
+          : dayjs(`${selectedYear}-12-31`).endOf('day');
+        range = {
+          type: "semestre",
+          label: `${selectedPeriod === 1 ? 'Primer' : 'Segundo'} Semestre ${selectedYear}`,
+          startDate: semestreStart,
+          endDate: semestreEnd,
+          year: selectedYear,
+          semester: selectedPeriod
+        };
+        break;
+
+      case "trimestre":
+        let trimestreStart, trimestreEnd;
+        const trimestreMonths = ["Ene-Mar", "Abr-Jun", "Jul-Sep", "Oct-Dic"];
+        
+        switch (selectedPeriod) {
+          case 1:
+            trimestreStart = dayjs(`${selectedYear}-01-01`).startOf('day');
+            trimestreEnd = dayjs(`${selectedYear}-03-31`).endOf('day');
+            break;
+          case 2:
+            trimestreStart = dayjs(`${selectedYear}-04-01`).startOf('day');
+            trimestreEnd = dayjs(`${selectedYear}-06-30`).endOf('day');
+            break;
+          case 3:
+            trimestreStart = dayjs(`${selectedYear}-07-01`).startOf('day');
+            trimestreEnd = dayjs(`${selectedYear}-09-30`).endOf('day');
+            break;
+          case 4:
+            trimestreStart = dayjs(`${selectedYear}-10-01`).startOf('day');
+            trimestreEnd = dayjs(`${selectedYear}-12-31`).endOf('day');
+            break;
+        }
+        
+        range = {
+          type: "trimestre",
+          label: `${selectedPeriod}° Trimestre ${selectedYear} (${trimestreMonths[selectedPeriod - 1]})`,
+          startDate: trimestreStart,
+          endDate: trimestreEnd,
+          year: selectedYear,
+          quarter: selectedPeriod
+        };
+        break;
+
+      case "mes":
+        const monthDate = dayjs(`${selectedYear}-${selectedPeriod.toString().padStart(2, '0')}-01`);
+        range = {
+          type: "mes",
+          label: monthDate.format('MMMM YYYY'),
+          startDate: monthDate.startOf('month'),
+          endDate: monthDate.endOf('month'),
+          year: selectedYear,
+          month: selectedPeriod
+        };
+        break;
     }
 
-    return {
-      año: {
-        label: `Año ${year}`,
-        start: dayjs(`${year}-01-01`),
-        end: dayjs(`${year}-12-31`)
-      },
-      semestre: {
-        label: `${semestre === 1 ? 'Primer' : 'Segundo'} Semestre`,
-        start: semestreStart,
-        end: semestreEnd,
-        number: semestre
-      },
-      trimestre: {
-        label: `${trimestre}° Trimestre (${getTrimestreMonths(trimestre)})`,
-        start: trimestreStart,
-        end: trimestreEnd,
-        number: trimestre
-      },
-      mes: {
-        label: date.format('MMMM YYYY'),
-        start: date.startOf('month'),
-        end: date.endOf('month')
-      }
-    };
+    if (range) {
+      onRangeChange(range);
+    }
   };
 
-  // Función para obtener los meses del trimestre
-  const getTrimestreMonths = (trimestre) => {
-    const months = {
-      1: "Ene-Mar",
-      2: "Abr-Jun", 
-      3: "Jul-Sep",
-      4: "Oct-Dic"
-    };
-    return months[trimestre];
-  };
-
-  // Generar opciones para el año actual y anteriores
+  // Generar años disponibles (actual y 2 años hacia adelante)
   const generateYearOptions = () => {
     const currentYear = dayjs().year();
     const years = [];
-    
-    // Incluir año actual y 2 años anteriores
-    for (let year = currentYear; year >= currentYear - 2; year--) {
-      const period = getCurrentPeriod(dayjs(`${year}-01-01`));
-      
-      years.push(
-        {
-          type: "año",
-          label: `Año ${year}`,
-          startDate: period.año.start,
-          endDate: period.año.end,
-          year: year
-        },
-        {
-          type: "semestre", 
-          label: `Primer Semestre ${year}`,
-          startDate: dayjs(`${year}-01-01`),
-          endDate: dayjs(`${year}-06-30`),
-          year: year,
-          semester: 1
-        },
-        {
-          type: "semestre",
-          label: `Segundo Semestre ${year}`, 
-          startDate: dayjs(`${year}-07-01`),
-          endDate: dayjs(`${year}-12-31`),
-          year: year,
-          semester: 2
-        },
-        {
-          type: "trimestre",
-          label: `1° Trimestre ${year} (Ene-Mar)`,
-          startDate: dayjs(`${year}-01-01`),
-          endDate: dayjs(`${year}-03-31`),
-          year: year,
-          quarter: 1
-        },
-        {
-          type: "trimestre", 
-          label: `2° Trimestre ${year} (Abr-Jun)`,
-          startDate: dayjs(`${year}-04-01`),
-          endDate: dayjs(`${year}-06-30`),
-          year: year,
-          quarter: 2
-        },
-        {
-          type: "trimestre",
-          label: `3° Trimestre ${year} (Jul-Sep)`,
-          startDate: dayjs(`${year}-07-01`),
-          endDate: dayjs(`${year}-09-30`),
-          year: year,
-          quarter: 3
-        },
-        {
-          type: "trimestre",
-          label: `4° Trimestre ${year} (Oct-Dic)`,
-          startDate: dayjs(`${year}-10-01`),
-          endDate: dayjs(`${year}-12-31`),
-          year: year,
-          quarter: 4
-        }
-      );
-
-      // Solo agregar meses del año actual
-      if (year === currentYear) {
-        for (let month = 1; month <= 12; month++) {
-          const monthDate = dayjs(`${year}-${month.toString().padStart(2, '0')}-01`);
-          years.push({
-            type: "mes",
-            label: monthDate.format('MMMM YYYY'),
-            startDate: monthDate.startOf('month'),
-            endDate: monthDate.endOf('month'),
-            year: year,
-            month: month
-          });
-        }
-      }
+    for (let year = currentYear; year <= currentYear + 2; year++) {
+      years.push(year);
     }
-    
     return years;
   };
 
-  const options = generateYearOptions();
-
-  const handleOptionSelect = (option) => {
-    onRangeChange(option);
-    setIsOpen(false);
+  // Generar opciones de período según el tipo seleccionado
+  const generatePeriodOptions = () => {
+    switch (selectedType) {
+      case "año":
+        return [{ value: 1, label: `Todo el año ${selectedYear}` }];
+      
+      case "semestre":
+        return [
+          { value: 1, label: `Primer Semestre ${selectedYear}` },
+          { value: 2, label: `Segundo Semestre ${selectedYear}` }
+        ];
+      
+      case "trimestre":
+        return [
+          { value: 1, label: `1° Trimestre ${selectedYear} (Ene-Mar)` },
+          { value: 2, label: `2° Trimestre ${selectedYear} (Abr-Jun)` },
+          { value: 3, label: `3° Trimestre ${selectedYear} (Jul-Sep)` },
+          { value: 4, label: `4° Trimestre ${selectedYear} (Oct-Dic)` }
+        ];
+      
+      case "mes":
+        const months = [];
+        for (let month = 1; month <= 12; month++) {
+          const monthDate = dayjs(`${selectedYear}-${month.toString().padStart(2, '0')}-01`);
+          months.push({
+            value: month,
+            label: monthDate.format('MMMM YYYY')
+          });
+        }
+        return months;
+      
+      default:
+        return [];
+    }
   };
 
-  const getDisplayText = () => {
-    if (!selectedRange) return "Seleccionar período...";
-    return selectedRange.label;
+  const handleTypeChange = (newType) => {
+    setSelectedType(newType);
+    // Resetear período al cambiar tipo
+    if (newType === "año") {
+      setSelectedPeriod(1);
+    } else if (newType === "semestre") {
+      // Por defecto al semestre actual
+      const currentMonth = dayjs().month() + 1;
+      setSelectedPeriod(currentMonth <= 6 ? 1 : 2);
+    } else if (newType === "trimestre") {
+      // Por defecto al trimestre actual
+      const currentMonth = dayjs().month() + 1;
+      let currentQuarter = 1;
+      if (currentMonth <= 3) currentQuarter = 1;
+      else if (currentMonth <= 6) currentQuarter = 2;
+      else if (currentMonth <= 9) currentQuarter = 3;
+      else currentQuarter = 4;
+      setSelectedPeriod(currentQuarter);
+    } else if (newType === "mes") {
+      // Por defecto al mes actual
+      setSelectedPeriod(dayjs().month() + 1);
+    }
   };
+
+  const yearOptions = generateYearOptions();
+  const periodOptions = generatePeriodOptions();
 
   if (showInDialog) {
     return (
       <div className="time-range-filter-dialog">
         <div className="filter-label">📅 Filtrar por período:</div>
-        <div className="dropdown-container">
-          <button 
-            className={`dropdown-trigger ${isOpen ? 'open' : ''}`}
-            onClick={() => setIsOpen(!isOpen)}
-            disabled={disabled}
-          >
-            <span className="selected-text">{getDisplayText()}</span>
-            <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
-          </button>
-          
-          {isOpen && (
-            <div className="dropdown-menu">
-              <div className="dropdown-section">
-                <div className="section-title">🗓️ Por Año</div>
-                {options.filter(opt => opt.type === "año").map((option, index) => (
-                  <button
-                    key={`año-${index}`}
-                    className={`dropdown-option ${selectedRange?.label === option.label ? 'selected' : ''}`}
-                    onClick={() => handleOptionSelect(option)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="dropdown-section">
-                <div className="section-title">📊 Por Semestre</div>
-                {options.filter(opt => opt.type === "semestre").map((option, index) => (
-                  <button
-                    key={`semestre-${index}`}
-                    className={`dropdown-option ${selectedRange?.label === option.label ? 'selected' : ''}`}
-                    onClick={() => handleOptionSelect(option)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="dropdown-section">
-                <div className="section-title">📈 Por Trimestre</div>
-                {options.filter(opt => opt.type === "trimestre").map((option, index) => (
-                  <button
-                    key={`trimestre-${index}`}
-                    className={`dropdown-option ${selectedRange?.label === option.label ? 'selected' : ''}`}
-                    onClick={() => handleOptionSelect(option)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="dropdown-section">
-                <div className="section-title">📅 Por Mes (Año Actual)</div>
-                {options.filter(opt => opt.type === "mes").map((option, index) => (
-                  <button
-                    key={`mes-${index}`}
-                    className={`dropdown-option ${selectedRange?.label === option.label ? 'selected' : ''}`}
-                    onClick={() => handleOptionSelect(option)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+        
+        <div className="filter-row">
+          {/* Filtro de Año */}
+          <div className="filter-group">
+            <label className="filter-sublabel">Año:</label>
+            <select 
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              disabled={disabled}
+              className="filter-select"
+            >
+              {yearOptions.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Filtro de Tipo */}
+          <div className="filter-group">
+            <label className="filter-sublabel">Tipo:</label>
+            <select 
+              value={selectedType}
+              onChange={(e) => handleTypeChange(e.target.value)}
+              disabled={disabled}
+              className="filter-select"
+            >
+              <option value="año">🗓️ Año completo</option>
+              <option value="semestre">📊 Por Semestre</option>
+              <option value="trimestre">📈 Por Trimestre</option>
+              <option value="mes">📅 Por Mes</option>
+            </select>
+          </div>
         </div>
+
+        {/* Filtro de Período específico */}
+        {selectedType !== "año" && (
+          <div className="filter-row">
+            <div className="filter-group full-width">
+              <label className="filter-sublabel">Período:</label>
+              <select 
+                value={selectedPeriod || ""}
+                onChange={(e) => setSelectedPeriod(parseInt(e.target.value))}
+                disabled={disabled}
+                className="filter-select"
+              >
+                {periodOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div className="time-range-filter">
-      <select 
-        value={selectedRange ? `${selectedRange.type}-${selectedRange.label}` : ""}
-        onChange={(e) => {
-          const option = options.find(opt => `${opt.type}-${opt.label}` === e.target.value);
-          if (option) {
-            onRangeChange(option);
-          }
-        }}
-        disabled={disabled}
-      >
-        <option value="">Seleccionar período...</option>
-        <optgroup label="🗓️ Por Año">
-          {options.filter(opt => opt.type === "año").map((option, index) => (
-            <option key={`año-${index}`} value={`${option.type}-${option.label}`}>
-              {option.label}
-            </option>
+      <div className="filter-row">
+        <select 
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+          disabled={disabled}
+        >
+          {yearOptions.map(year => (
+            <option key={year} value={year}>{year}</option>
           ))}
-        </optgroup>
-        <optgroup label="📊 Por Semestre">
-          {options.filter(opt => opt.type === "semestre").map((option, index) => (
-            <option key={`semestre-${index}`} value={`${option.type}-${option.label}`}>
-              {option.label}
-            </option>
-          ))}
-        </optgroup>
-        <optgroup label="📈 Por Trimestre">
-          {options.filter(opt => opt.type === "trimestre").map((option, index) => (
-            <option key={`trimestre-${index}`} value={`${option.type}-${option.label}`}>
-              {option.label}
-            </option>
-          ))}
-        </optgroup>
-        <optgroup label="📅 Por Mes">
-          {options.filter(opt => opt.type === "mes").map((option, index) => (
-            <option key={`mes-${index}`} value={`${option.type}-${option.label}`}>
-              {option.label}
-            </option>
-          ))}
-        </optgroup>
-      </select>
+        </select>
+        
+        <select 
+          value={selectedType}
+          onChange={(e) => handleTypeChange(e.target.value)}
+          disabled={disabled}
+        >
+          <option value="año">Año completo</option>
+          <option value="semestre">Por Semestre</option>
+          <option value="trimestre">Por Trimestre</option>
+          <option value="mes">Por Mes</option>
+        </select>
+        
+        {selectedType !== "año" && (
+          <select 
+            value={selectedPeriod || ""}
+            onChange={(e) => setSelectedPeriod(parseInt(e.target.value))}
+            disabled={disabled}
+          >
+            {periodOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
     </div>
   );
 }
