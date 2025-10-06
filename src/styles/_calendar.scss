@@ -11,14 +11,14 @@
 .calendar-container {
   width: 100%;
   padding: 20px;
-  overflow-x: auto;
+  overflow: visible; // Cambiar de auto a visible para evitar scroll innecesario
   text-transform: uppercase;
   position: relative;
   z-index: 1;
 
   .rbc-calendar {
     width: 100%;
-    max-width: 80%;
+    max-width: 95%; // Expandir de 80% a 95% para aprovechar más espacio
     margin: 0 auto;
     color: m.$color_blue;
     font-size: 16px;
@@ -27,6 +27,23 @@
     box-shadow: m.$box-shadow;
     position: relative;
     z-index: 2;
+    min-height: fit-content; // Ajustar al contenido
+    height: auto !important; // Permitir altura automática
+    overflow: visible; // Evitar scroll interno
+    
+    // Contenedor del mes específico
+    .rbc-month-view {
+      height: auto !important;
+      min-height: 500px;
+      overflow: visible;
+    }
+    
+    // Tabla del calendario
+    .rbc-month-view table {
+      width: 100%;
+      height: auto !important;
+      table-layout: fixed; // Distribuir columnas uniformemente
+    }
   }
   
   @media (max-width: 900px) {
@@ -39,15 +56,181 @@
   .rbc-day-bg {
     background-color: m.$color_white;
     border: 1px solid m.$color_blue;
-    height: 100px;
+    min-height: 100px; // Cambiado de height fijo a min-height
+    height: auto; // Permitir altura automática
     width: 100%;
     box-sizing: border-box;
     display: flex;
-    align-items: center;
+    align-items: flex-start; // Cambiado para alinear al inicio
     justify-content: center;
     border-radius: 3px;
     cursor: pointer !important;
     position: relative;
+    padding: 5px; // Agregar padding para mejor visualización
+  }
+
+  // ===== AJUSTE AUTOMÁTICO DE ALTURA POR FILA =====
+  .rbc-month-view {
+    .rbc-month-row {
+      // Permitir que las filas se ajusten automáticamente
+      height: auto !important;
+      min-height: 100px;
+      
+      // Cada celda en la fila debe tener la misma altura
+      .rbc-day-bg {
+        height: 100%; // Heredar altura de la fila
+        display: flex;
+        flex-direction: column;
+        align-items: stretch; // Cambiar para mejor alineación
+        justify-content: flex-start;
+        padding: 5px;
+        position: relative;
+        
+        // Container para el contenido del día
+        .rbc-day-content {
+          width: 100%;
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-start;
+          margin-top: 20px; // Espacio para el número del día
+        }
+      }
+      
+      // El número del día - mantener posición normal
+      .rbc-date-cell {
+        position: relative; // Cambiar de absolute a relative
+        z-index: 10;
+        margin: 0;
+        padding: 5px;
+        background-color: transparent; // Quitar fondo
+        border-radius: 3px;
+        font-size: 15px; // Restaurar tamaño original
+        line-height: 1;
+        text-align: center;
+        color: m.$color_blue;
+        font-weight: bold;
+      }
+    }
+  }
+
+  // ===== EVENTOS/CONTENIDO EN LAS CELDAS =====
+  .rbc-event,
+  .rbc-event-content {
+    background: none !important;
+    color: m.$color_blue !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 2px 4px !important;
+    font-size: 11px !important; // Reducido para mejor ajuste
+    line-height: 1.2 !important;
+    font-weight: bold;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    box-shadow: none !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 2px !important;
+    text-align: center !important;
+  }
+  
+  // ===== CONTENIDO LARGO - AJUSTE DINÁMICO =====
+  .calendar-dynamic-row {
+    height: auto !important;
+    min-height: 100px !important;
+    
+    &.row-height-small { min-height: 100px !important; }
+    &.row-height-medium { min-height: 140px !important; }
+    &.row-height-large { min-height: 180px !important; }
+    &.row-height-xlarge { min-height: 220px !important; }
+    
+    .rbc-day-bg {
+      height: 100% !important;
+      min-height: inherit !important;
+    }
+  }
+
+  // ===== RESPONSIVE: SOLO APLICAR EN DESKTOP =====
+  @media (min-width: 768px) {
+    .rbc-month-view {
+      .rbc-month-row {
+        &.calendar-dynamic-row {
+          // Ajustes específicos para desktop
+          transition: min-height 0.3s ease-in-out;
+          
+          .rbc-day-bg {
+            // Mejor alineación del contenido en desktop
+            align-items: flex-start;
+            padding: 8px 5px;
+            
+            .rbc-event,
+            .rbc-event-content {
+              font-size: 12px !important;
+              line-height: 1.3 !important;
+              margin-bottom: 3px !important;
+              padding: 3px 5px !important;
+              border-radius: 3px !important;
+              background-color: rgba(186, 250, 186, 0.8) !important;
+              word-wrap: break-word !important;
+              hyphens: auto !important;
+            }
+          }
+          
+          .rbc-date-cell {
+            position: relative; // Mantener relativo en lugar de absolute
+            z-index: 10;
+            font-size: 15px; // Tamaño normal
+            padding: 5px;
+            background-color: transparent; // Sin fondo especial
+            border: none; // Sin borde especial
+            color: m.$color_blue;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+
+  // ===== MOBILE: MANTENER ALTURA FIJA =====
+  @media (max-width: 767px) {
+    .rbc-month-view {
+      .rbc-month-row {
+        height: 80px !important; // Altura fija más pequeña en móvil
+        min-height: 80px !important;
+        
+        .rbc-day-bg {
+          height: 100% !important;
+          min-height: 80px !important;
+          padding: 3px;
+          
+          .rbc-event,
+          .rbc-event-content {
+            font-size: 10px !important;
+            line-height: 1.1 !important;
+            padding: 1px 2px !important;
+            margin-bottom: 1px !important;
+            // Truncar texto en móvil para evitar overflow
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+          }
+        }
+        
+        .rbc-date-cell {
+          position: relative; // Mantener relativo
+          font-size: 13px; // Tamaño un poco más pequeño para móvil
+          padding: 3px;
+          color: m.$color_blue;
+          font-weight: bold;
+          z-index: 10;
+        }
+      }
+    }
   }
 
   .rbc-selected {
@@ -65,6 +248,7 @@
     text-transform: uppercase;
     cursor: pointer !important;
     position: relative;
+    z-index: 10; // Asegurar que esté encima del contenido
   }
 
   .rbc-button-link {

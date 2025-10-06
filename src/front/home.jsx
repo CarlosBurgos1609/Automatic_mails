@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
@@ -300,6 +300,132 @@ const Home = () => {
         .catch(() => showToastMsg("Error al copiar el email"));
     }
   };
+
+  // ✅ FUNCIÓN PARA AJUSTAR ALTURA AUTOMÁTICA DEL CALENDARIO
+  const adjustCalendarRowHeights = useCallback(() => {
+    try {
+      const calendarContainer = document.querySelector('.calendar-container');
+      if (!calendarContainer) return;
+
+      const monthView = calendarContainer.querySelector('.rbc-month-view');
+      if (!monthView) return;
+
+      const rows = monthView.querySelectorAll('.rbc-month-row');
+      
+      rows.forEach((row, rowIndex) => {
+        const cells = row.querySelectorAll('.rbc-day-bg');
+        let maxContentHeight = 100; // Altura mínima base
+        
+        // Calcular el contenido más alto en esta fila
+        cells.forEach(cell => {
+          const events = cell.querySelectorAll('.rbc-event, .rbc-event-content');
+          const dateCell = cell.querySelector('.rbc-date-cell');
+          
+          let cellContentHeight = 30; // Espacio base para el número del día
+          
+          events.forEach(event => {
+            const eventText = event.textContent || '';
+            // Calcular altura aproximada basada en la longitud del texto
+            const words = eventText.split(' ').length;
+            const lines = Math.ceil(words / 4); // Aproximadamente 4 palabras por línea
+            cellContentHeight += (lines * 16) + 4; // 16px por línea + 4px de spacing
+          });
+          
+          maxContentHeight = Math.max(maxContentHeight, cellContentHeight);
+        });
+        
+        // Aplicar clase CSS según la altura necesaria
+        row.classList.remove('row-height-small', 'row-height-medium', 'row-height-large', 'row-height-xlarge');
+        row.classList.add('calendar-dynamic-row');
+        
+        if (maxContentHeight <= 120) {
+          row.classList.add('row-height-small');
+        } else if (maxContentHeight <= 160) {
+          row.classList.add('row-height-medium');
+        } else if (maxContentHeight <= 200) {
+          row.classList.add('row-height-large');
+        } else {
+          row.classList.add('row-height-xlarge');
+        }
+        
+        console.log(`📏 Fila ${rowIndex + 1}: altura ajustada a ${maxContentHeight}px`);
+      });
+      
+    } catch (error) {
+      console.error('Error ajustando alturas del calendario:', error);
+    }
+  }, []);
+
+  // ✅ EFECTO PARA AJUSTAR ALTURAS CUANDO CAMBIAN LOS EVENTOS
+  useEffect(() => {
+    if (events.length > 0) {
+      // Retrasar el ajuste para permitir que el DOM se actualice
+      const timeoutId = setTimeout(() => {
+        adjustCalendarRowHeights();
+      }, 200); // Reducir tiempo de espera
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [events, adjustCalendarRowHeights]);
+
+  // ✅ EFECTO PARA AJUSTAR ALTURAS CUANDO CAMBIA LA VISTA O FECHA
+  useEffect(() => {
+    if (view === 'month') {
+      const timeoutId = setTimeout(() => {
+        adjustCalendarRowHeights();
+      }, 100); // Reducir tiempo de espera
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [view, date, adjustCalendarRowHeights]);
+
+  // ✅ EFECTO PARA REAJUSTAR AL REDIMENSIONAR VENTANA (SOLO DESKTOP)
+  useEffect(() => {
+    const handleResize = () => {
+      // Solo aplicar en desktop (pantallas >= 768px)
+      if (window.innerWidth >= 768 && view === 'month') {
+        setTimeout(() => {
+          adjustCalendarRowHeights();
+        }, 50); // Tiempo más rápido
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [adjustCalendarRowHeights, view]);
+
+  // ✅ OBSERVER PARA DETECTAR CAMBIOS EN EL DOM DEL CALENDARIO
+  useEffect(() => {
+    const calendarContainer = document.querySelector('.calendar-container');
+    if (!calendarContainer) return;
+
+    const observer = new MutationObserver((mutations) => {
+      let shouldAdjust = false;
+      
+      mutations.forEach((mutation) => {
+        // Si se agregan o quitan nodos de eventos
+        if (mutation.type === 'childList' && 
+            (mutation.target.classList.contains('rbc-day-bg') ||
+             mutation.target.classList.contains('rbc-month-row'))) {
+          shouldAdjust = true;
+        }
+      });
+      
+      if (shouldAdjust && window.innerWidth >= 768 && view === 'month') {
+        setTimeout(() => {
+          adjustCalendarRowHeights();
+        }, 50); // Tiempo más rápido para mejor UX
+      }
+    });
+
+    observer.observe(calendarContainer, {
+      childList: true,
+      subtree: true,
+      attributes: false
+    });
+
+    return () => observer.disconnect();
+  }, [adjustCalendarRowHeights, view]);
 
   // ✅ FUNCIÓN PARA GUARDAR JUZGADO EN CALENDARIO (REQUERIDA)
   const handleSaveJuzgado = async (juzgadoData) => {
@@ -650,13 +776,18 @@ const Home = () => {
             open={loadingTurnos}
             message="Cargando turnos del mes..."
           />
+          
           {/* ✅ CALENDARIO CON TODAS LAS FUNCIONES DEFINIDAS */}
           <Calendar
             localizer={localizer}
             events={events}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: "600px" }}
+            style={{ 
+              height: "auto",
+              minHeight: "700px",
+              maxHeight: "none"
+            }}
             views={["month", "week", "day"]}
             view={view}
             date={date}
