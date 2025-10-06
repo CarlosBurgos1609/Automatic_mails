@@ -645,7 +645,7 @@ const Home = () => {
           <hr />
         </div>
         
-        <div className="calendar-container">
+        <div className="calendar-container" id="calendar-container">
           <LoadingDialog
             open={loadingTurnos}
             message="Cargando turnos del mes..."

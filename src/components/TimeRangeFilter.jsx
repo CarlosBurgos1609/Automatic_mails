@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
+import { generateCalendarPDF } from "../utils/pdfGenerator";
+import pdfIcon from "../assets/icons/pdf.png";
 
 export default function TimeRangeFilter({ 
   selectedRange, 
@@ -10,6 +12,7 @@ export default function TimeRangeFilter({
   const [selectedYear, setSelectedYear] = useState(dayjs().year());
   const [selectedType, setSelectedType] = useState("semestre");
   const [selectedPeriod, setSelectedPeriod] = useState(null);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   // Calcular período actual al cargar
   useEffect(() => {
@@ -50,6 +53,35 @@ export default function TimeRangeFilter({
       updateTimeRange();
     }
   }, [selectedYear, selectedType, selectedPeriod]);
+
+  // Función para descargar PDF del calendario con nombre específico
+  const handleDownloadPDF = async () => {
+    if (downloadingPDF) return;
+    
+    setDownloadingPDF(true);
+    
+    try {
+      const result = await generateCalendarPDF({
+        elementId: 'calendar-container',
+        tipoFiltro: selectedType,
+        año: selectedYear,
+        periodo: selectedType === 'año' ? null : selectedPeriod
+      });
+      
+      if (result.success) {
+        // Mostrar mensaje de éxito si hay una función para ello
+        console.log(result.message);
+      } else {
+        console.error('Error al generar PDF:', result.error);
+        alert('Error al generar el PDF. Por favor, inténtelo de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error inesperado:', error);
+      alert('Error inesperado al generar el PDF.');
+    } finally {
+      setDownloadingPDF(false);
+    }
+  };
 
   const updateTimeRange = () => {
     let range = null;
@@ -261,6 +293,20 @@ export default function TimeRangeFilter({
               </select>
             </div>
           )}
+
+          {/* Botón de descarga PDF */}
+          <div className="filter-group">
+            <label className="filter-sublabel">&nbsp;</label>
+            <button 
+              onClick={handleDownloadPDF}
+              disabled={disabled || downloadingPDF}
+              className="pdf-download-filter-btn"
+              title="Descargar calendario en PDF"
+            >
+              <img src={pdfIcon} alt="PDF" />
+              {downloadingPDF ? 'Generando...' : 'PDF'}
+            </button>
+          </div>
         </div>
       </div>
     );

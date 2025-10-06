@@ -611,6 +611,42 @@
     }
   }
 
+  .pdf-download-filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 3px 6px;
+    border: 1px solid #e53935;
+    border-radius: 3px;
+    background-color: #e53935;
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 22px;
+    white-space: nowrap;
+
+    img {
+      width: 12px;
+      height: 12px;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: #d32f2f;
+      border-color: #d32f2f;
+    }
+
+    &:disabled {
+      background-color: #ffcdd2;
+      border-color: #ffcdd2;
+      color: #999;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
   @media (max-width: 768px) {
     .filter-row {
       flex-direction: column;
@@ -624,6 +660,55 @@
         min-width: 100%;
       }
     }
+  }
+}
+
+// ===== DIÁLOGO DE FILTROS PDF =====
+.pdf-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+  width: 100%;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: m.$color_blue;
+      margin-bottom: 2px;
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: m.$color_blue;
+        box-shadow: 0 0 0 2px rgba(0, 63, 117, 0.1);
+      }
+
+      &:disabled {
+        background: #f5f5f5;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    gap: 10px;
+    margin: 12px 0;
   }
 }
 
