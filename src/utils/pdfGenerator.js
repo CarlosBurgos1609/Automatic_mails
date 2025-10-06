@@ -190,7 +190,7 @@ const drawOfficialHeader = (pdf, año, mes, tipoFiltro, periodo, pdfWidth, blanc
   const mesNombre = dayjs().year(año).month(mes - 1).format('MMMM YYYY').toUpperCase();
   
   pdf.setFontSize(11);
-  pdf.setTextColor(0, 0, 0);
+  pdf.setTextColor(0,63,117);
   pdf.setFillColor(240, 240, 240);
   pdf.rect(0, 55, pdfWidth, 15, 'F');
   
