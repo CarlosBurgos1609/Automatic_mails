@@ -236,17 +236,15 @@ export default function TimeRangeFilter({
               disabled={disabled}
               className="filter-select"
             >
-              <option value="año">🗓️ Año completo</option>
-              <option value="semestre">📊 Por Semestre</option>
-              <option value="trimestre">📈 Por Trimestre</option>
-              <option value="mes">📅 Por Mes</option>
+              <option value="año">🗓️ Año</option>
+              <option value="semestre">📊 Semestre</option>
+              <option value="trimestre">📈 Trimestre</option>
+              <option value="mes">📅 Mes</option>
             </select>
           </div>
-        </div>
 
-        {/* Filtro de Período específico */}
-        {selectedType !== "año" && (
-          <div className="filter-row">
+          {/* Filtro de Período específico - Solo se muestra si no es "año" */}
+          {selectedType !== "año" && (
             <div className="filter-group full-width">
               <label className="filter-sublabel">Período:</label>
               <select 
@@ -262,8 +260,8 @@ export default function TimeRangeFilter({
                 ))}
               </select>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
