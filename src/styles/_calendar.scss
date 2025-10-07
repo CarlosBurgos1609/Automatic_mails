@@ -337,6 +337,106 @@
     }
   }
 
+  // ===== DÍAS FESTIVOS EN VISTA DE SEMANA - MUY ESPECÍFICO =====
+  // Solo headers de días festivos en vista de semana
+  .rbc-time-view .rbc-time-header-cell.rbc-festive-day,
+  .rbc-week-view .rbc-time-header-cell.rbc-festive-day,
+  .rbc-work-week-view .rbc-time-header-cell.rbc-festive-day,
+  .rbc-day-view .rbc-time-header-cell.rbc-festive-day {
+    background-color: m.$color_blue !important; // Mantener fondo azul del header
+    color: m.$color_red !important; // Solo texto rojo para indicar festivo
+    font-weight: bold !important;
+    
+    &::before,
+    &::after {
+      display: none !important; // NO mostrar emojis en headers
+    }
+  }
+
+  // Solo contenido específico del día festivo
+  .rbc-time-view .rbc-time-content .rbc-day-bg.rbc-festive-day,
+  .rbc-week-view .rbc-time-content .rbc-day-bg.rbc-festive-day,
+  .rbc-work-week-view .rbc-time-content .rbc-day-bg.rbc-festive-day,
+  .rbc-day-view .rbc-time-content .rbc-day-bg.rbc-festive-day {
+    position: relative;
+    background-color: m.$color_white !important;
+    
+    .rbc-button-link {
+      color: m.$color_red !important;
+      font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 2px rgba(229, 57, 53, 0.3) !important;
+    }
+    
+    .rbc-date-cell {
+      color: m.$color_red !important;
+      font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 2px rgba(229, 57, 53, 0.3) !important;
+    }
+    
+    // Emoji solo en las celdas de contenido del día
+    &::before {
+      content: "🎉";
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 14px;
+      z-index: 5;
+      pointer-events: none;
+    }
+    
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      background-color: m.$color_red;
+      border-radius: 2px;
+      z-index: 4;
+      pointer-events: none;
+    }
+  }
+
+  // ALTERNATIVA: Si el problema persiste, usar selector más específico para headers
+  .rbc-time-view .rbc-time-header .rbc-festive-day,
+  .rbc-week-view .rbc-time-header .rbc-festive-day,
+  .rbc-work-week-view .rbc-time-header .rbc-festive-day,
+  .rbc-day-view .rbc-time-header .rbc-festive-day {
+    // Headers de días festivos - solo cambiar texto a rojo
+    color: m.$color_red !important;
+    font-weight: bold !important;
+    background-color: m.$color_blue !important; // Mantener fondo azul del header
+    
+    // NO mostrar emojis ni indicadores en headers
+    &::before,
+    &::after {
+      display: none !important;
+    }
+  }
+
+  // ===== RESETEAR SELECTORES PROBLEMÁTICOS =====
+  // Eliminar estilos de elementos que causan desfase
+  .rbc-time-view .rbc-time-slot.rbc-festive-day,
+  .rbc-week-view .rbc-time-slot.rbc-festive-day,
+  .rbc-work-week-view .rbc-time-slot.rbc-festive-day,
+  .rbc-day-view .rbc-time-slot.rbc-festive-day,
+  .rbc-time-view .rbc-time-gutter.rbc-festive-day,
+  .rbc-week-view .rbc-time-gutter.rbc-festive-day,
+  .rbc-work-week-view .rbc-time-gutter.rbc-festive-day,
+  .rbc-day-view .rbc-time-gutter.rbc-festive-day {
+    background-color: m.$color_white !important; // Color normal
+    color: m.$color_blue !important; // Color normal
+    
+    &::before,
+    &::after {
+      display: none !important; // No mostrar indicadores festivos
+    }
+  }
+
   // ✅ ANIMACIÓN PARA EL EMOJI
   @keyframes bounce {
     0%, 100% { transform: scale(1); }
@@ -350,13 +450,45 @@
   }
 
   // ===== HOY =====
-  .rbc-today {
+  // Vista de MES - color claro actual
+  .rbc-month-view .rbc-today {
     background-color: m.$color_light_blue !important;
     border: 1px solid m.$color_blue !important;
   }
 
+  // Vista de SEMANA - solo aplicar a elementos específicos, no genéricos
+  .rbc-time-view .rbc-time-header-cell.rbc-today,
+  .rbc-week-view .rbc-time-header-cell.rbc-today,
+  .rbc-work-week-view .rbc-time-header-cell.rbc-today,
+  .rbc-day-view .rbc-time-header-cell.rbc-today {
+    background-color: m.$color_green !important;
+    color: m.$color_blue !important;
+    font-weight: bold !important;
+    border: 2px solid m.$color_blue !important;
+  }
+
+  // Contenido específico del día de hoy en semana
+  .rbc-time-view .rbc-time-content .rbc-day-bg.rbc-today,
+  .rbc-week-view .rbc-time-content .rbc-day-bg.rbc-today,
+  .rbc-work-week-view .rbc-time-content .rbc-day-bg.rbc-today,
+  .rbc-day-view .rbc-time-content .rbc-day-bg.rbc-today {
+    background-color: m.$color_green !important;
+    border: 2px solid m.$color_blue !important;
+    
+    .rbc-button-link {
+      color: m.$color_blue !important;
+      font-weight: bold !important;
+    }
+    
+    .rbc-date-cell {
+      color: m.$color_blue !important;
+      font-weight: bold !important;
+    }
+  }
+
   // ✅ HOY + FESTIVO - PRIORIZAR INDICACIÓN FESTIVA
-  .rbc-today.rbc-festive-day {
+  // En vista de MES
+  .rbc-month-view .rbc-today.rbc-festive-day {
     background-color: m.$color_green !important; // Mantener el fondo de "hoy"
     border: 2px solid m.$color_red !important; // Borde rojo para festivo
     
@@ -388,6 +520,29 @@
       width: 25px;
       background-color: m.$color_red;
       box-shadow: 0 0 4px rgba(229, 57, 53, 0.5);
+    }
+  }
+
+  // En vista de SEMANA - solo content específico
+  .rbc-time-view .rbc-time-content .rbc-day-bg.rbc-today.rbc-festive-day,
+  .rbc-week-view .rbc-time-content .rbc-day-bg.rbc-today.rbc-festive-day,
+  .rbc-work-week-view .rbc-time-content .rbc-day-bg.rbc-today.rbc-festive-day,
+  .rbc-day-view .rbc-time-content .rbc-day-bg.rbc-today.rbc-festive-day {
+    background-color: m.$color_green !important; // Verde para buena legibilidad
+    border: 2px solid m.$color_red !important; // Borde rojo para festivo
+    
+    .rbc-button-link {
+      color: m.$color_red !important;
+      font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 3px rgba(229, 57, 53, 0.5) !important;
+    }
+    
+    .rbc-date-cell {
+      color: m.$color_red !important;
+      font-weight: bold !important;
+      font-size: 16px !important;
+      text-shadow: 0 0 3px rgba(229, 57, 53, 0.5) !important;
     }
   }
 
