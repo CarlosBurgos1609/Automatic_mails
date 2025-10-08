@@ -19,6 +19,7 @@ dayjs.locale("es");
 export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month", isDesktop = true }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   const [showJuzgadosDialog, setShowJuzgadosDialog] = useState(false);
   const [showFestivDialog, setShowFestivDialog] = useState(false);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
@@ -38,6 +39,13 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
 
   // Coloca el URL de la página actual
   const pageUrl = window.location.href;
+
+  // Función helper para mostrar toast con mensaje específico
+  const showToastWithMessage = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
 
   // Función para mostrar el diálogo de filtros PDF
   const handleDownload = () => {
@@ -60,8 +68,7 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
       
       if (result.success) {
         console.log(result.message);
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 3000);
+        showToastWithMessage("¡PDF descargado exitosamente!");
         setShowPDFDialog(false);
       } else {
         console.error('Error al generar PDF:', result.error);
@@ -77,8 +84,7 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
 
   const handleShare = () => {
     navigator.clipboard.writeText(pageUrl).then(() => {
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
+      showToastWithMessage("¡Enlace copiado correctamente!");
     });
   };
 
@@ -202,7 +208,7 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
         Compartir
       </button>
       
-      <Copy show={showToast} message="¡Enlace copiado correctamente!" />
+      <Copy show={showToast} message={toastMessage} />
       
       {/* Diálogo de filtros para PDF */}
       {showPDFDialog && (
