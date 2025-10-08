@@ -74,6 +74,9 @@ const Home = () => {
   const [date, setDate] = useState(new Date());
   const [range, setRange] = useState({ start: null, end: null });
   
+  // Desktop detection state
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+  
   // Dialog states
   const [showDialog, setShowDialog] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
@@ -379,10 +382,13 @@ const Home = () => {
     }
   }, [view, date, adjustCalendarRowHeights]);
 
-  // ✅ EFECTO PARA REAJUSTAR AL REDIMENSIONAR VENTANA (SOLO DESKTOP)
+  // ✅ EFECTO PARA REAJUSTAR AL REDIMENSIONAR VENTANA Y DETECTAR DESKTOP
   useEffect(() => {
     const handleResize = () => {
-      // Solo aplicar en desktop (pantallas >= 768px)
+      // Actualizar detección de desktop
+      setIsDesktop(window.innerWidth >= 768);
+      
+      // Solo aplicar ajuste de calendario en desktop (pantallas >= 768px)
       if (window.innerWidth >= 768 && view === 'month') {
         setTimeout(() => {
           adjustCalendarRowHeights();
@@ -816,6 +822,8 @@ const Home = () => {
           <Buttons 
             onJuzgadosClick={() => setShowGeneralJuzgadosDialog(true)}
             onFestivsClick={() => setShowGeneralFestivsDialog(true)}
+            view={view} // Pasar la vista actual
+            isDesktop={isDesktop} // Pasar si es desktop (reactivo)
           />
         </div>
         

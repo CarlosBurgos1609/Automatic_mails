@@ -23,6 +23,19 @@ export const generateCalendarPDF = async (options) => {
   } = options;
 
   try {
+    // ✅ VERIFICAR QUE ESTEMOS EN VISTA DE MES ANTES DE GENERAR PDF
+    const calendarElement = document.querySelector('.rbc-calendar');
+    const isMonthView = calendarElement && calendarElement.querySelector('.rbc-month-view');
+    
+    if (!isMonthView) {
+      console.warn('⚠️ PDF solo puede generarse en vista de mes');
+      return {
+        success: false,
+        error: 'PDF solo disponible en vista de mes',
+        message: 'Por favor, cambie a vista de mes para generar el PDF'
+      };
+    }
+
     // Logging detallado
     console.log("=== GENERACIÓN DE PDF ===");
     console.log(`Año: ${año}`);

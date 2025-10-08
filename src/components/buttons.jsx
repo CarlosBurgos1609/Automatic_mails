@@ -15,8 +15,8 @@ import "dayjs/locale/es";
 
 dayjs.locale("es");
 
-// ✅ AGREGAR onFestivsClick a las props
-export default function Buttons({ onJuzgadosClick, onFestivsClick }) {
+// ✅ AGREGAR view e isDesktop a las props
+export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month", isDesktop = true }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showJuzgadosDialog, setShowJuzgadosDialog] = useState(false);
@@ -166,14 +166,17 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick }) {
 
   return (
     <div className="download-share-buttons">
-      <button 
-        className="pdf-download-btn" 
-        onClick={handleDownload}
-        disabled={downloadingPDF}
-      >
-        <img src={pdfIcon} alt="PDF" />
-        {downloadingPDF ? 'Generando...' : 'Descargar en PDF'}
-      </button>
+      {/* ✅ MOSTRAR BOTÓN PDF SOLO EN VISTA DE MES Y EN DESKTOP */}
+      {view === "month" && isDesktop && (
+        <button 
+          className="pdf-download-btn" 
+          onClick={handleDownload}
+          disabled={downloadingPDF}
+        >
+          <img src={pdfIcon} alt="PDF" />
+          {downloadingPDF ? 'Generando...' : 'Descargar en PDF'}
+        </button>
+      )}
 
       <button
         className="add-btn"
