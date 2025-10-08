@@ -162,7 +162,7 @@ const generateOfficialPages = async (
     // Pausa breve para permitir que el DOM se estabilice antes del siguiente mes
     if (i < mesesAGenerar.length - 1) {
       console.log(`⏳ Preparando siguiente mes...`);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 300));
     }
   }
 
