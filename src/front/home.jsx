@@ -827,7 +827,7 @@ const Home = () => {
             endAccessor="end"
             style={{ 
               height: "auto",
-              minHeight: "700px",
+              minHeight: view === "month" ? "700px" : "500px",
               maxHeight: "none"
             }}
             views={["month", "week", "day"]}
@@ -851,6 +851,9 @@ const Home = () => {
               next: "Siguiente",
               agenda: "Agenda",
             }}
+            min={new Date(2025, 0, 1, 6, 0, 0)} // Iniciar a las 6:00 AM
+            max={new Date(2025, 0, 1, 22, 0, 0)} // Terminar a las 10:00 PM
+            step={60} // Intervalos de 60 minutos
           />
         </div>
         
