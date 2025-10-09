@@ -15,8 +15,8 @@ import "dayjs/locale/es";
 
 dayjs.locale("es");
 
-// ✅ AGREGAR view e isDesktop a las props
-export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month", isDesktop = true }) {
+// ✅ AGREGAR view, isDesktop e isLoggedIn a las props
+export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month", isDesktop = true, isLoggedIn = false }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -184,24 +184,45 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
         </button>
       )}
 
-      <button
-        className="add-btn"
-        onClick={onJuzgadosClick}
-        style={{ marginBottom: "16px" }}
-      >
-        <img src={juzgado} alt="Juzgados" />
-        Juzgados
-      </button>
-      
-      {/* ✅ USAR onFestivsClick del componente padre */}
-      <button
-        className="add-festive-btn"
-        onClick={onFestivsClick}
-        style={{ marginBottom: "16px" }}
-      >
-        <img src={festive} alt="Añadir festivo" />
-        Festivos
-      </button>
+      {/* ✅ MOSTRAR BOTONES SOLO SI EL USUARIO ESTÁ LOGUEADO */}
+      {isLoggedIn && (
+        <>
+          <button
+            className="add-btn"
+            onClick={onJuzgadosClick}
+            style={{ marginBottom: "16px" }}
+          >
+            <img src={juzgado} alt="Juzgados" />
+            Juzgados
+          </button>
+          
+          {/* ✅ USAR onFestivsClick del componente padre */}
+          <button
+            className="add-festive-btn"
+            onClick={onFestivsClick}
+            style={{ marginBottom: "16px" }}
+          >
+            <img src={festive} alt="Añadir festivo" />
+            Festivos
+          </button>
+        </>
+      )}
+
+      {/* ✅ MOSTRAR MENSAJE INFORMATIVO SI NO ESTÁ LOGUEADO */}
+      {!isLoggedIn && (
+        <div style={{ 
+          padding: "12px", 
+          backgroundColor: "#fff3e0", 
+          border: "1px solid #ffb74d", 
+          borderRadius: "4px",
+          textAlign: "center",
+          margin: "12px 0",
+          color: "#e65100",
+          fontSize: "14px"
+        }}>
+          🔒 Inicie sesión para gestionar juzgados y festivos
+        </div>
+      )}
 
       <button className="share-btn" onClick={handleShare}>
         <img src={shareIcon} alt="Compartir" />

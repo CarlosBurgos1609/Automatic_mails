@@ -1,0 +1,131 @@
+@use "mixin" as m;
+// ===== ESTILOS PARA DIÁLOGO DE LOGIN =====
+.login-dialog {
+  max-width: 400px;
+  width: 90%;
+  
+  h1 {
+    text-align: center;
+    color: m.$color_blue;
+    margin-bottom: 8px;
+    font-size: 24px;
+  }
+  
+  p {
+    text-align: center;
+    color: m.$color_dark_gray;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    
+    label {
+      font-weight: 600;
+      color: m.$color_blue;
+      font-size: 14px;
+    }
+    
+    input {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+      
+      &:focus {
+        outline: none;
+        border-color: m.$color_blue;
+        box-shadow: 0 0 0 2px rgba(0, 63, 117, 0.1);
+      }
+      
+      &:disabled {
+        background-color: #f5f5f5;
+        cursor: not-allowed;
+      }
+      
+      &::placeholder {
+        color: #999;
+      }
+    }
+  }
+  
+  .error-message {
+    background-color: #fee;
+    color: #c33;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #fcc;
+    font-size: 14px;
+    text-align: center;
+    margin: 8px 0;
+  }
+}
+
+.login-info {
+  margin-top: 20px;
+  padding: 12px;
+  background-color: #f0f8ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 4px;
+  text-align: center;
+  
+  small {
+    color: #0066cc;
+    line-height: 1.4;
+  }
+}
+
+// ===== BOTÓN DE LOGIN EN HEADER =====
+.login-btn {
+  button {
+    background: transparent;
+    color: m.$color_white;
+    border: 1px solid m.$color_white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: m.$color_white;
+  
+  .user-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  .logout-btn {
+    background: transparent;
+    color: m.$color_white;
+    border: 1px solid m.$color_white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+}

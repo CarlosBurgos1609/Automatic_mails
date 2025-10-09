@@ -8,7 +8,7 @@ import {
 } from "../../utils/timeRangeUtils";
 import dayjs from "dayjs";
 
-export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate, showToastMsg }) {
+export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate, showToastMsg, isLoggedIn = false }) {
   const [busqueda, setBusqueda] = useState("");
   const [juzgadosData, setJuzgadosData] = useState([]);
   const [turnosData, setTurnosData] = useState([]);
@@ -108,6 +108,11 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
   };
 
   const handleGuardar = () => {
+    if (!isLoggedIn) {
+      showToastMsg("Debe iniciar sesión para agregar turnos");
+      return;
+    }
+    
     if (!juzgadoSeleccionado) {
       setError("Debe seleccionar un juzgado antes de guardar.");
       return;
@@ -267,14 +272,31 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
 
             {/* Botones de acción */}
             <div className="dialog-actions flex-column">
+              {/* ✅ MOSTRAR MENSAJE INFORMATIVO SI NO ESTÁ LOGUEADO */}
+              {!isLoggedIn && (
+                <div style={{ 
+                  padding: "12px", 
+                  backgroundColor: "#fff3e0", 
+                  border: "1px solid #ffb74d", 
+                  borderRadius: "4px",
+                  textAlign: "center",
+                  margin: "12px 0",
+                  color: "#e65100"
+                }}>
+                  🔒 Inicie sesión para agregar turnos de juzgados
+                </div>
+              )}
+              
               <button
-                className={`edit-button-full save-button ${!juzgadoSeleccionado ? 'disabled' : ''}`}
+                className={`edit-button-full save-button ${!juzgadoSeleccionado || !isLoggedIn ? 'disabled' : ''}`}
                 onClick={handleGuardar}
-                disabled={!juzgadoSeleccionado}
+                disabled={!juzgadoSeleccionado || !isLoggedIn}
               >
-                {juzgadoSeleccionado 
-                  ? `Guardar Turno` 
-                  : "Seleccione un Juzgado"}
+                {!isLoggedIn 
+                  ? "🔒 Requiere Autenticación"
+                  : juzgadoSeleccionado 
+                    ? `Guardar Turno` 
+                    : "Seleccione un Juzgado"}
               </button>
               <button className="close-button-full" onClick={handleDialogClose}>
                 Cerrar

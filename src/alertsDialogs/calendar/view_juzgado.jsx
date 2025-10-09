@@ -19,7 +19,8 @@ export default function ViewJuzgadoDialog({
   onTurnoEliminado, 
   showToastMsg, 
   onChangeTurn,
-  festivo // ✅ NUEVO PROP PARA FESTIVO
+  festivo, // ✅ NUEVO PROP PARA FESTIVO
+  isLoggedIn = false // ✅ NUEVO PROP PARA ESTADO DE LOGIN
 }) {
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -142,21 +143,42 @@ export default function ViewJuzgadoDialog({
         </div>
         
         <div className="dialog-actions-vertical">
-          <button
-            className="edit-button-full"
-            onClick={() => onChangeTurn(juzgado)}
-          >
-            Cambiar Juzgado de Turno
-          </button>
-          <button
-            className="delete-btn"
-            style={{ justifyContent: "center", display: "flex", alignItems: "center" }}
-            onClick={handleEliminarTurno}
-            disabled={loading}
-          >
-            <img src={deleteIcon} alt="Eliminar" style={{ marginRight: "8px" }} />
-            Eliminar Turno del Juzgado
-          </button>
+          {/* ✅ MOSTRAR BOTONES SOLO SI EL USUARIO ESTÁ LOGUEADO */}
+          {isLoggedIn && (
+            <>
+              <button
+                className="edit-button-full"
+                onClick={() => onChangeTurn(juzgado)}
+              >
+                Cambiar Juzgado de Turno
+              </button>
+              <button
+                className="delete-btn"
+                style={{ justifyContent: "center", display: "flex", alignItems: "center" }}
+                onClick={handleEliminarTurno}
+                disabled={loading}
+              >
+                <img src={deleteIcon} alt="Eliminar" style={{ marginRight: "8px" }} />
+                Eliminar Turno del Juzgado
+              </button>
+            </>
+          )}
+          
+          {/* ✅ MOSTRAR MENSAJE INFORMATIVO SI NO ESTÁ LOGUEADO */}
+          {!isLoggedIn && (
+            <div style={{ 
+              padding: "12px", 
+              backgroundColor: "#fff3e0", 
+              border: "1px solid #ffb74d", 
+              borderRadius: "4px",
+              textAlign: "center",
+              margin: "12px 0",
+              color: "#e65100"
+            }}>
+              🔒 Inicie sesión para editar o eliminar turnos
+            </div>
+          )}
+          
           <button className="close-button-full" onClick={onClose}>
             Cerrar
           </button>

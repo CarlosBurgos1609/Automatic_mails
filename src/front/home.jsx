@@ -40,6 +40,7 @@ import EditJuzgadoDialog from "../alertsDialogs/juzgados/edit_juzgado";
 import DeleteJuzgadoDialog from "../alertsDialogs/juzgados/delete_juzgado";
 import GeneralJuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados";
 import GeneralFestivsDialog from "../alertsDialogs/festivs/general_festivs";
+import LoginDialog from "../alertsDialogs/login/login";
 // ❌ REMOVIDO: import FestivDialog from "../alertsDialogs/calendar/festiv_dialog";
 
 // Styles
@@ -68,6 +69,11 @@ const Home = () => {
   const [todayTurnos, setTodayTurnos] = useState([]);
   const [festivs, setFestivs] = useState([]);
   const [loadingTurnos, setLoadingTurnos] = useState(false);
+  
+  // ✅ ESTADOS DE AUTENTICACIÓN
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   
   // Calendar states
   const [view, setView] = useState("month");
@@ -251,6 +257,33 @@ const Home = () => {
     setTimeout(() => {
       setToastMsgs((prev) => prev.slice(1));
     }, 2000);
+  };
+
+  // ✅ FUNCIONES DE AUTENTICACIÓN
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    setCurrentUser("admin");
+    setShowLoginDialog(false);
+    showToastMsg("Sesión iniciada correctamente");
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentUser(null);
+    showToastMsg("Sesión cerrada");
+  };
+
+  const handleShowLogin = () => {
+    setShowLoginDialog(true);
+  };
+
+  const requireAuth = (callback) => {
+    if (!isLoggedIn) {
+      showToastMsg("Debe iniciar sesión para realizar esta acción");
+      setShowLoginDialog(true);
+      return;
+    }
+    callback();
   };
 
   // ✅ FUNCIÓN PARA MANEJAR SELECCIÓN DE EVENTOS (REQUERIDA)
@@ -495,7 +528,7 @@ const Home = () => {
     };
   };
 
-  // ✅ FUNCIÓN PARA MANEJAR CLICKS EN SLOTS (SIMPLIFICADA)
+  // ✅ FUNCIÓN PARA MANEJAR CLICKS EN SLOTS (CON AUTENTICACIÓN)
   const handleSelectSlot = ({ start }) => {
     console.log('📅 Slot seleccionado:', start);
     
@@ -503,10 +536,12 @@ const Home = () => {
       dayjs(ev.start).isSame(dayjs(start), "day")
     );
     
-    // ✅ SIMPLIFICADO: Siempre permitir agregar turno, incluso en días festivos
+    // ✅ REQUERIR AUTENTICACIÓN PARA AGREGAR TURNOS
     if (!hasEvent) {
-      setSelectedSlotDate(start);
-      setShowAddDialog(true);
+      requireAuth(() => {
+        setSelectedSlotDate(start);
+        setShowAddDialog(true);
+      });
     }
   };
 
@@ -727,7 +762,12 @@ const Home = () => {
   return (
     <ChartsProvider>
       <div className="home-container">
-        <Header />
+        <Header 
+          isLoggedIn={isLoggedIn}
+          currentUser={currentUser}
+          onLogin={handleShowLogin}
+          onLogout={handleLogout}
+        />
         
         <div className="title">
           <h1>Correos Electrónicos Habeas Corpus</h1>
@@ -820,10 +860,11 @@ const Home = () => {
         
         <div className="download-container">
           <Buttons 
-            onJuzgadosClick={() => setShowGeneralJuzgadosDialog(true)}
-            onFestivsClick={() => setShowGeneralFestivsDialog(true)}
+            onJuzgadosClick={() => requireAuth(() => setShowGeneralJuzgadosDialog(true))}
+            onFestivsClick={() => requireAuth(() => setShowGeneralFestivsDialog(true))}
             view={view} // Pasar la vista actual
             isDesktop={isDesktop} // Pasar si es desktop (reactivo)
+            isLoggedIn={isLoggedIn} // ✅ PASAR ESTADO DE LOGIN
           />
         </div>
         
@@ -883,6 +924,7 @@ const Home = () => {
             setShowChangeDialog(true);
           }}
           festivo={selectedJuzgado ? getFestivoByDate(selectedJuzgado.turn_date) : null}
+          isLoggedIn={isLoggedIn} // ✅ PASAR ESTADO DE LOGIN
         />
         
         <AddJuzgadoCalendarDialog
@@ -891,6 +933,7 @@ const Home = () => {
           onSave={handleSaveJuzgado}
           slotDate={selectedSlotDate}
           showToastMsg={showToastMsg}
+          isLoggedIn={isLoggedIn} // ✅ PASAR ESTADO DE LOGIN
         />
         
         <ChangeJuzgadoTurnDialog
@@ -1003,6 +1046,13 @@ const Home = () => {
         />
 
         {/* ❌ REMOVIDO: Diálogo de festivo */}
+
+        {/* ✅ DIÁLOGO DE LOGIN */}
+        <LoginDialog
+          open={showLoginDialog}
+          onClose={() => setShowLoginDialog(false)}
+          onLogin={handleLogin}
+        />
 
       </div>
     </ChartsProvider>
