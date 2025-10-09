@@ -9,7 +9,7 @@ export default function LoginDialog({ open, onClose, onLogin }) {
   // Credenciales estáticas
   const STATIC_CREDENTIALS = {
     username: "admin",
-    password: "admin123"
+    password: "admin123",
   };
 
   const handleSubmit = (e) => {
@@ -19,7 +19,10 @@ export default function LoginDialog({ open, onClose, onLogin }) {
 
     // Simular delay de autenticación
     setTimeout(() => {
-      if (username === STATIC_CREDENTIALS.username && password === STATIC_CREDENTIALS.password) {
+      if (
+        username === STATIC_CREDENTIALS.username &&
+        password === STATIC_CREDENTIALS.password
+      ) {
         onLogin();
         handleClose();
       } else {
@@ -44,7 +47,7 @@ export default function LoginDialog({ open, onClose, onLogin }) {
       <div className="login-dialog">
         <h1>🔐 Iniciar Sesión</h1>
         <p>Ingrese sus credenciales para acceder al sistema</p>
-        
+
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
             <label htmlFor="username">Usuario:</label>
@@ -59,7 +62,7 @@ export default function LoginDialog({ open, onClose, onLogin }) {
               autoComplete="username"
             />
           </div>
-          
+
           <div className="input-group">
             <label htmlFor="password">Contraseña:</label>
             <input
@@ -74,11 +77,7 @@ export default function LoginDialog({ open, onClose, onLogin }) {
             />
           </div>
 
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
+          {error && <div className="error-message">{error}</div>}
 
           <div className="dialog-actions">
             <button
@@ -101,7 +100,8 @@ export default function LoginDialog({ open, onClose, onLogin }) {
 
         <div className="login-info">
           <small>
-            💡 <strong>Credenciales de demostración:</strong><br />
+            💡 <strong>Credenciales de demostración:</strong>
+            <br />
             Usuario: admin | Contraseña: admin123
           </small>
         </div>
