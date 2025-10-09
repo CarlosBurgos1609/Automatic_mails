@@ -3,7 +3,7 @@ import React from 'react';
 import logoJudicatura from '../assets/images/ConsejoSuperiorDeLaJudicatura.png';
 import '../styles/styles.scss';
 
-const Header = ({ isLoggedIn = false, currentUser = null, onLogin, onLogout }) => {
+const Header = () => {
   return (
     <header className="header">
       <div className="header-top flex-row">
@@ -14,16 +14,7 @@ const Header = ({ isLoggedIn = false, currentUser = null, onLogin, onLogout }) =
           <input type="text" placeholder="Buscar" />
         </div>
         <div className="login-btn">
-          {isLoggedIn ? (
-            <div className="user-info">
-              <span className="user-name">👤 {currentUser}</span>
-              <button className="logout-btn" onClick={onLogout}>
-                Cerrar Sesión
-              </button>
-            </div>
-          ) : (
-            <button onClick={onLogin}>Iniciar Sesión</button>
-          )}
+          <a href="/login">Acceder</a>
         </div>
       </div>
       <nav className="nav-menu">

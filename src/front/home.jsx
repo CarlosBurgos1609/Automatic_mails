@@ -41,6 +41,7 @@ import DeleteJuzgadoDialog from "../alertsDialogs/juzgados/delete_juzgado";
 import GeneralJuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados";
 import GeneralFestivsDialog from "../alertsDialogs/festivs/general_festivs";
 import LoginDialog from "../alertsDialogs/login/login";
+import FloatingAuthButton from "../components/FloatingAuthButton";
 // ❌ REMOVIDO: import FestivDialog from "../alertsDialogs/calendar/festiv_dialog";
 
 // Styles
@@ -279,7 +280,7 @@ const Home = () => {
 
   const requireAuth = (callback) => {
     if (!isLoggedIn) {
-      showToastMsg("Debe iniciar sesión para realizar esta acción");
+      showToastMsg("Función no disponible en este momento");
       setShowLoginDialog(true);
       return;
     }
@@ -762,12 +763,7 @@ const Home = () => {
   return (
     <ChartsProvider>
       <div className="home-container">
-        <Header 
-          isLoggedIn={isLoggedIn}
-          currentUser={currentUser}
-          onLogin={handleShowLogin}
-          onLogout={handleLogout}
-        />
+        <Header />
         
         <div className="title">
           <h1>Correos Electrónicos Habeas Corpus</h1>
@@ -1052,6 +1048,14 @@ const Home = () => {
           open={showLoginDialog}
           onClose={() => setShowLoginDialog(false)}
           onLogin={handleLogin}
+        />
+
+        {/* ✅ BOTÓN FLOTANTE DE AUTENTICACIÓN */}
+        <FloatingAuthButton
+          isLoggedIn={isLoggedIn}
+          currentUser={currentUser}
+          onLogin={handleShowLogin}
+          onLogout={handleLogout}
         />
 
       </div>

@@ -109,7 +109,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
 
   const handleGuardar = () => {
     if (!isLoggedIn) {
-      showToastMsg("Debe iniciar sesión para agregar turnos");
+      showToastMsg("Operación no disponible en este momento");
       return;
     }
     
@@ -272,20 +272,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
 
             {/* Botones de acción */}
             <div className="dialog-actions flex-column">
-              {/* ✅ MOSTRAR MENSAJE INFORMATIVO SI NO ESTÁ LOGUEADO */}
-              {!isLoggedIn && (
-                <div style={{ 
-                  padding: "12px", 
-                  backgroundColor: "#fff3e0", 
-                  border: "1px solid #ffb74d", 
-                  borderRadius: "4px",
-                  textAlign: "center",
-                  margin: "12px 0",
-                  color: "#e65100"
-                }}>
-                  🔒 Inicie sesión para agregar turnos de juzgados
-                </div>
-              )}
+              {/* ✅ NO MOSTRAR NINGÚN MENSAJE - RESTRICCIONES COMPLETAMENTE INVISIBLES */}
               
               <button
                 className={`edit-button-full save-button ${!juzgadoSeleccionado || !isLoggedIn ? 'disabled' : ''}`}
@@ -293,7 +280,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                 disabled={!juzgadoSeleccionado || !isLoggedIn}
               >
                 {!isLoggedIn 
-                  ? "🔒 Requiere Autenticación"
+                  ? "Seleccione un Juzgado" // ✅ SIN MENCIONAR AUTENTICACIÓN
                   : juzgadoSeleccionado 
                     ? `Guardar Turno` 
                     : "Seleccione un Juzgado"}

@@ -184,7 +184,7 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
         </button>
       )}
 
-      {/* ✅ MOSTRAR BOTONES SOLO SI EL USUARIO ESTÁ LOGUEADO */}
+      {/* ✅ MOSTRAR BOTONES SOLO SI EL USUARIO ESTÁ LOGUEADO - SIN MENSAJES */}
       {isLoggedIn && (
         <>
           <button
@@ -208,21 +208,7 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
         </>
       )}
 
-      {/* ✅ MOSTRAR MENSAJE INFORMATIVO SI NO ESTÁ LOGUEADO */}
-      {!isLoggedIn && (
-        <div style={{ 
-          padding: "12px", 
-          backgroundColor: "#fff3e0", 
-          border: "1px solid #ffb74d", 
-          borderRadius: "4px",
-          textAlign: "center",
-          margin: "12px 0",
-          color: "#e65100",
-          fontSize: "14px"
-        }}>
-          🔒 Inicie sesión para gestionar juzgados y festivos
-        </div>
-      )}
+      {/* ✅ NO MOSTRAR NINGÚN MENSAJE CUANDO NO ESTÁ LOGUEADO - COMPLETAMENTE INVISIBLE */}
 
       <button className="share-btn" onClick={handleShare}>
         <img src={shareIcon} alt="Compartir" />

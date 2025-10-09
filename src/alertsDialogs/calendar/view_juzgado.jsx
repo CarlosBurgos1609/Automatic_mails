@@ -143,7 +143,7 @@ export default function ViewJuzgadoDialog({
         </div>
         
         <div className="dialog-actions-vertical">
-          {/* ✅ MOSTRAR BOTONES SOLO SI EL USUARIO ESTÁ LOGUEADO */}
+          {/* ✅ MOSTRAR BOTONES SOLO SI EL USUARIO ESTÁ LOGUEADO - SIN MENSAJES */}
           {isLoggedIn && (
             <>
               <button
@@ -164,20 +164,7 @@ export default function ViewJuzgadoDialog({
             </>
           )}
           
-          {/* ✅ MOSTRAR MENSAJE INFORMATIVO SI NO ESTÁ LOGUEADO */}
-          {!isLoggedIn && (
-            <div style={{ 
-              padding: "12px", 
-              backgroundColor: "#fff3e0", 
-              border: "1px solid #ffb74d", 
-              borderRadius: "4px",
-              textAlign: "center",
-              margin: "12px 0",
-              color: "#e65100"
-            }}>
-              🔒 Inicie sesión para editar o eliminar turnos
-            </div>
-          )}
+          {/* ✅ NO MOSTRAR NINGÚN MENSAJE - RESTRICCIONES COMPLETAMENTE INVISIBLES */}
           
           <button className="close-button-full" onClick={onClose}>
             Cerrar
