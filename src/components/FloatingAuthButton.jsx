@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FiUser, FiLock, FiLogOut } from "react-icons/fi"; // Feather Icons
+import { HiUser } from "react-icons/hi"; // Heroicons para un user más prominente
 
 export default function FloatingAuthButton({ isLoggedIn, currentUser, onLogin, onLogout }) {
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
@@ -45,7 +47,7 @@ export default function FloatingAuthButton({ isLoggedIn, currentUser, onLogin, o
         {showLogoutPopup && (
           <div className="logout-popup">
             <button className="logout-btn" onClick={handleLogout}>
-              <span className="logout-icon">🚪</span>
+              <FiLogOut className="logout-icon" />
               Cerrar Sesión
             </button>
           </div>
@@ -57,15 +59,18 @@ export default function FloatingAuthButton({ isLoggedIn, currentUser, onLogin, o
           onClick={handleButtonClick}
         >
           {isLoggedIn ? (
-            <>
-              <span>👤</span>
-              <span style={{ color: '#4caf50', fontWeight: 'bold' }}>Admin</span>
-            </>
+            <div className="auth-content logged-in-content">
+              <HiUser className="user-icon" />
+              <span className="admin-text">Admin</span>
+            </div>
           ) : (
-            <>
-              <span>🔐</span>
+            <div className="auth-content login-content">
+              <div className="login-icons">
+                <FiUser className="user-icon" />
+                <FiLock className="lock-icon" />
+              </div>
               <span>Iniciar Sesión</span>
-            </>
+            </div>
           )}
         </button>
       </div>

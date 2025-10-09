@@ -2,21 +2,35 @@
 
 // ===== ESTILOS PARA DIÁLOGO DE LOGIN =====
 .login-dialog {
-  max-width: 400px;
-  width: 90%;
+  @include m.dialog-base;
+  max-width: 500px !important;
+  width: 95% !important;
+  min-width: 400px;
+  
+  @include m.mobile {
+    max-width: 95% !important;
+    min-width: 320px;
+  }
   
   h1 {
-    text-align: center;
     color: m.$color_blue;
+    font-size: 26px;
     margin-bottom: 8px;
-    font-size: 24px;
+    text-align: center;
+    width: 100%;
   }
   
   p {
-    text-align: center;
-    color: m.$color_dark_gray;
+    color: m.$color_blue;
+    font-size: 18px;
     margin-bottom: 24px;
-    font-size: 14px;
+    text-align: center;
+    width: 100%;
+  }
+  
+  // Usar los estilos base para botones ya definidos en _dialogs.scss
+  button {
+    margin-bottom: 0;
   }
 }
 
@@ -24,29 +38,38 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100% !important;
   
   .input-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100% !important;
     
     label {
       font-weight: 600;
       color: m.$color_blue;
       font-size: 14px;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 4px;
     }
     
     input {
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: border-color 0.3s;
+      width: 100% !important;
+      min-width: 0 !important;
+      padding: 12px 16px !important;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.2s;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      display: block;
       
       &:focus {
-        outline: none;
-        border-color: m.$color_blue;
-        box-shadow: 0 0 0 2px rgba(0, 63, 117, 0.1);
+        border: 1.5px solid m.$color_blue;
       }
       
       &:disabled {
@@ -60,29 +83,73 @@
     }
   }
   
+  // Usar el mismo estilo de error-message que en _dialogs.scss
   .error-message {
-    background-color: #fee;
-    color: #c33;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #fcc;
-    font-size: 14px;
+    color: m.$color_red;
+    font-size: 15px;
+    margin-bottom: 10px;
     text-align: center;
-    margin: 8px 0;
+    width: 100% !important;
+    font-weight: bold;
+    background-color: #fff0f0;
+    border: 1px solid m.$color_red;
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box !important;
+    display: block;
+  }
+  
+  // Asegurar que las acciones del diálogo ocupen todo el ancho
+  .dialog-actions {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px;
+    margin-top: 18px;
+    
+    .edit-button-full,
+    .close-button-full {
+      width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      display: block !important;
+      margin: 0 !important;
+      flex: none !important;
+    }
+  }
+}
+
+// Estilo para la información de login
+.login-info {
+  width: 100%;
+  text-align: center;
+  margin-top: 16px;
+  
+  small {
+    color: m.$color_gray;
+    font-size: 13px;
+    line-height: 1.4;
+    
+    strong {
+      color: m.$color_blue;
+    }
   }
 }
 
 .login-info {
   margin-top: 20px;
-  padding: 12px;
+  padding: 16px;
   background-color: #f0f8ff;
   border: 1px solid #b3d9ff;
-  border-radius: 4px;
+  border-radius: 8px;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
   
   small {
     color: #0066cc;
-    line-height: 1.4;
+    line-height: 1.6;
+    font-size: 13px;
   }
 }
 
@@ -97,7 +164,7 @@
     background: linear-gradient(135deg, #1976d2, #1565c0);
     color: white;
     border: none;
-    padding: 12px 16px;
+    padding: 14px 18px;
     border-radius: 25px;
     font-size: 14px;
     font-weight: 600;
@@ -107,7 +174,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    min-width: 120px;
+    min-width: 150px;
+    min-height: 50px;
     justify-content: center;
     
     &:hover {
@@ -116,11 +184,55 @@
     }
     
     &.logged-in {
-      background: linear-gradient(135deg, #2e7d32, #1b5e20);
-      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+      background: m.$color_blue;
+      box-shadow: 0 4px 12px rgba(0, 63, 117, 0.3);
       
       &:hover {
-        box-shadow: 0 6px 16px rgba(46, 125, 50, 0.4);
+        box-shadow: 0 6px 16px rgba(0, 63, 117, 0.4);
+      }
+    }
+    
+    .auth-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: white;
+      
+      &.login-content {
+        flex-direction: row;
+        gap: 8px;
+        
+        .login-icons {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          
+          .user-icon, .lock-icon {
+            font-size: 18px;
+            color: white;
+          }
+          
+          .lock-icon {
+            font-size: 16px; // El candado ligeramente más pequeño
+          }
+        }
+      }
+      
+      &.logged-in-content {
+        .user-icon {
+          font-size: 24px;
+          color: white;
+          margin-bottom: 2px;
+        }
+        
+        .admin-text {
+          font-size: 11px;
+          color: white;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
       }
     }
   }
@@ -189,6 +301,30 @@
 
 // ===== ESTILOS RESPONSIVOS =====
 @media (max-width: 768px) {
+  .login-dialog {
+    max-width: 95vw;
+    width: 95vw;
+    min-width: 300px;
+    margin: 10px;
+    
+    h1 {
+      font-size: 22px;
+    }
+    
+    p {
+      font-size: 16px;
+    }
+  }
+  
+  .login-form {
+    .input-group {
+      input {
+        padding: 10px 14px;
+        font-size: 16px;
+      }
+    }
+  }
+
   .floating-auth-container {
     bottom: 15px;
     right: 15px;
@@ -196,7 +332,27 @@
     .floating-auth-btn {
       padding: 10px 14px;
       font-size: 13px;
-      min-width: 100px;
+      min-width: 120px;
+      
+      .auth-content {
+        &.login-content {
+          .login-icons {
+            .user-icon, .lock-icon {
+              font-size: 14px;
+            }
+          }
+        }
+        
+        &.logged-in-content {
+          .user-icon {
+            font-size: 18px;
+          }
+          
+          .admin-text {
+            font-size: 11px;
+          }
+        }
+      }
     }
     
     .logout-popup {
@@ -205,6 +361,10 @@
       .logout-btn {
         padding: 10px 14px;
         font-size: 13px;
+        
+        .logout-icon {
+          font-size: 14px;
+        }
       }
     }
   }

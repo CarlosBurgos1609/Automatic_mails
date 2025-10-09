@@ -41,7 +41,7 @@ export default function LoginDialog({ open, onClose, onLogin }) {
 
   return (
     <div className="alert-dialog-backdrop">
-      <div className="alert-dialog login-dialog">
+      <div className="login-dialog">
         <h1>🔐 Iniciar Sesión</h1>
         <p>Ingrese sus credenciales para acceder al sistema</p>
         
@@ -76,11 +76,11 @@ export default function LoginDialog({ open, onClose, onLogin }) {
 
           {error && (
             <div className="error-message">
-              ❌ {error}
+              {error}
             </div>
           )}
 
-          <div className="dialog-actions flex-column">
+          <div className="dialog-actions">
             <button
               type="submit"
               className="edit-button-full"
