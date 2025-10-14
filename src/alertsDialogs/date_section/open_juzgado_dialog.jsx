@@ -25,7 +25,7 @@ export default function JuzgadoDialog({ open, onClose, juzgadoHoy }) {
   return (
     <div className="alert-dialog-backdrop">
       <div className="alert-dialog">
-        <h1>Nombre del Juzgado</h1>
+        <h1>Juzgado de Turno</h1>
         <p>{nombre}</p>
         <div className="juzgado-email-row">
           <span>{correo}</span>
