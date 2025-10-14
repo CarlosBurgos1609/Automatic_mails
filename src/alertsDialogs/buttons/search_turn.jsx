@@ -5,7 +5,19 @@ import {
   calculateTemporalStats,
   getDefaultPeriod
 } from "../../utils/timeRangeUtils";
-import dayjs from "dayjs"; 
+import dayjs from "dayjs";
+import { 
+  FaSearch, 
+  FaClipboardList, 
+  FaCheckCircle, 
+  FaBackward, 
+  FaForward, 
+  FaCalendarAlt, 
+  FaChartBar, 
+  FaEnvelope,
+  FaEye,
+  FaNewspaper
+} from "react-icons/fa"; 
 
 export default function SearchTurnDialog({
   open,
@@ -94,12 +106,12 @@ export default function SearchTurnDialog({
   return (
     <div className="alert-dialog-backdrop">
       <div className="alert-dialog search-turn-dialog">
-        <h1>🔍 Buscar Juzgado de Turno</h1>
+        <h1><FaSearch /> Buscar Juzgado de Turno</h1>
         
         {/* Información del filtro actual */}
         <div className="search-info">
           <div className="info-text">
-            📊 Consulta los juzgados de turno según el período seleccionado
+            <FaChartBar /> Consulta los juzgados de turno según el período seleccionado
           </div>
         </div>
 
@@ -130,7 +142,7 @@ export default function SearchTurnDialog({
               onClick={() => setFiltroTemporal("todos")}
               disabled={loading}
             >
-              <span className="filtro-icon">📋</span>
+              <span className="filtro-icon"><FaClipboardList /></span>
               Todos ({estadisticasTemporales.total})
             </button>
             <button
@@ -138,7 +150,7 @@ export default function SearchTurnDialog({
               onClick={() => setFiltroTemporal("disponibles")}
               disabled={loading}
             >
-              <span className="filtro-icon">✅</span>
+              <span className="filtro-icon"><FaCheckCircle /></span>
               Disponibles ({estadisticasTemporales.disponibles})
             </button>
             <button
@@ -146,7 +158,7 @@ export default function SearchTurnDialog({
               onClick={() => setFiltroTemporal("ya-paso")}
               disabled={loading}
             >
-              <span className="filtro-icon">⏮️</span>
+              <span className="filtro-icon"><FaBackward /></span>
               Ya Pasaron ({estadisticasTemporales.yaPasaron})
             </button>
             <button
@@ -154,7 +166,7 @@ export default function SearchTurnDialog({
               onClick={() => setFiltroTemporal("por-venir")}
               disabled={loading}
             >
-              <span className="filtro-icon">⏭️</span>
+              <span className="filtro-icon"><FaForward /></span>
               Por Venir ({estadisticasTemporales.porVenir})
             </button>
           </div>
@@ -181,9 +193,9 @@ export default function SearchTurnDialog({
                   <div className="juzgado-header readonly">
                     <div className="juzgado-info">
                       <span className={`status-temporal-indicator ${juzgado.status}`}>
-                        {juzgado.status === "ya-paso" ? "⏮️" : 
-                         juzgado.status === "por-venir" ? "⏭️" : 
-                         juzgado.status === "sin-turnos" ? "🆕" : "📅"}
+                        {juzgado.status === "ya-paso" ? <FaBackward /> : 
+                         juzgado.status === "por-venir" ? <FaForward /> : 
+                         juzgado.status === "sin-turnos" ? <FaNewspaper /> : <FaCalendarAlt />}
                       </span>
                       <div className="juzgado-details">
                         <div className="juzgado-name">
@@ -193,33 +205,33 @@ export default function SearchTurnDialog({
                           <div className="juzgado-temporal-info">
                             <div className="temporal-header">
                               {juzgado.status === "ya-paso" && (
-                                <span className="temporal-title">⏮️ Turnos pasados:</span>
+                                <span className="temporal-title"><FaBackward /> Turnos pasados:</span>
                               )}
                               {juzgado.status === "por-venir" && (
-                                <span className="temporal-title">⏭️ Próximos turnos:</span>
+                                <span className="temporal-title"><FaForward /> Próximos turnos:</span>
                               )}
-                            </div>
-                            
-                            {/* Fechas individuales */}
-                            <div className="fechas-container">
-                              {juzgado.fechasArray && juzgado.fechasArray.length > 0 ? (
-                                juzgado.fechasArray.map((fecha, index) => (
-                                  <span key={index} className={`fecha-individual ${juzgado.status}`}>
-                                    📅 {fecha}
+                              
+                              {/* Fechas individuales y contador en la misma línea */}
+                              <div className="fechas-container">
+                                {juzgado.fechasArray && juzgado.fechasArray.length > 0 ? (
+                                  juzgado.fechasArray.map((fecha, index) => (
+                                    <span key={index} className={`fecha-individual ${juzgado.status}`}>
+                                      <FaCalendarAlt /> {fecha}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className={`fecha-individual ${juzgado.status}`}>
+                                    <FaCalendarAlt /> {juzgado.ultimaFecha}
                                   </span>
-                                ))
-                              ) : (
-                                <span className={`fecha-individual ${juzgado.status}`}>
-                                  📅 {juzgado.ultimaFecha}
+                                )}
+                              </div>
+                              
+                              {/* Contador de turnos en la misma línea */}
+                              <div className="turnos-counter">
+                                <span className="turnos-count">
+                                  <FaChartBar /> {juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''}
                                 </span>
-                              )}
-                            </div>
-                            
-                            {/* Contador de turnos */}
-                            <div className="turnos-counter">
-                              <span className="turnos-count">
-                                📊 {juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''}
-                              </span>
+                              </div>
                             </div>
                           </div>
                         )}
@@ -232,13 +244,9 @@ export default function SearchTurnDialog({
                         )}
                       </div>
                     </div>
-                    {/* Indicador de solo lectura */}
-                    <span className="readonly-indicator">
-                      👁️
-                    </span>
                   </div>
                   <div className="juzgado-email">
-                    📧 {juzgado.email}
+                    <FaEnvelope /> {juzgado.email}
                   </div>
                 </div>
               ))

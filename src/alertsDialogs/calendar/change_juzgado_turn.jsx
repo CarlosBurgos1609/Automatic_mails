@@ -5,7 +5,18 @@ import {
   calculateTemporalStats,
   getDefaultPeriod
 } from "../../utils/timeRangeUtils";
-import dayjs from "dayjs"; 
+import dayjs from "dayjs";
+import { 
+  FaExchangeAlt, 
+  FaClipboardList, 
+  FaCheckCircle, 
+  FaBackward, 
+  FaForward, 
+  FaCalendarAlt, 
+  FaChartBar, 
+  FaEnvelope,
+  FaNewspaper
+} from "react-icons/fa"; 
 
 export default function ChangeJuzgadoTurnDialog({
   open,
@@ -136,12 +147,12 @@ export default function ChangeJuzgadoTurnDialog({
   return (
     <div className="alert-dialog-backdrop">
       <div className="alert-dialog add-juzgado-dialog change-juzgado-dialog">
-        <h1>Cambiar Turno de Juzgado</h1>
+        <h1><FaExchangeAlt /> Cambiar Turno de Juzgado</h1>
         
         {/* Información del turno actual */}
         <div className="turno-info">
           <div className="fecha-info">
-            📅 Fecha: {fechaSeleccionada}
+            <FaCalendarAlt /> Fecha: {fechaSeleccionada}
           </div>
           <div className="juzgado-actual">
             <strong>Juzgado actual:</strong>{" "}
@@ -230,9 +241,9 @@ export default function ChangeJuzgadoTurnDialog({
                 <div className={`juzgado-header ${nuevoJuzgado?.id === juzgado.id ? 'selected' : ''}`}>
                   <div className="juzgado-info">
                     <span className={`status-temporal-indicator ${juzgado.status}`}>
-                      {juzgado.status === "ya-paso" ? "⏮️" : 
-                       juzgado.status === "por-venir" ? "⏭️" : 
-                       juzgado.status === "sin-turnos" ? "🆕" : "📅"}
+                      {juzgado.status === "ya-paso" ? <FaBackward /> : 
+                       juzgado.status === "por-venir" ? <FaForward /> : 
+                       juzgado.status === "sin-turnos" ? <FaNewspaper /> : <FaCalendarAlt />}
                     </span>
                     <div className="juzgado-details">
                       <div className="juzgado-name">
@@ -242,33 +253,33 @@ export default function ChangeJuzgadoTurnDialog({
                         <div className="juzgado-temporal-info">
                           <div className="temporal-header">
                             {juzgado.status === "ya-paso" && (
-                              <span className="temporal-title">⏮️ Turnos pasados:</span>
+                              <span className="temporal-title"><FaBackward /> Turnos pasados:</span>
                             )}
                             {juzgado.status === "por-venir" && (
-                              <span className="temporal-title">⏭️ Próximos turnos:</span>
+                              <span className="temporal-title"><FaForward /> Próximos turnos:</span>
                             )}
-                          </div>
-                          
-                          {/* Fechas individuales */}
-                          <div className="fechas-container">
-                            {juzgado.fechasArray && juzgado.fechasArray.length > 0 ? (
-                              juzgado.fechasArray.map((fecha, index) => (
-                                <span key={index} className={`fecha-individual ${juzgado.status}`}>
-                                  📅 {fecha}
+                            
+                            {/* Fechas individuales y contador en la misma línea */}
+                            <div className="fechas-container">
+                              {juzgado.fechasArray && juzgado.fechasArray.length > 0 ? (
+                                juzgado.fechasArray.map((fecha, index) => (
+                                  <span key={index} className={`fecha-individual ${juzgado.status}`}>
+                                    <FaCalendarAlt /> {fecha}
+                                  </span>
+                                ))
+                              ) : (
+                                <span className={`fecha-individual ${juzgado.status}`}>
+                                  <FaCalendarAlt /> {juzgado.ultimaFecha}
                                 </span>
-                              ))
-                            ) : (
-                              <span className={`fecha-individual ${juzgado.status}`}>
-                                📅 {juzgado.ultimaFecha}
+                              )}
+                            </div>
+                            
+                            {/* Contador de turnos en la misma línea */}
+                            <div className="turnos-counter">
+                              <span className="turnos-count">
+                                <FaChartBar /> {juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''}
                               </span>
-                            )}
-                          </div>
-                          
-                          {/* Contador de turnos */}
-                          <div className="turnos-counter">
-                            <span className="turnos-count">
-                              📊 {juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''}
-                            </span>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -288,7 +299,7 @@ export default function ChangeJuzgadoTurnDialog({
                   )}
                 </div>
                 <div className="juzgado-email">
-                  📧 {juzgado.email}
+                  <FaEnvelope /> {juzgado.email}
                 </div>
               </div>
             ))
@@ -299,13 +310,13 @@ export default function ChangeJuzgadoTurnDialog({
         {nuevoJuzgado && (
           <div className="juzgado-seleccionado">
             <div className="selection-title">
-              ✅ Nuevo juzgado seleccionado:
+              <FaCheckCircle /> Nuevo juzgado seleccionado:
             </div>
             <div className="selection-details">
               {nuevoJuzgado.code} - {nuevoJuzgado.name}
             </div>
             <div className="selection-details">
-              📧 {nuevoJuzgado.email}
+              <FaEnvelope /> {nuevoJuzgado.email}
             </div>
           </div>
         )}
