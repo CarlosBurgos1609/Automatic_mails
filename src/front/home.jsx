@@ -321,7 +321,7 @@ const Home = () => {
       style: {
         backgroundColor: "#bafaba",
         color: "#003f75",
-        border: "1px solid #003f75",
+        // border: "1px solid #003f75",
         borderRadius: "4px",
         fontSize: "12px",
         fontWeight: "bold",
@@ -513,8 +513,8 @@ const Home = () => {
     if (isToday) {
       className = "rbc-today";
       style = { 
-        backgroundColor: "#bafaba", 
-        border: "2px solid #003f75" 
+        // backgroundColor: "#bafaba", 
+        // border: "2px solid #003f75" 
       };
     }
     

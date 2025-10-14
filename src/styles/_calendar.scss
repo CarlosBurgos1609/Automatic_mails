@@ -30,14 +30,14 @@
     min-height: fit-content; // Ajustar al contenido
     height: auto !important; // Permitir altura automática
     overflow: visible; // Evitar scroll interno
-    
+
     // Contenedor del mes específico
     .rbc-month-view {
       height: auto !important;
       min-height: 500px;
       overflow: visible;
     }
-    
+
     // Tabla del calendario
     .rbc-month-view table {
       width: 100%;
@@ -45,7 +45,7 @@
       table-layout: fixed; // Distribuir columnas uniformemente
     }
   }
-  
+
   @media (max-width: 900px) {
     .rbc-calendar {
       max-width: 100%;
@@ -75,7 +75,7 @@
       // Permitir que las filas se ajusten automáticamente
       height: auto !important;
       min-height: 100px;
-      
+
       // Cada celda en la fila debe tener la misma altura
       .rbc-day-bg {
         height: 100%; // Heredar altura de la fila
@@ -85,7 +85,7 @@
         justify-content: flex-start;
         padding: 5px;
         position: relative;
-        
+
         // Container para el contenido del día
         .rbc-day-content {
           width: 100%;
@@ -97,7 +97,7 @@
           margin-top: 20px; // Espacio para el número del día
         }
       }
-      
+
       // El número del día - mantener posición normal
       .rbc-date-cell {
         position: relative; // Cambiar de absolute a relative
@@ -138,17 +138,17 @@
     margin-bottom: 2px !important;
     text-align: center !important;
   }
-  
+
   // ===== CONTENIDO LARGO - AJUSTE DINÁMICO =====
   .calendar-dynamic-row {
     height: auto !important;
     min-height: 100px !important;
-    
+
     &.row-height-small { min-height: 100px !important; }
     &.row-height-medium { min-height: 140px !important; }
     &.row-height-large { min-height: 180px !important; }
     &.row-height-xlarge { min-height: 220px !important; }
-    
+
     .rbc-day-bg {
       height: 100% !important;
       min-height: inherit !important;
@@ -162,12 +162,12 @@
         &.calendar-dynamic-row {
           // Ajustes específicos para desktop
           transition: min-height 0.3s ease-in-out;
-          
+
           .rbc-day-bg {
             // Mejor alineación del contenido en desktop
             align-items: flex-start;
             padding: 8px 5px;
-            
+
             .rbc-event,
             .rbc-event-content {
               font-size: 12px !important;
@@ -180,7 +180,7 @@
               hyphens: auto !important;
             }
           }
-          
+
           .rbc-date-cell {
             position: relative; // Mantener relativo en lugar de absolute
             z-index: 10;
@@ -202,12 +202,12 @@
       .rbc-month-row {
         height: 80px !important; // Altura fija más pequeña en móvil
         min-height: 80px !important;
-        
+
         .rbc-day-bg {
           height: 100% !important;
           min-height: 80px !important;
           padding: 3px;
-          
+
           .rbc-event,
           .rbc-event-content {
             font-size: 10px !important;
@@ -220,7 +220,7 @@
             white-space: nowrap !important;
           }
         }
-        
+
         .rbc-date-cell {
           position: relative; // Mantener relativo
           font-size: 13px; // Tamaño un poco más pequeño para móvil
@@ -275,7 +275,7 @@
     position: relative;
     // ✅ MANTENER EL FONDO NORMAL DE LA CELDA
     background-color: m.$color_white !important;
-    
+
     // ✅ CAMBIAR SOLO EL COLOR DEL NÚMERO
     .rbc-button-link {
       color: m.$color_red !important;
@@ -285,7 +285,7 @@
       font-size: 16px !important;
       text-shadow: 0 0 2px rgba(229, 57, 53, 0.3) !important;
     }
-    
+
     .rbc-date-cell {
       color: m.$color_red !important;
       font-weight: bold !important;
@@ -307,15 +307,15 @@
 
     // ✅ HOVER SUTIL SIN CAMBIAR EL FONDO
     &:hover {
-      background-color: rgba(229, 57, 53, 0.05) !important;
-      
+      //  background-color: rgba(229, 57, 53, 0.05) !important;
+
       .rbc-button-link {
         color: m.$color_red !important;
         font-weight: bold !important;
         transform: scale(1.05);
         transition: transform 0.2s ease;
       }
-      
+
       &::before {
         animation: bounce 0.5s ease;
       }
@@ -352,21 +352,21 @@
   // ===== HOY =====
   .rbc-today {
     background-color: m.$color_light_blue !important;
-    border: 1px solid m.$color_blue !important;
+    // border: 1px solid m.$color_blue !important;
   }
 
   // ✅ HOY + FESTIVO - PRIORIZAR INDICACIÓN FESTIVA
   .rbc-today.rbc-festive-day {
     background-color: m.$color_green !important; // Mantener el fondo de "hoy"
     border: 2px solid m.$color_red !important; // Borde rojo para festivo
-    
+
     .rbc-button-link {
       color: m.$color_red !important;
       font-weight: bold !important;
       font-size: 16px !important;
       text-shadow: 0 0 3px rgba(229, 57, 53, 0.5) !important;
     }
-    
+
     .rbc-date-cell {
       color: m.$color_red !important;
       font-weight: bold !important;
@@ -452,31 +452,31 @@
       min-height: 20px !important;
       font-size: 11px; // Fuente más pequeña
     }
-    
+
     .rbc-time-gutter .rbc-time-slot {
       height: 20px !important;
       line-height: 20px !important;
       font-size: 10px; // Fuente aún más pequeña para las horas en el gutter
     }
-    
+
     // Ajustar la altura del contenedor de tiempo
     .rbc-time-content {
       min-height: auto !important;
       max-height: 400px; // Altura máxima para evitar scroll excesivo
       overflow-y: auto; // Scroll solo cuando sea necesario
     }
-    
+
     // Reducir espacio entre horas
     .rbc-timeslot-group {
       min-height: 20px !important;
       height: 20px !important;
     }
-    
+
     // Ajustar el gutter (columna de horas)
     .rbc-time-gutter {
       width: 60px; // Ancho más pequeño para el gutter
       font-size: 10px;
-      
+
       .rbc-time-slot {
         padding: 2px 4px; // Padding reducido
         display: flex;
@@ -484,13 +484,13 @@
         justify-content: center;
       }
     }
-    
+
     // Contenedor principal más compacto
     .rbc-time-view {
       height: auto !important;
       max-height: 500px; // Aumentado de 450px para dar más espacio
     }
-    
+
     // CORREGIR: Ajustar headers para que NO se corten
     .rbc-time-header {
       min-height: 100px !important; // Volver a altura original
@@ -498,7 +498,7 @@
       padding: 8px !important; // Padding adecuado
       overflow: visible !important; // No cortar contenido
     }
-    
+
     .rbc-time-header-cell {
       min-height: 50px !important; // Altura suficiente para el contenido
       height: auto !important; // Altura automática
@@ -509,7 +509,7 @@
       flex-wrap: wrap !important;
       text-align: center !important;
       overflow: visible !important;
-      
+
       .rbc-header {
         min-height: 40px !important;
         height: auto !important;
@@ -519,31 +519,31 @@
         white-space: normal !important;
       }
     }
-    
+
     // Eventos más compactos en vista de tiempo
     .rbc-event {
       font-size: 11px !important;
       padding: 2px 4px !important;
       line-height: 1.2 !important;
     }
-    
+
     // ELIMINAR FILAS EXTRAS - Ocultar elementos innecesarios en la parte inferior
     .rbc-time-view .rbc-row:last-child {
       display: none !important; // Ocultar última fila si está vacía
     }
-    
+
     // Controlar el número de slots mostrados
     .rbc-time-content .rbc-time-column {
       max-height: 320px !important; // Limitar altura para evitar filas extras
       overflow: hidden !important; // Ocultar contenido que se salga
     }
-    
+
     // Asegurar que no haya scroll horizontal innecesario
     .rbc-time-view {
       overflow-x: hidden !important;
       overflow-y: auto !important;
     }
-    
+
     // Limitar el número de slots de tiempo mostrados
     .rbc-time-gutter,
     .rbc-time-column {
@@ -559,36 +559,36 @@
       .rbc-time-content {
         max-height: 250px; // Altura aún más reducida en móvil
       }
-      
+
       .rbc-time-gutter {
         width: 50px; // Gutter más pequeño en móvil
         font-size: 9px;
       }
-      
+
       .rbc-time-slot {
         height: 18px !important;
         min-height: 18px !important;
         font-size: 10px !important;
       }
-      
+
       // CORREGIR: Headers en móvil
       .rbc-time-header {
         min-height: 50px !important; // Altura adecuada en móvil
         height: 50px !important;
         font-size: 12px !important;
       }
-      
+
       .rbc-time-header-cell {
         min-height: 45px !important;
         padding: 4px !important;
-        
+
         .rbc-header {
           font-size: 11px !important;
           min-height: 35px !important;
           padding: 2px 4px !important;
         }
       }
-      
+
       // Limitar altura en móvil
       .rbc-time-column {
         max-height: 250px !important;
@@ -603,13 +603,13 @@
       height: auto !important;
       min-height: auto !important;
     }
-    
+
     // Mantener altura original para vista de mes
     .rbc-month-row {
       height: auto !important;
       min-height: 100px;
     }
-    
+
     .rbc-day-bg {
       min-height: 100px;
       height: auto;
@@ -732,14 +732,14 @@
   .rbc-month-view .rbc-day-bg.rbc-festive-day:nth-child(7n+1):not(.rbc-off-range),
   .rbc-month-view .rbc-day-bg.rbc-festive-day:nth-child(7n):not(.rbc-off-range) {
     background-color: rgba(255, 255, 0, 0.1) !important; // Mantener fondo de fin de semana
-    
+
     .rbc-button-link {
       color: m.$color_red !important;
       font-weight: bold !important;
       font-size: 16px !important;
       text-shadow: 0 0 2px rgba(229, 57, 53, 0.3) !important;
     }
-    
+
     .rbc-date-cell {
       color: m.$color_red !important;
       font-weight: bold !important;
@@ -897,7 +897,7 @@
       .rbc-button-link {
         font-size: 14px !important;
       }
-      
+
       .rbc-date-cell {
         font-size: 14px !important;
       }
@@ -1018,7 +1018,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  
+
   h1 {
     flex-shrink: 0;
     margin-bottom: 12px;
@@ -1038,7 +1038,7 @@
   .input-busqueda {
     flex-shrink: 0;
     margin-bottom: 12px;
-    
+
     input {
       @include m.input-base;
       text-transform: uppercase;
@@ -1165,7 +1165,7 @@
     min-width: 98vw;
     margin: 2px;
     padding: 10px 6px;
-    
+
     .juzgados-list {
       min-height: 200px;
     }
@@ -1178,20 +1178,20 @@
   border: 1px solid #ccc;
   border-radius: m.$border-radius;
   padding: 8px;
-  
+
   .MuiPickersStaticWrapper-root {
     background-color: transparent;
   }
-  
+
   .MuiDateCalendar-root {
     max-width: 100%;
   }
-  
+
   .MuiPickersDay-root {
     &:hover {
       background-color: m.$color_light_blue;
     }
-    
+
     &.Mui-selected {
       background-color: m.$color_blue;
       color: m.$color_white;
@@ -1204,12 +1204,12 @@
     color: m.$color_red !important;
     font-weight: bold;
   }
-  
+
   &:hover {
     background-color: #fff0f0 !important;
     border-color: m.$color_red !important;
   }
-  
+
   &.selected {
     background-color: #ffebee !important;
     border-color: m.$color_red !important;
