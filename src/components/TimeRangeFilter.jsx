@@ -1,6 +1,75 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dayjs from "dayjs";
-import { FaCalendarAlt, FaFileDownload } from "react-icons/fa";
+import { 
+  FaCalendarAlt, 
+  FaFileDownload, 
+  FaCalendar, 
+  FaChartBar, 
+  FaChartLine, 
+  FaCalendarWeek,
+  FaCalendarDay,
+  FaCalendarCheck,
+  FaChevronDown,
+  FaClock
+} from "react-icons/fa";
+
+// Componente personalizado de select con iconos
+const CustomSelect = ({ value, onChange, options, disabled, className }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectRef = useRef(null);
+  
+  const selectedOption = options.find(opt => opt.value === value);
+  
+  // Cerrar dropdown al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
+  return (
+    <div 
+      ref={selectRef}
+      className={`custom-select ${className || ''} ${disabled ? 'disabled' : ''}`}
+    >
+      <div 
+        className="custom-select-trigger"
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+      >
+        <span className="selected-option">
+          {selectedOption?.icon && <span className="option-icon">{selectedOption.icon}</span>}
+          {selectedOption?.label || 'Seleccionar...'}
+        </span>
+        <FaChevronDown className={`dropdown-arrow ${isOpen ? 'open' : ''}`} />
+      </div>
+      
+      {isOpen && !disabled && (
+        <div className="custom-select-dropdown">
+          {options.map((option) => (
+            <div
+              key={option.value}
+              className={`custom-select-option ${value === option.value ? 'selected' : ''}`}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+            >
+              {option.icon && <span className="option-icon">{option.icon}</span>}
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function TimeRangeFilter({ 
   selectedRange, 
@@ -207,6 +276,22 @@ export default function TimeRangeFilter({
   const yearOptions = generateYearOptions();
   const periodOptions = generatePeriodOptions();
 
+  // Opciones del tipo con iconos
+  const typeOptions = [
+    { value: "año", label: "Año", icon: <FaCalendar /> },
+    { value: "semestre", label: "Semestre", icon: <FaChartBar /> },
+    { value: "trimestre", label: "Trimestre", icon: <FaChartLine /> },
+    { value: "mes", label: "Mes", icon: <FaCalendarDay /> }
+  ];
+
+  // Opciones del tipo para versión no-dialog (con más texto descriptivo)
+  const typeOptionsSimple = [
+    { value: "año", label: "Año completo", icon: <FaCalendar /> },
+    { value: "semestre", label: "Por Semestre", icon: <FaChartBar /> },
+    { value: "trimestre", label: "Por Trimestre", icon: <FaChartLine /> },
+    { value: "mes", label: "Por Mes", icon: <FaCalendarDay /> }
+  ];
+
   if (showInDialog) {
     return (
       <div className="time-range-filter-dialog">
@@ -215,7 +300,7 @@ export default function TimeRangeFilter({
         <div className="filter-row">
           {/* Filtro de Año */}
           <div className="filter-group">
-            <label className="filter-sublabel">Año:</label>
+            <label className="filter-sublabel"><FaCalendar /> Año:</label>
             <select 
               value={selectedYear}
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
@@ -230,24 +315,20 @@ export default function TimeRangeFilter({
 
           {/* Filtro de Tipo */}
           <div className="filter-group">
-            <label className="filter-sublabel">Tipo:</label>
-            <select 
+            <label className="filter-sublabel"><FaChartBar /> Tipo:</label>
+            <CustomSelect
               value={selectedType}
-              onChange={(e) => handleTypeChange(e.target.value)}
+              onChange={handleTypeChange}
+              options={typeOptions}
               disabled={disabled}
               className="filter-select"
-            >
-              <option value="año">🗓️ Año</option>
-              <option value="semestre">📊 Semestre</option>
-              <option value="trimestre">📈 Trimestre</option>
-              <option value="mes"><FaCalendarAlt /> Mes</option>
-            </select>
+            />
           </div>
 
           {/* Filtro de Período específico - Solo se muestra si no es "año" */}
           {selectedType !== "año" && (
             <div className="filter-group full-width">
-              <label className="filter-sublabel">Período:</label>
+              <label className="filter-sublabel"><FaCalendarWeek /> Período:</label>
               <select 
                 value={selectedPeriod || ""}
                 onChange={(e) => setSelectedPeriod(parseInt(e.target.value))}
@@ -280,16 +361,12 @@ export default function TimeRangeFilter({
           ))}
         </select>
         
-        <select 
+        <CustomSelect
           value={selectedType}
-          onChange={(e) => handleTypeChange(e.target.value)}
+          onChange={handleTypeChange}
+          options={typeOptionsSimple}
           disabled={disabled}
-        >
-          <option value="año">Año completo</option>
-          <option value="semestre">Por Semestre</option>
-          <option value="trimestre">Por Trimestre</option>
-          <option value="mes">Por Mes</option>
-        </select>
+        />
         
         {selectedType !== "año" && (
           <select 
