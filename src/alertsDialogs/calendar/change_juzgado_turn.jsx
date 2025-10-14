@@ -240,19 +240,36 @@ export default function ChangeJuzgadoTurnDialog({
                       </div>
                       {juzgado.status !== "sin-turnos" && (
                         <div className="juzgado-temporal-info">
-                          {juzgado.status === "ya-paso" && (
-                            <span className="temporal-tag ya-paso">
-                              Último turno: {juzgado.ultimaFecha}
+                          <div className="temporal-header">
+                            {juzgado.status === "ya-paso" && (
+                              <span className="temporal-title">⏮️ Turnos pasados:</span>
+                            )}
+                            {juzgado.status === "por-venir" && (
+                              <span className="temporal-title">⏭️ Próximos turnos:</span>
+                            )}
+                          </div>
+                          
+                          {/* Fechas individuales */}
+                          <div className="fechas-container">
+                            {juzgado.fechasArray && juzgado.fechasArray.length > 0 ? (
+                              juzgado.fechasArray.map((fecha, index) => (
+                                <span key={index} className={`fecha-individual ${juzgado.status}`}>
+                                  📅 {fecha}
+                                </span>
+                              ))
+                            ) : (
+                              <span className={`fecha-individual ${juzgado.status}`}>
+                                📅 {juzgado.ultimaFecha}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Contador de turnos */}
+                          <div className="turnos-counter">
+                            <span className="turnos-count">
+                              📊 {juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''}
                             </span>
-                          )}
-                          {juzgado.status === "por-venir" && (
-                            <span className="temporal-tag por-venir">
-                              Próximo turno: {juzgado.ultimaFecha}
-                            </span>
-                          )}
-                          <span className="turnos-count">
-                            ({juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''})
-                          </span>
+                          </div>
                         </div>
                       )}
                       {juzgado.status === "sin-turnos" && (

@@ -9,6 +9,7 @@ import juzgado from "../assets/icons/juzgado.png";
 import Copy from "./Copy";
 import JuzgadosDialog from "../alertsDialogs/juzgados/general_juzgados"
 import FestivDialog from "../alertsDialogs/festivs/general_festivs"
+import SearchTurnDialog from "../alertsDialogs/buttons/search_turn";
 import { generateCalendarPDF } from "../utils/pdfGenerator";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
@@ -23,6 +24,7 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
   const [showJuzgadosDialog, setShowJuzgadosDialog] = useState(false);
   const [showFestivDialog, setShowFestivDialog] = useState(false);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [showSearchTurnDialog, setShowSearchTurnDialog] = useState(false); // ✅ NUEVO ESTADO
   
   // Estados para el diálogo de filtros PDF
   const [showPDFDialog, setShowPDFDialog] = useState(false);
@@ -210,12 +212,28 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
 
       {/* ✅ NO MOSTRAR NINGÚN MENSAJE CUANDO NO ESTÁ LOGUEADO - COMPLETAMENTE INVISIBLE */}
 
+      {/* ✅ BOTÓN DE BÚSQUEDA DE TURNO - VISIBLE SIEMPRE */}
+      <button 
+        className="search-turn-btn" 
+        onClick={() => setShowSearchTurnDialog(true)}
+        title="Buscar juzgado de turno"
+      >
+        <img src={juzgado} alt="Buscar turno" />
+        Buscar Turno
+      </button>
+
       <button className="share-btn" onClick={handleShare}>
         <img src={shareIcon} alt="Compartir" />
         Compartir
       </button>
       
       <Copy show={showToast} message={toastMessage} />
+      
+      {/* ✅ DIÁLOGO DE BÚSQUEDA DE TURNO */}
+      <SearchTurnDialog
+        open={showSearchTurnDialog}
+        onClose={() => setShowSearchTurnDialog(false)}
+      />
       
       {/* Diálogo de filtros para PDF */}
       {showPDFDialog && (

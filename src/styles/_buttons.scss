@@ -3,6 +3,7 @@
 // ===== BOTONES ESPECÍFICOS =====
 .pdf-download-btn,
 .share-btn,
+.search-turn-btn,
 .add-btn,
 .delete-btn,
 .add-festive-btn,
@@ -65,6 +66,35 @@
     img {
       filter: m.$filter-blue-image;
     }
+  }
+}
+
+.search-turn-btn {
+  background: m.$color_light_blue;
+  color: m.$color_blue;
+  border: 2px solid m.$color_blue;
+
+  img {
+    width: 20px;
+    height: 20px;
+    filter: m.$filter-blue-image;
+  }
+
+  &:hover {
+    background: m.$color_green;
+    color: m.$color_blue;
+    border: 2px solid m.$color_blue;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 63, 117, 0.3);
+    
+    img {
+      filter: m.$filter-blue-image;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 63, 117, 0.2);
   }
 }
 

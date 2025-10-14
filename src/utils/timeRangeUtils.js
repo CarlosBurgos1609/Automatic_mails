@@ -95,6 +95,14 @@ export const getJuzgadoTemporalStatusInRange = (
     totalTurnos: turnosEnRango.length,
     turnosEnRango: turnosOrdenados,
     ultimaFecha: ultimoTurno ? ultimoTurno.fecha.format("DD/MM/YYYY") : null,
+    // ✅ AGREGAR TODAS LAS FECHAS DE LOS TURNOS EN EL PERÍODO
+    fechasTurnos: turnosOrdenados.length > 0 
+      ? turnosOrdenados.map(turno => turno.fecha.format("DD/MM/YYYY")).join(", ")
+      : null,
+    // ✅ AGREGAR ARRAY DE FECHAS SEPARADAS PARA MOSTRAR INDIVIDUALMENTE
+    fechasArray: turnosOrdenados.length > 0 
+      ? turnosOrdenados.map(turno => turno.fecha.format("DD/MM/YYYY"))
+      : [],
   };
 };
 

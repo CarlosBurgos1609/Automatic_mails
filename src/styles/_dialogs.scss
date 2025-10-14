@@ -1047,7 +1047,10 @@
                 padding: 2px 6px;
                 border-radius: 10px;
                 font-weight: 500;
-                white-space: nowrap;
+                word-wrap: break-word;
+                white-space: normal;
+                line-height: 1.3;
+                max-width: 100%;
                 
                 &.ya-paso {
                   background: rgba(253, 126, 20, 0.1);
@@ -1571,6 +1574,336 @@
       &.close-button-full:hover {
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(229, 57, 53, 0.2);
+      }
+    }
+  }
+}
+
+// ===== DIÁLOGO DE BÚSQUEDA DE TURNO =====
+.search-turn-dialog {
+  max-height: 95vh;
+  max-width: 95vw;
+  min-height: 60vh;
+  min-width: 80vw;
+  width: 90vw;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .search-info {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #e3f2fd;
+    border: 1px solid #2196f3;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+
+    .info-text {
+      color: m.$color_blue;
+      font-weight: 500;
+      font-size: 14px;
+    }
+  }
+
+  .input-busqueda {
+    margin-bottom: 16px;
+    width: 100%;
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.2s;
+      text-transform: uppercase;
+      box-sizing: border-box;
+
+      &:focus {
+        border-color: m.$color_blue;
+      }
+
+      &:disabled {
+        background-color: #f5f5f5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  // ✅ FILTRO TEMPORAL CON ANCHO COMPLETO
+  .time-range-filter-dialog {
+    width: 100%;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+  }
+
+  // ✅ FILTROS TEMPORALES PARA BÚSQUEDA
+  .filtros-temporales {
+    margin-bottom: 16px;
+    width: 100%;
+    box-sizing: border-box;
+
+    .filtros-botones {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+
+      .filtro-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: m.$color_light_blue;
+        color: m.$color_blue;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 13px;
+        flex: 1 1 auto;
+        min-width: 0;
+        justify-content: center;
+
+        .filtro-icon {
+          font-size: 14px;
+        }
+
+        &:hover {
+          background: darken(m.$color_light_blue, 5%);
+          transform: translateY(-1px);
+        }
+
+        &.active {
+          background: m.$color_blue;
+          color: m.$color_white;
+          border-color: m.$color_blue;
+          box-shadow: 0 2px 8px rgba(0, 63, 117, 0.3);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+        }
+      }
+    }
+  }
+
+  // ✅ ÁREA SCROLLABLE PARA CONTENIDO PRINCIPAL
+  .dialog-scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    max-height: 400px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .juzgados-list {
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+
+    .loading-state,
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+      font-style: italic;
+      width: 100%;
+    }
+
+    .juzgado-item {
+      background: m.$color_white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 2px solid #e0e0e0;
+      transition: all 0.2s;
+      cursor: default;
+      width: 100%;
+      box-sizing: border-box;
+
+      // ✅ ESTILOS PARA MODO SOLO LECTURA
+      &.readonly {
+        border-left: 4px solid #2196f3;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        
+        &:hover {
+          transform: none;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      // Estados temporales con colores específicos
+      &.ya-paso {
+        border-left-color: #ff9800;
+        background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+      }
+
+      &.por-venir {
+        border-left-color: #4caf50;
+        background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+      }
+
+      &.sin-turnos {
+        border-left-color: #9c27b0;
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+      }
+
+      .juzgado-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        width: 100%;
+
+        &.readonly {
+          cursor: default;
+        }
+
+        .juzgado-info {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          flex: 1;
+          min-width: 0;
+
+          .status-temporal-indicator {
+            font-size: 20px;
+            min-width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+          }
+
+          .juzgado-details {
+            flex: 1;
+            min-width: 0;
+
+            .juzgado-name {
+              font-weight: bold;
+              font-size: 16px;
+              color: m.$color_blue;
+              margin-bottom: 4px;
+              line-height: 1.3;
+              word-wrap: break-word;
+            }
+
+            .juzgado-temporal-info {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+              width: 100%;
+
+              .temporal-tag {
+                font-size: 12px;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-weight: 600;
+                display: inline-block;
+                max-width: 100%;
+                word-wrap: break-word;
+                white-space: normal;
+                line-height: 1.3;
+
+                &.ya-paso {
+                  background: #ff9800;
+                  color: white;
+                }
+
+                &.por-venir {
+                  background: #4caf50;
+                  color: white;
+                }
+
+                &.sin-turnos {
+                  background: #9c27b0;
+                  color: white;
+                }
+              }
+
+              .turnos-count {
+                font-size: 11px;
+                color: #666;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+
+        // ✅ INDICADOR DE SOLO LECTURA
+        .readonly-indicator {
+          font-size: 18px;
+          color: #2196f3;
+          margin-left: 8px;
+          flex-shrink: 0;
+        }
+      }
+
+      .juzgado-email {
+        font-size: 14px;
+        color: #555;
+        margin-top: 8px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
+        width: 100%;
+        box-sizing: border-box;
+        word-wrap: break-word;
+      }
+    }
+  }
+
+  // ✅ BOTÓN FIJO EN LA PARTE INFERIOR
+  .dialog-actions {
+    margin-top: 16px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 16px;
+    width: 100%;
+    box-sizing: border-box;
+
+    .close-button-full {
+      width: 100%;
+      padding: 14px 0;
+      border-radius: 8px;
+      border: 2px solid m.$color_blue;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      background: m.$color_white;
+      color: m.$color_blue;
+      transition: all 0.2s;
+      box-sizing: border-box;
+
+      &:hover,
+      &:active {
+        background: m.$color_blue;
+        color: m.$color_white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 63, 117, 0.3);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
       }
     }
   }
@@ -2340,6 +2673,116 @@
     }
   }
 
+  // ✅ AJUSTES PARA SEARCH TURN DIALOG EN MÓVIL
+  .search-turn-dialog {
+    width: 95vw;
+    height: 90vh;
+    min-width: 95vw;
+    min-height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    padding: 16px 12px;
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .search-info {
+      padding: 8px;
+      margin-bottom: 12px;
+
+      .info-text {
+        font-size: 12px;
+      }
+    }
+
+    .input-busqueda input[type="text"] {
+      font-size: 16px;
+      padding: 10px;
+    }
+
+    .filtros-temporales {
+      margin-bottom: 12px;
+
+      .filtros-botones {
+        gap: 4px;
+        
+        .filtro-btn {
+          padding: 6px 8px;
+          font-size: 11px;
+          flex: 1 1 45%;
+          min-width: 0;
+          
+          .filtro-icon {
+            font-size: 11px;
+          }
+        }
+      }
+    }
+
+    .dialog-scroll-content {
+      max-height: 45vh;
+      margin-bottom: 12px;
+    }
+
+    .juzgados-list {
+      .juzgado-item {
+        padding: 10px;
+        margin-bottom: 6px;
+
+        .juzgado-header {
+          .juzgado-info {
+            gap: 6px;
+
+            .status-temporal-indicator {
+              font-size: 14px;
+              min-width: 18px;
+            }
+
+            .juzgado-details {
+              .juzgado-name {
+                font-size: 13px;
+                line-height: 1.2;
+              }
+
+              .juzgado-temporal-info {
+                .temporal-tag {
+                  font-size: 9px;
+                  padding: 1px 4px;
+                }
+
+                .turnos-count {
+                  font-size: 9px;
+                }
+              }
+            }
+          }
+
+          .readonly-indicator {
+            font-size: 14px;
+          }
+        }
+
+        .juzgado-email {
+          font-size: 11px;
+          margin-top: 4px;
+          padding: 4px;
+        }
+      }
+    }
+
+    .dialog-actions {
+      margin-top: 12px;
+      padding-top: 12px;
+
+      .close-button-full {
+        font-size: 16px;
+        padding: 10px 0;
+      }
+    }
+  }
+
   .juzgado-management-dialog {
     width: 95vw;
     max-width: 95vw;
@@ -2864,5 +3307,65 @@
     max-width: 250px;
     min-width: 220px;
     margin: 0 5px;
+  }
+}
+
+// Estilos para fechas individuales en los diálogos
+.temporal-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  
+  .temporal-title {
+    font-weight: 600;
+    font-size: 0.95em;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.fechas-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0;
+  
+  .fecha-individual {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid;
+    transition: all 0.2s ease;
+    
+    &.ya-paso {
+      background-color: rgba(253, 126, 20, 0.1);
+      color: #fd7e14;
+      border-color: rgba(253, 126, 20, 0.3);
+    }
+    
+    &.por-venir {
+      background-color: rgba(32, 201, 151, 0.1);
+      color: #20c997;
+      border-color: rgba(32, 201, 151, 0.3);
+    }
+  }
+}
+
+.turnos-counter {
+  margin-top: 6px;
+  
+  .turnos-count {
+    font-size: 0.85em;
+    color: #495057;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 }
