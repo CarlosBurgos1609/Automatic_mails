@@ -2,6 +2,7 @@
 
 import React from "react";
 import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { FaChartArea, FaCalendarAlt, FaBalanceScale, FaPaperPlane } from "react-icons/fa";
 import useChartsData from "../hooks/useChartsData";
 import { processAreaChartDataNew } from "../utils/chartDataProcessors";
 import { useChartsContext } from "../contexts/ChartsContext";
@@ -77,9 +78,14 @@ export default function AreaChartInteractive() {
             color: '#666', 
             marginBottom: '16px',
             fontSize: '14px',
-            fontStyle: 'italic' 
+            fontStyle: 'italic',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px'
           }}>
-            📊 Filtro activo: <strong>{currentFilterLabel}</strong>
+            <FaChartArea style={{ color: '#003f75', fontSize: '16px' }} />
+            <span>Filtro activo: <strong>{currentFilterLabel}</strong></span>
           </p>
         </div>
         
@@ -92,7 +98,9 @@ export default function AreaChartInteractive() {
           borderRadius: '8px',
           margin: '20px 0'
         }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>📊</div>
+          <div style={{ fontSize: '48px', marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
+            <FaChartArea style={{ color: '#ccc', fontSize: '48px' }} />
+          </div>
           <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
             No hay datos disponibles
           </div>
@@ -114,9 +122,14 @@ export default function AreaChartInteractive() {
           color: '#666', 
           marginBottom: '16px',
           fontSize: '14px',
-          fontStyle: 'italic' 
+          fontStyle: 'italic',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '6px'
         }}>
-          📊 Mostrando: <strong>{currentFilterLabel}</strong>
+          <FaChartArea style={{ color: '#003f75', fontSize: '16px' }} />
+          <span>Mostrando: <strong>{currentFilterLabel}</strong></span>
         </p>
       </div>
       
@@ -209,14 +222,17 @@ export default function AreaChartInteractive() {
           gap: '16px',
           flexWrap: 'wrap'
         }}>
-          <span>
-            📅 <strong>{chartData.length}</strong> días
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <FaCalendarAlt style={{ color: '#666', fontSize: '14px' }} />
+            <strong>{chartData.length}</strong> días
           </span>
-          <span>
-            ⚖️ <strong>{totalHabeas.toLocaleString()}</strong> habeas corpus
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <FaBalanceScale style={{ color: '#003f75', fontSize: '14px' }} />
+            <strong>{totalHabeas.toLocaleString()}</strong> habeas corpus
           </span>
-          <span>
-            📤 <strong>{totalReenvios.toLocaleString()}</strong> reenvíos
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <FaPaperPlane style={{ color: '#bafaba', fontSize: '14px' }} />
+            <strong>{totalReenvios.toLocaleString()}</strong> reenvíos
           </span>
         </div>
         <div style={{ 

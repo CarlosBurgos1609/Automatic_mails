@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Legend 
 } from "recharts";
+import { FaChartBar } from "react-icons/fa";
 import useChartsData from "../hooks/useChartsData";
 import { processRadarChartDataNew } from "../utils/chartDataProcessors";
 import { useChartsContext } from "../contexts/ChartsContext";
@@ -96,9 +97,14 @@ export default function RadarChartComponent() {
         marginBottom: '8px', 
         fontSize: '12px', 
         color: '#666',
-        fontStyle: 'italic'
+        fontStyle: 'italic',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '6px'
       }}>
-        📊 {currentFilterLabel}
+        <FaChartBar style={{ color: '#bafaba', fontSize: '14px' }} />
+        <span>{currentFilterLabel}</span>
       </div>
       
       <p style={{ textAlign: "center", color: "#666", marginBottom: 8, fontSize: "14px" }}>

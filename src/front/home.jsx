@@ -289,7 +289,7 @@ const Home = () => {
 
   // ✅ FUNCIÓN PARA MANEJAR SELECCIÓN DE EVENTOS (REQUERIDA)
   const handleSelectEvent = (event) => {
-    console.log('📅 Evento seleccionado:', event);
+    console.log('[EVENTO] Evento seleccionado:', event);
     const juzgado = juzgados.find((j) => j.id === event.juzgado_id);
     if (juzgado) {
       setSelectedJuzgado({
@@ -303,7 +303,7 @@ const Home = () => {
 
   // ✅ FUNCIÓN PARA MANEJAR CAMBIO DE RANGO DE FECHAS (REQUERIDA)
   const handleRangeChange = (range) => {
-    console.log('📅 Rango de fechas cambiado:', range);
+    console.log('[RANGO] Rango de fechas cambiado:', range);
     if (Array.isArray(range)) {
       const start = dayjs(range[0]).format("YYYY-MM-DD");
       const end = dayjs(range[range.length - 1]).format("YYYY-MM-DD");

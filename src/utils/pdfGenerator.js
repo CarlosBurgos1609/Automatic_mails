@@ -142,7 +142,7 @@ const generateOfficialPages = async (
     const mes = mesesAGenerar[i];
 
     console.log(
-      `🔄 Generando página ${i + 1}/${mesesAGenerar.length} - ${dayjs()
+      `[GENERANDO] Página ${i + 1}/${mesesAGenerar.length} - ${dayjs()
         .year(año)
         .month(mes - 1)
         .format("MMMM YYYY")}`
@@ -313,7 +313,7 @@ const debugCalendarioElementos = () => {
       console.log(`  ➡️ *** ESTE ES EL BOTÓN SIGUIENTE ***`);
     }
     if (texto.toLowerCase().includes("hoy")) {
-      console.log(`  📅 *** ESTE ES EL BOTÓN HOY ***`);
+      console.log(`  [HOY] *** ESTE ES EL BOTÓN HOY ***`);
     }
   });
 
@@ -479,7 +479,7 @@ const detectarMesActualCalendario = () => {
       document.querySelector(".rbc-toolbar .rbc-toolbar-label"),
     ].filter(Boolean);
 
-    console.log(`📋 Encontrados ${mesIndicadores.length} indicadores de mes`);
+    console.log(`[INDICADORES] Encontrados ${mesIndicadores.length} indicadores de mes`);
 
     for (let i = 0; i < mesIndicadores.length; i++) {
       const indicador = mesIndicadores[i];
@@ -609,7 +609,7 @@ const encontrarBotonPorTexto = (textoBoton) => {
 const navegarAMesEspecifico = async (año, mes) => {
   try {
     console.log(
-      `🔄 Navegando calendario a: ${dayjs()
+      `[NAVEGACION] Navegando calendario a: ${dayjs()
         .year(año)
         .month(mes - 1)
         .format("MMMM YYYY")}`
@@ -650,17 +650,17 @@ const navegarAMesEspecifico = async (año, mes) => {
     }
 
     console.log(
-      `📍 Mes actual detectado: ${dayjs()
+      `[MES_ACTUAL] Mes actual detectado: ${dayjs()
         .month(mesBaseActual - 1)
         .format("MMMM")} (${mesBaseActual})`
     );
     console.log(
-      `🎯 Mes objetivo: ${dayjs()
+      `[MES_OBJETIVO] Mes objetivo: ${dayjs()
         .year(año)
         .month(mes - 1)
         .format("MMMM YYYY")} (${mes})`
     );
-    console.log(`📊 Diferencia calculada: ${diferenciaMeses} meses`);
+    console.log(`[DIFERENCIA] Diferencia calculada: ${diferenciaMeses} meses`);
 
     // Buscar botones usando la función auxiliar (más confiable)
     const nextButton =
@@ -706,7 +706,7 @@ const navegarAMesEspecifico = async (año, mes) => {
         if ((i + 1) % 2 === 0) {
           const mesIntermedio = detectarMesActualCalendario();
           console.log(
-            `📈 Progreso: ahora en ${dayjs()
+            `[PROGRESO] Progreso: ahora en ${dayjs()
               .month((mesIntermedio || 1) - 1)
               .format("MMMM")} (${mesIntermedio})`
           );
@@ -717,7 +717,7 @@ const navegarAMesEspecifico = async (año, mes) => {
       const clicsNecesarios = Math.abs(diferenciaMeses);
       console.log(`⬅️ Navegando ${clicsNecesarios} meses hacia ATRÁS`);
       console.log(
-        `🎯 Vamos a hacer ${clicsNecesarios} clics en el botón: "${prevButton.textContent.trim()}"`
+        `[CLICS] Vamos a hacer ${clicsNecesarios} clics en el botón: "${prevButton.textContent.trim()}"`
       );
 
       for (let i = 0; i < clicsNecesarios; i++) {
@@ -765,7 +765,7 @@ const navegarAMesEspecifico = async (año, mes) => {
           .month((mesIntermedio || 1) - 1)
           .format("MMMM");
         console.log(
-          `📉 Progreso clic ${
+          `[PROGRESO_CLIC] Progreso clic ${
             i + 1
           }: ahora en ${nombreMesIntermedio} (${mesIntermedio})`
         );

@@ -7,6 +7,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { FaChartPie } from "react-icons/fa";
 import useChartsData from "../hooks/useChartsData";
 import { processPieChartDataNew } from "../utils/chartDataProcessors";
 import { useChartsContext } from "../contexts/ChartsContext";
@@ -95,9 +96,14 @@ export default function PieChartSimple() {
         marginBottom: '12px', 
         fontSize: '12px', 
         color: '#666',
-        fontStyle: 'italic'
+        fontStyle: 'italic',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '6px'
       }}>
-        📊 {currentFilterLabel}
+        <FaChartPie style={{ color: '#003f75', fontSize: '14px' }} />
+        <span>{currentFilterLabel}</span>
       </div>
       
       <ResponsiveContainer width="100%" height={300}>
