@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FaLock, FaLightbulb } from "react-icons/fa";
 
 export default function LoginDialog({ open, onClose, onLogin }) {
   const [username, setUsername] = useState("");
@@ -45,7 +46,7 @@ export default function LoginDialog({ open, onClose, onLogin }) {
   return (
     <div className="alert-dialog-backdrop">
       <div className="login-dialog">
-        <h1>🔐 Iniciar Sesión</h1>
+        <h1><FaLock /> Iniciar Sesión</h1>
         <p>Ingrese sus credenciales para acceder al sistema</p>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -100,7 +101,7 @@ export default function LoginDialog({ open, onClose, onLogin }) {
 
         <div className="login-info">
           <small>
-            💡 <strong>Credenciales de demostración:</strong>
+            <FaLightbulb /> <strong>Credenciales de demostración:</strong>
             <br />
             Usuario: admin | Contraseña: admin123
           </small>

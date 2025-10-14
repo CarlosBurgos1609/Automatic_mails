@@ -5,6 +5,7 @@ import timezone from "dayjs/plugin/timezone";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { FaCalendarAlt } from "react-icons/fa";
 
 // ✅ Configurar dayjs para manejar zonas horarias
 dayjs.extend(utc);
@@ -227,7 +228,7 @@ export default function EditFestiveDialog({ open, onClose, onSave }) {
                   >
                     <div className="juzgado-name">{festivo.name}</div>
                     <div className="juzgado-email">
-                      📅 {formatearFecha(festivo.date)}
+                      <FaCalendarAlt /> {formatearFecha(festivo.date)}
                     </div>
                   </div>
                 ))

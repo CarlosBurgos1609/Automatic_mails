@@ -13,6 +13,7 @@ import SearchTurnDialog from "../alertsDialogs/buttons/search_turn";
 import { generateCalendarPDF } from "../utils/pdfGenerator";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import { FaCalendarAlt } from "react-icons/fa";
 
 dayjs.locale("es");
 
@@ -268,7 +269,7 @@ export default function Buttons({ onJuzgadosClick, onFestivsClick, view = "month
                   <option value="año">🗓️ Año completo</option>
                   <option value="semestre">📊 Por Semestre</option>
                   <option value="trimestre">📈 Por Trimestre</option>
-                  <option value="mes">📅 Por Mes</option>
+                  <option value="mes"><FaCalendarAlt /> Por Mes</option>
                 </select>
               </div>
 

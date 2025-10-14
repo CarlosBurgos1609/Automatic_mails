@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
+import { FaCalendarAlt, FaFileDownload } from "react-icons/fa";
 
 export default function TimeRangeFilter({ 
   selectedRange, 
@@ -209,7 +210,7 @@ export default function TimeRangeFilter({
   if (showInDialog) {
     return (
       <div className="time-range-filter-dialog">
-        <div className="filter-label">📅 Filtrar por período:</div>
+        <div className="filter-label"><FaCalendarAlt /> Filtrar por período:</div>
         
         <div className="filter-row">
           {/* Filtro de Año */}
@@ -239,7 +240,7 @@ export default function TimeRangeFilter({
               <option value="año">🗓️ Año</option>
               <option value="semestre">📊 Semestre</option>
               <option value="trimestre">📈 Trimestre</option>
-              <option value="mes">📅 Mes</option>
+              <option value="mes"><FaCalendarAlt /> Mes</option>
             </select>
           </div>
 

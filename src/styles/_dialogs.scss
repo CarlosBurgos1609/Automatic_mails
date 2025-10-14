@@ -1071,7 +1071,7 @@
               .turnos-count {
                 font-size: 11px;
                 font-weight: normal;
-                color: #666;
+                color: #c01a1a;
                 background: rgba(108, 117, 125, 0.1);
                 padding: 2px 6px;
                 border-radius: 10px;
@@ -1248,60 +1248,78 @@
     }
   }
 
-  // ✅ NUEVOS ESTILOS PARA FILTROS
-  .filtros-estado {
+  // ✅ NUEVOS ESTILOS PARA FILTROS TEMPORALES (igual que change-juzgado-dialog)
+  .filtros-temporales {
     flex-shrink: 0;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     
     .filtros-botones {
       display: flex;
-      gap: 6px;
-      justify-content: center;
+      gap: 8px;
       flex-wrap: wrap;
+      justify-content: center;
       
       .filtro-btn {
         display: flex;
         align-items: center;
-        gap: 4px;
-        padding: 6px 12px;
-        border-radius: 16px;
-        border: 2px solid #ddd;
-        background: white;
-        color: #666;
+        gap: 6px;
+        background: m.$color_light_blue;
+        color: m.$color_blue;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
         font-size: 13px;
-        font-weight: 500;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         white-space: nowrap;
+        min-width: fit-content;
         
         .filtro-icon {
-          font-size: 13px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 16px;
+          height: 16px;
+          font-size: 14px;
+          
+          svg {
+            width: 14px;
+            height: 14px;
+            vertical-align: middle;
+          }
         }
         
-        &:hover {
-          border-color: m.$color_blue;
-          background: #f0f8ff;
+        &:hover:not(:disabled) {
           transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(0, 63, 117, 0.15);
         }
         
         &.active {
-          border-color: m.$color_blue;
           background: m.$color_blue;
+          color: m.$color_white;
+          box-shadow: 0 2px 8px rgba(0, 63, 117, 0.2);
+        }
+        
+        &.disponibles.active {
+          background: #20c997;
           color: white;
-          transform: translateY(-1px);
-          box-shadow: 0 2px 8px rgba(0, 63, 117, 0.3);
         }
         
-        &.disponible.active {
-          border-color: #28a745;
-          background: #28a745;
-          box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        &.ya-paso.active {
+          background: #fd7e14;
+          color: white;
         }
         
-        &.ocupado.active {
-          border-color: #dc3545;
-          background: #dc3545;
-          box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        &.por-venir.active {
+          background: #20c997;
+          color: white;
+        }
+        
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
         }
       }
     }
@@ -1381,6 +1399,52 @@
         }
       }
 
+      // ✅ ESTADOS TEMPORALES PARA JUZGADOS  
+      &.ya-paso {
+        border-left: 4px solid #fd7e14;
+        background-color: rgba(253, 126, 20, 0.05);
+        
+        &:hover:not(.selected) {
+          background-color: rgba(253, 126, 20, 0.1);
+          border: 1px solid #fd7e14;
+          border-left: 4px solid #fd7e14;
+        }
+        
+        &.selected {
+          border-left: 4px solid #fd7e14;
+        }
+      }
+      
+      &.por-venir {
+        border-left: 4px solid #20c997;
+        background-color: rgba(32, 201, 151, 0.05);
+        
+        &:hover:not(.selected) {
+          background-color: rgba(32, 201, 151, 0.1);
+          border: 1px solid #20c997;
+          border-left: 4px solid #20c997;
+        }
+        
+        &.selected {
+          border-left: 4px solid #20c997;
+        }
+      }
+      
+      &.sin-turnos {
+        border-left: 4px solid #2196f3;
+        background-color: rgba(33, 150, 243, 0.05);
+        
+        &:hover:not(.selected) {
+          background-color: rgba(33, 150, 243, 0.1);
+          border: 1px solid #2196f3;
+          border-left: 4px solid #2196f3;
+        }
+        
+        &.selected {
+          border-left: 4px solid #2196f3;
+        }
+      }
+
       &:hover:not(.selected) {
         background-color: #f0f7ff;
         border: 1px solid m.$color_blue;
@@ -1417,6 +1481,182 @@
             flex-shrink: 0;
           }
           
+          .status-temporal-indicator {
+            font-size: 18px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            padding: 4px;
+            
+            &.ya-paso {
+              background: rgba(253, 126, 20, 0.15);
+              color: #fd7e14;
+              
+              svg {
+                width: 16px;
+                height: 16px;
+              }
+            }
+            
+            &.por-venir {
+              background: rgba(32, 201, 151, 0.15);
+              color: #20c997;
+              
+              svg {
+                width: 16px;
+                height: 16px;
+              }
+            }
+            
+            &.sin-turnos {
+              background: rgba(33, 150, 243, 0.15);
+              color: #2196f3;
+              
+              svg {
+                width: 16px;
+                height: 16px;
+              }
+            }
+          }
+          
+          .juzgado-details {
+            flex: 1;
+            min-width: 0;
+            
+            .juzgado-name {
+              font-weight: bold;
+              color: m.$color_blue;
+              margin-bottom: 8px;
+              line-height: 1.3;
+              word-wrap: break-word;
+            }
+            
+            .juzgado-temporal-info {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              flex-wrap: wrap;
+              
+              .temporal-title {
+                font-size: 12px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                
+                &.ya-paso {
+                  color: #fd7e14;
+                }
+                
+                &.por-venir {
+                  color: #20c997;
+                }
+                
+                svg {
+                  width: 12px;
+                  height: 12px;
+                }
+              }
+              
+              .fechas-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                align-items: center;
+                margin-top: 4px;
+                
+                .fecha-individual {
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 4px;
+                  padding: 4px 8px;
+                  border-radius: 6px;
+                  font-size: 0.85em;
+                  font-weight: 500;
+                  border: 1px solid;
+                  transition: all 0.2s ease;
+                  
+                  svg {
+                    width: 12px;
+                    height: 12px;
+                  }
+                  
+                  &.ya-paso {
+                    background-color: rgba(253, 126, 20, 0.1);
+                    color: #fd7e14;
+                    border-color: rgba(253, 126, 20, 0.3);
+                  }
+                  
+                  &.por-venir {
+                    background-color: rgba(32, 201, 151, 0.1);
+                    color: #20c997;
+                    border-color: rgba(32, 201, 151, 0.3);
+                  }
+                  
+                  &.sin-turnos {
+                    background-color: rgba(33, 150, 243, 0.1);
+                    color: #2196f3;
+                    border-color: rgba(33, 150, 243, 0.3);
+                  }
+                }
+              }
+              
+              .turnos-counter {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                font-size: 0.85em;
+                font-weight: 500;
+                padding: 4px 8px;
+                border-radius: 6px;
+                background: rgba(0, 63, 117, 0.1);
+                color: m.$color_blue;
+                border: 1px solid rgba(0, 63, 117, 0.2);
+                
+                .turnos-count {
+                  display: flex;
+                  align-items: center;
+                  gap: 4px;
+                  
+                  svg {
+                    width: 12px;
+                    height: 12px;
+                  }
+                }
+              }
+              
+              .temporal-tag {
+                font-size: 11px;
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-weight: 500;
+                word-wrap: break-word;
+                white-space: normal;
+                line-height: 1.3;
+                max-width: 100%;
+                
+                &.ya-paso {
+                  background: rgba(253, 126, 20, 0.1);
+                  color: #fd7e14;
+                }
+                
+                &.por-venir {
+                  background: rgba(32, 201, 151, 0.1);
+                  color: #20c997;
+                }
+                
+                &.sin-turnos {
+                  background: rgba(33, 150, 243, 0.1);
+                  color: #2196f3;
+                }
+              }
+            }
+          }
+          
           .turnos-count {
             font-size: 12px;
             font-weight: normal;
@@ -1443,20 +1683,26 @@
         }
       }
 
-      .juzgado-email-row {
+      .juzgado-email {
         font-size: 14px;
         color: #666;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+
+        align-items: left;
         gap: 8px;
         flex-wrap: wrap;
         word-wrap: break-word;
+        margin-top: 8px;
+        padding: 8px 12px;
+        background-color: rgba(0, 63, 117, 0.05);
+        border-radius: 6px;
+        border: 1px solid rgba(0, 63, 117, 0.1);
 
-        span {
-          word-wrap: break-word;
-          overflow-wrap: break-word;
-          flex-grow: 1;
+        svg {
+          width: 14px;
+          height: 14px;
+          color: m.$color_blue;
+          margin-right: 6px;
         }
 
         .quick-copy-btn {
@@ -1470,6 +1716,16 @@
           transition: all 0.2s;
           flex-shrink: 0;
           white-space: nowrap;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+
+          svg {
+            width: 12px;
+            height: 12px;
+            color: white;
+            margin-right: 0;
+          }
 
           &:hover {
             background-color: #002a54;
@@ -3372,7 +3628,7 @@
   
   .turnos-count {
     font-size: 0.85em;
-    color: #495057;
+    color: #b6b7b8;
     font-weight: 500;
     display: flex;
     align-items: center;

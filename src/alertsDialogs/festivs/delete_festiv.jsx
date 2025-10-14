@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FaCalendarAlt } from "react-icons/fa";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -185,7 +186,7 @@ export default function DeleteFestiveDialog({ open, onClose, onDelete }) {
                       {festivo.name}
                     </div>
                     <div className="juzgado-email">
-                      📅 {formatearFecha(festivo.date)}
+                      <FaCalendarAlt /> {formatearFecha(festivo.date)}
                     </div>
                   </div>
                 ))

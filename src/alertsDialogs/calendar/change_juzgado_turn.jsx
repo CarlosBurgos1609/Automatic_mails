@@ -189,7 +189,7 @@ export default function ChangeJuzgadoTurnDialog({
               onClick={() => setFiltroTemporal("todos")}
               disabled={loading || isChanging}
             >
-              <span className="filtro-icon">📋</span>
+              <span className="filtro-icon"><FaClipboardList /></span>
               Todos ({estadisticasTemporales.total})
             </button>
             <button

@@ -2,11 +2,22 @@ import React, { useState, useEffect } from "react";
 import Copy from "../../components/Copy";
 import TimeRangeFilter from "../../components/TimeRangeFilter";
 import { 
-  getJuzgadoStatsInTimeRange, 
+  getJuzgadoTemporalStatusInRange, 
   calculateTemporalStats,
   getDefaultPeriod
 } from "../../utils/timeRangeUtils";
 import dayjs from "dayjs";
+import { 
+  FaPlus, 
+  FaCalendarAlt, 
+  FaClipboardList, 
+  FaCheckCircle, 
+  FaBackward, 
+  FaForward,
+  FaChartBar,
+  FaEnvelope,
+  FaNewspaper
+} from "react-icons/fa";
 
 export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDate, showToastMsg, isLoggedIn = false }) {
   const [busqueda, setBusqueda] = useState("");
@@ -16,7 +27,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
   const [error, setError] = useState("");
   const [showCopy, setShowCopy] = useState(false);
   const [loadingJuzgados, setLoadingJuzgados] = useState(false);
-  const [filtroActivo, setFiltroActivo] = useState("todos"); // "todos", "disponibles", "ocupados"
+  const [filtroTemporal, setFiltroTemporal] = useState("todos"); // "todos", "ya-paso", "por-venir", "disponibles"
   const [timeRange, setTimeRange] = useState(null); // Nuevo estado para filtro temporal
 
   // Cargar juzgados desde el backend
@@ -58,25 +69,15 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     }
   };
 
-  // Función para obtener estadísticas de turnos por juzgado en el rango temporal
-  const getJuzgadoStats = (juzgadoId) => {
-    return getJuzgadoStatsInTimeRange(juzgadoId, turnosData, timeRange);
+  // Función para obtener el estado temporal de un juzgado en el rango seleccionado
+  const getJuzgadoTemporalStatus = (juzgado) => {
+    return getJuzgadoTemporalStatusInRange(juzgado, turnosData, timeRange);
   };
 
-  // Función para determinar el estado de un juzgado basado en el rango temporal
-  const getJuzgadoStatus = (juzgado) => {
-    const stats = getJuzgadoStats(juzgado.id);
-    return {
-      ...juzgado,
-      ...stats,
-      status: stats.tieneActivo ? "ocupado" : "disponible"
-    };
-  };
+  // Aplicar estado temporal a todos los juzgados
+  const juzgadosConEstado = juzgadosData.map(juzgado => getJuzgadoTemporalStatus(juzgado));
 
-  // Aplicar estadísticas a todos los juzgados
-  const juzgadosConEstado = juzgadosData.map(juzgado => getJuzgadoStatus(juzgado));
-
-  // Filtrado de juzgados por nombre, código o email y por estado
+  // Filtrado de juzgados por nombre, código o email y por estado temporal
   const juzgadosFiltrados = juzgadosConEstado.filter(
     (j) => {
       const coincideBusqueda = 
@@ -85,21 +86,23 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
         (j.email && j.email.toLowerCase().includes(busqueda.toLowerCase()));
       
       const coincideFiltro = 
-        filtroActivo === "todos" || 
-        (filtroActivo === "disponibles" && j.status === "disponible") ||
-        (filtroActivo === "ocupados" && j.status === "ocupado");
+        filtroTemporal === "todos" || 
+        (filtroTemporal === "ya-paso" && j.status === "ya-paso") ||
+        (filtroTemporal === "por-venir" && (j.status === "por-venir" || j.status === "sin-turnos")) ||
+        (filtroTemporal === "disponibles" && j.status === "sin-turnos");
       
       return coincideBusqueda && coincideFiltro;
     }
   );
 
-  // Estadísticas generales basadas en el rango temporal
-  const estadisticas = timeRange ? 
+  // Estadísticas temporales basadas en el rango seleccionado
+  const estadisticasTemporales = timeRange ? 
     calculateTemporalStats(juzgadosData, turnosData, timeRange) :
     {
       total: juzgadosConEstado.length,
-      disponibles: juzgadosConEstado.filter(j => j.status === "disponible").length,
-      ocupados: juzgadosConEstado.filter(j => j.status === "ocupado").length
+      yaPasaron: juzgadosConEstado.filter(j => j.status === "ya-paso").length,
+      porVenir: juzgadosConEstado.filter(j => j.status === "por-venir" || j.status === "sin-turnos").length,
+      disponibles: juzgadosConEstado.filter(j => j.status === "sin-turnos").length
     };
 
   const handleSeleccionarJuzgado = (juzgado) => {
@@ -139,7 +142,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
     setJuzgadoSeleccionado(null);
     setError("");
     setLoadingJuzgados(false);
-    setFiltroActivo("todos");
+    setFiltroTemporal("todos");
     setTimeRange(null);
     onClose();
   };
@@ -161,7 +164,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
             
             {fechaSeleccionada && (
               <div className="fecha-seleccionada">
-                📅 Fecha seleccionada: {fechaSeleccionada}
+                <FaCalendarAlt /> Fecha seleccionada: {fechaSeleccionada}
               </div>
             )}
 
@@ -182,29 +185,40 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
               disabled={loadingJuzgados}
             />
 
-            {/* Filtros de estado */}
-            <div className="filtros-estado">
+            {/* Filtros temporales */}
+            <div className="filtros-temporales">
               <div className="filtros-botones">
                 <button
-                  className={`filtro-btn ${filtroActivo === "todos" ? "active" : ""}`}
-                  onClick={() => setFiltroActivo("todos")}
+                  className={`filtro-btn ${filtroTemporal === "todos" ? "active" : ""}`}
+                  onClick={() => setFiltroTemporal("todos")}
+                  disabled={loadingJuzgados}
                 >
-                  <span className="filtro-icon">📋</span>
-                  Todos ({estadisticas.total})
+                  <span className="filtro-icon"><FaClipboardList /></span>
+                  Todos ({estadisticasTemporales.total})
                 </button>
                 <button
-                  className={`filtro-btn disponible ${filtroActivo === "disponibles" ? "active" : ""}`}
-                  onClick={() => setFiltroActivo("disponibles")}
+                  className={`filtro-btn disponibles ${filtroTemporal === "disponibles" ? "active" : ""}`}
+                  onClick={() => setFiltroTemporal("disponibles")}
+                  disabled={loadingJuzgados}
                 >
-                  <span className="filtro-icon">✅</span>
-                  Disponibles ({estadisticas.disponibles})
+                  <span className="filtro-icon"><FaCheckCircle /></span>
+                  Disponibles ({estadisticasTemporales.disponibles})
                 </button>
                 <button
-                  className={`filtro-btn ocupado ${filtroActivo === "ocupados" ? "active" : ""}`}
-                  onClick={() => setFiltroActivo("ocupados")}
+                  className={`filtro-btn ya-paso ${filtroTemporal === "ya-paso" ? "active" : ""}`}
+                  onClick={() => setFiltroTemporal("ya-paso")}
+                  disabled={loadingJuzgados}
                 >
-                  <span className="filtro-icon">🔴</span>
-                  Con Turnos ({estadisticas.ocupados})
+                  <span className="filtro-icon"><FaBackward /></span>
+                  Ya Pasaron ({estadisticasTemporales.yaPasaron})
+                </button>
+                <button
+                  className={`filtro-btn por-venir ${filtroTemporal === "por-venir" ? "active" : ""}`}
+                  onClick={() => setFiltroTemporal("por-venir")}
+                  disabled={loadingJuzgados}
+                >
+                  <span className="filtro-icon"><FaForward /></span>
+                  Por Venir ({estadisticasTemporales.porVenir})
                 </button>
               </div>
             </div>
@@ -228,15 +242,57 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                   >
                     <div className={`juzgado-header ${juzgadoSeleccionado?.id === juzgado.id ? 'selected' : ''}`}>
                       <div className="juzgado-info">
-                        <span className={`status-indicator ${juzgado.status}`}>
-                          {juzgado.status === "disponible" ? "🟢" : "🔴"}
+                        <span className={`status-temporal-indicator ${juzgado.status}`}>
+                          {juzgado.status === "ya-paso" ? <FaBackward /> : 
+                           juzgado.status === "por-venir" ? <FaForward /> : 
+                           juzgado.status === "sin-turnos" ? <FaNewspaper /> : <FaCalendarAlt />}
                         </span>
-                        {juzgado.code} - {juzgado.name}
-                        {juzgado.status === "ocupado" && (
-                          <span className="turnos-count">
-                            ({juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''})
-                          </span>
-                        )}
+                        <div className="juzgado-details">
+                          <div className="juzgado-name">
+                            {juzgado.code} - {juzgado.name}
+                          </div>
+                          {juzgado.status !== "sin-turnos" && (
+                            <div className="juzgado-temporal-info">
+                              <div className="temporal-header">
+                                {juzgado.status === "ya-paso" && (
+                                  <span className="temporal-title"><FaBackward /> Turnos pasados:</span>
+                                )}
+                                {juzgado.status === "por-venir" && (
+                                  <span className="temporal-title"><FaForward /> Próximos turnos:</span>
+                                )}
+                                
+                                {/* Fechas individuales y contador en la misma línea */}
+                                <div className="fechas-container">
+                                  {juzgado.fechasArray && juzgado.fechasArray.length > 0 ? (
+                                    juzgado.fechasArray.map((fecha, index) => (
+                                      <span key={index} className={`fecha-individual ${juzgado.status}`}>
+                                        <FaCalendarAlt /> {fecha}
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span className={`fecha-individual ${juzgado.status}`}>
+                                      <FaCalendarAlt /> {juzgado.ultimaFecha}
+                                    </span>
+                                  )}
+                                </div>
+                                
+                                {/* Contador de turnos en la misma línea */}
+                                <div className="turnos-counter">
+                                  <span className="turnos-count">
+                                    <FaChartBar /> {juzgado.totalTurnos} turno{juzgado.totalTurnos !== 1 ? 's' : ''}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {juzgado.status === "sin-turnos" && (
+                            <div className="juzgado-temporal-info">
+                              <span className="temporal-tag sin-turnos">
+                                Sin turnos asignados
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       {juzgadoSeleccionado?.id === juzgado.id && (
                         <span className="selected-indicator">
@@ -244,8 +300,8 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                         </span>
                       )}
                     </div>
-                    <div className="juzgado-email-row">
-                      <span>{juzgado.email}</span>
+                    <div className="juzgado-email">
+                      <FaEnvelope /> {juzgado.email}
                       {juzgadoSeleccionado?.id === juzgado.id && (
                         <button 
                           onClick={(e) => {
@@ -254,7 +310,7 @@ export default function AddJuzgadoCalendarDialog({ open, onClose, onSave, slotDa
                           }}
                           className="quick-copy-btn"
                         >
-                          📋 Copiar
+                          <FaClipboardList /> Copiar
                         </button>
                       )}
                     </div>

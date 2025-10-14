@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import checkIcon from "../../assets/icons/check.png";
+import { FaCalendarAlt } from "react-icons/fa";
 
 export default function SaveFestivDialog({ 
   show, 
@@ -61,7 +62,7 @@ export default function SaveFestivDialog({
         <span className="main-message">{mensaje}</span>
         <div className="festiv-details">
           <div><strong>🎉 Nombre:</strong> {festivData?.nombre}</div>
-          <div><strong>📅 Fecha:</strong> {festivData?.fecha}</div>
+          <div><strong><FaCalendarAlt /> Fecha:</strong> {festivData?.fecha}</div>
         </div>
       </div>
       {/* ✅ BOTÓN DE CERRAR */}
