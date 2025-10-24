@@ -9,9 +9,10 @@
 ### Otros comandos
 ```bash
 npm run build
-npm run
-npm install 
+npm install . 
 npm i '...'
+node server.js
+npm run
 ```
 ---
 
